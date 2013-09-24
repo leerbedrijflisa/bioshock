@@ -6,10 +6,15 @@
     $(function(){
         var hub = $.connection.CustomHub;
 
-        $(document).keydown(function (event) {
+        $(document).keyup(function (event) {
             if (event.keyCode == 17) {
                 $("#editorTab").toggle();
             }
+        });
+
+        $(function () {
+            $("#editorTab").draggable();
+            $("#editorTab").resizable();
         });
         
         
