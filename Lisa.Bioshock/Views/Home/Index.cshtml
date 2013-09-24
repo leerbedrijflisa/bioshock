@@ -3,7 +3,17 @@
     Layout = "~/Views/Shared/_Layout.cshtml";   
 }
 <script type="text/javascript">
+    $(function(){
+        var hub = $.connection.CustomHub;
 
+        $(document).keydown(function (event) {
+            if (event.keyCode == 17) {
+                $("#editorTab").toggle();
+            }
+        });
+        
+        
+    });
 </script>
 
 <h2>Index</h2>
