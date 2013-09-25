@@ -6,13 +6,14 @@
     $(function(){
         var hub = $.connection.CustomHub;
 
-      /*  var editor = CodeMirror.fromTextArea(document.getElementById("editor"), {
+        var editor = CodeMirror.fromTextArea(document.getElementById("editor"), {
             value: "",
             lineNumbers: true,
             mode: "htmlmixed",
             theme: "monokai",
-            fullscreen: true
-        }); */
+            fullscreen: true,
+            gutters: ["CodeMirror-linenumbers"]
+        });
 
         $(document).keyup(function (event) {
             if (event.keyCode == 17) {
