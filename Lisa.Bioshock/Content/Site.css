@@ -1,6 +1,9 @@
-﻿body {
+﻿@import url('http://fonts.googleapis.com/css?family=Droid+Sans+Mono');
+
+body {
+    padding: 0;
+    margin: 0;
     font-size: .85em;
-    font-family: "Segoe UI", Verdana, Helvetica, Sans-Serif;
     color: #232323;
     background-color: #fff;
 }
@@ -68,22 +71,36 @@ textarea {
     min-height: 400px;
     display: none;
     border: 3px solid #c1c1c1;
-    border-top: 25px solid #c1c1c1;
     border-radius: 5px 5px 5px 5px;
-    padding: 0.5em;
+    padding: 0;
     position: relative;
+    
 }
 
 #editor
 {
-    resize: none;
-    position: absolute;
+    /*resize: none;*/
+    position: relative;
     top: 0;
     right: 0;
     bottom: 0;
     left: 0;
     border: none;
 }
+
+#preview
+{
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    padding: 0;
+    margin: 0;
+    width: 100%;
+    height: 100%;
+}
+
     
 
 

@@ -4,15 +4,9 @@
 }
 <script type="text/javascript">
     $(function () {
-        var hub = $.connection.CustomHub;
 
-        /*hub.client.addMessage = function (codeMessage) {
-            $('#preview').InnerHtml();
-        };
-
-        $.connection.hub.start().done(function () {
-            hub.server.send($('#editor').val());
-        });*/
+        var hub = $.connection.customHub;
+        var lastKeyDown = undefined;
 
         var editor = CodeMirror.fromTextArea(document.getElementById("editor"), {
             value: "",
@@ -23,18 +17,87 @@
             gutters: ["CodeMirror-linenumbers"]
         });
 
-        $(document).keyup(function (event) {
-            if (event.keyCode == 17) {
-                $("#editorTab").toggle();
+        function editorKeyDown(event) {
+
+            lastKeyDown = event.keyCode;
+        }
+
+        function editorKeyUp(event) {
+
+            if (event.keyCode == 17 && lastKeyDown == 17) {
+
+                $('#editorTab').toggle();
                 editor.focus();
             }
-        });
+        }
 
-        $("#editorTab").draggable().resizable();
+        $(window).keydown(editorKeyDown);
+        $(window).keyup(editorKeyUp);
+        
+        var iframe = document.getElementById('preview');
+        $(iframe.contentDocument).keydown(editorKeyDown);
+        $(iframe.contentDocument).keyup(editorKeyUp);
+
+        //$(window).keydown(function (event) {
+
+        //    lastKeyDown = event.keyCode;
+        //    console.log("keyDown: " + event.keyCode);
+        //});
+                
+        //$(document.getElementById('preview').contentWindow.document).keydown(function (event) {
+
+        //    lastKeyDown = event.keyCode;
+        //    console.log("keyDown: " + event.keyCode);
+        //});
+
+        //$(window).keyup(function (event) {
+
+        //    console.log("keyUp: " + event.keyCode);
+        //    if (event.keyCode == 17 && lastKeyDown == 17) {
+
+        //        $("#editorTab").toggle();
+        //        editor.focus();
+        //    }            
+        //});
+
+        //$(document.getElementById('preview').contentWindow.document).keyup(function (event) {
+
+        //    console.log("keyUp: " + event.keyCode);
+        //    if (event.keyCode == 17 && lastKeyDown == 17) {
+
+        //        $("#editorTab").toggle();
+        //        editor.focus();
+        //    }
+        //});
+
+        $("#editorTab").draggable({ ifraneFix: true, cancel: '#editor', handle: '#toolbar' }).resizable();
+
+        hub.client.addMessage = function (codeMessage) {
+            
+            var title = codeMessage.match(/<title>(.+)<\//im);            
+
+            if (title) {
+
+                document.title = title[1];
+            }
+            //$('#preview').html(codeMessage);
+            $('#preview').contents().find('html').html(codeMessage);
+        };
+
+        $.connection.hub.start().done(function () {
+            hub.server.send($('#editor').val());
+
+            editor.on('change', function (codeMirror) {
+                
+                hub.server.send(codeMirror.getValue());
+            });
+        });
 
     });
 </script>
-<div id="preview"></div>
+
+<iframe id="preview" frameborder="0"></iframe>
 <div id="editorTab">
+    <div id="toolbar" style="height:20px;background-color:red;"></div>
     <textarea id="editor"></textarea>
 </div>
