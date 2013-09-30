@@ -10,7 +10,7 @@ namespace Lisa.Bioshock.Models
     {
         public void Send(string codeMessage)
         {
-            Clients.All.AddMessage(codeMessage);
+            Clients.All.addMessage(codeMessage);
         }
     }
 }
