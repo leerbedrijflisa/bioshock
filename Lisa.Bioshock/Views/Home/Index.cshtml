@@ -2,11 +2,12 @@
     ViewBag.Title = "Index";
     Layout = "~/Views/Shared/_Layout.cshtml";   
 }
+<script src="~/Scripts/GuiController.js"></script>
 <script type="text/javascript">
     $(function () {
 
         var hub = $.connection.customHub;
-        var lastKeyDown = undefined;
+        //var lastKeyDown = undefined;
 
         var editor = CodeMirror.fromTextArea(document.getElementById("editor"), {
             value: "",
@@ -17,60 +18,30 @@
             gutters: ["CodeMirror-linenumbers"]
         });
 
-        function editorKeyDown(event) {
-
-            lastKeyDown = event.keyCode;
-        }
-
-        function editorKeyUp(event) {
-
-            if (event.keyCode == 17 && lastKeyDown == 17) {
-
-                $('#editorTab').toggle();
-                editor.focus();
-            }
-        }
-
-        $(window).keydown(editorKeyDown);
-        $(window).keyup(editorKeyUp);
-        
-        var iframe = document.getElementById('preview');
-        $(iframe.contentDocument).keydown(editorKeyDown);
-        $(iframe.contentDocument).keyup(editorKeyUp);
-
-        //$(window).keydown(function (event) {
+        //function editorKeyDown(event) {
 
         //    lastKeyDown = event.keyCode;
-        //    console.log("keyDown: " + event.keyCode);
-        //});
-                
-        //$(document.getElementById('preview').contentWindow.document).keydown(function (event) {
+        //}
 
-        //    lastKeyDown = event.keyCode;
-        //    console.log("keyDown: " + event.keyCode);
-        //});
+        //function editorKeyUp(event) {
 
-        //$(window).keyup(function (event) {
-
-        //    console.log("keyUp: " + event.keyCode);
         //    if (event.keyCode == 17 && lastKeyDown == 17) {
 
-        //        $("#editorTab").toggle();
-        //        editor.focus();
-        //    }            
-        //});
-
-        //$(document.getElementById('preview').contentWindow.document).keyup(function (event) {
-
-        //    console.log("keyUp: " + event.keyCode);
-        //    if (event.keyCode == 17 && lastKeyDown == 17) {
-
-        //        $("#editorTab").toggle();
+        //        $('#editorTab').toggle();
         //        editor.focus();
         //    }
-        //});
+        //}
 
-        $("#editorTab").draggable({ ifraneFix: true, cancel: '#editor', handle: '#toolbar' }).resizable();
+        //$(window).keydown(editorKeyDown);
+        //$(window).keyup(editorKeyUp);
+        
+        //var iframe = document.getElementById('preview');
+        //$(iframe.contentDocument).keydown(editorKeyDown);
+        //$(iframe.contentDocument).keyup(editorKeyUp);
+        
+        //$("#editorTab").draggable({ ifraneFix: true, cancel: '#editor', handle: '#toolbar' }).resizable();
+
+        
 
         hub.client.addMessage = function (codeMessage) {
             
@@ -80,7 +51,7 @@
 
                 document.title = title[1];
             }
-            //$('#preview').html(codeMessage);
+            
             $('#preview').contents().find('html').html(codeMessage);
         };
 
@@ -101,3 +72,7 @@
     <div id="toolbar" style="height:20px;background-color:red;"></div>
     <textarea id="editor"></textarea>
 </div>
+
+<script type="text/javascript">
+    var guiController = new GuiController('#editorTab', '#toolbar');
+</script>

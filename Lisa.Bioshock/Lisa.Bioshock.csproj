@@ -391,10 +391,13 @@
     <Content Include="Content\themes\base\minified\jquery.ui.slider.min.css" />
     <Content Include="Content\themes\base\minified\jquery.ui.tabs.min.css" />
     <Content Include="Content\themes\base\minified\jquery.ui.theme.min.css" />
+    <Content Include="delme.txt" />
     <Content Include="Global.asax" />
     <Content Include="Content\Site.css" />
     <Content Include="Content\CodeMirror\mode\livescript\livescript.ls" />
     <None Include="Scripts\jquery-1.8.2.intellisense.js" />
+    <TypeScriptCompile Include="Scripts\GuiController.ts" />
+    <Content Include="Scripts\GuiController.js" />
     <Content Include="Scripts\jquery-1.8.2.js" />
     <Content Include="Scripts\jquery-1.8.2.min.js" />
     <None Include="Scripts\jquery.validate-vsdoc.js" />
@@ -414,6 +417,8 @@
     <Content Include="Scripts\knockout-2.2.0.debug.js" />
     <Content Include="Scripts\knockout-2.2.0.js" />
     <Content Include="Scripts\modernizr-2.6.2.js" />
+    <Content Include="Scripts\typings\jqueryui\jqueryui.d.ts" />
+    <Content Include="Scripts\typings\jquery\jquery.d.ts" />
     <Content Include="Scripts\_references.js" />
     <Content Include="Web.config" />
     <Content Include="Web.Debug.config">
@@ -462,6 +467,26 @@
       </FlavorProperties>
     </VisualStudio>
   </ProjectExtensions>
+  <ItemGroup>
+    <TypeScriptCompile Include="F:\LISA\bioshock\trunk\Lisa.Bioshock\\Scripts\typings\jqueryui\jqueryui.d.ts" />
+    <TypeScriptCompile Include="F:\LISA\bioshock\trunk\Lisa.Bioshock\\Scripts\typings\jquery\jquery.d.ts" />
+    <TypeScriptCompile Include="$(ProjectDir)\**\*.ts" />
+  </ItemGroup>
+  <Target Name="TypeScript" AfterTargets="BeforeBuild">
+    <Exec Command="&quot;$(PROGRAMFILES)\Microsoft SDKs\TypeScript\tsc&quot; --sourcemap  --target ES5  @(TypeScriptCompile ->'&quot;%(fullpath)&quot;' , ' ')" Condition="'@(TypeScriptCompile)'!=''" />
+  </Target>
+  <!--
+  <PropertyGroup Condition="'$(Configuration)' == 'Debug'">
+    <TypeScriptTarget>ES5</TypeScriptTarget>
+    <TypeScriptIncludeComments>true</TypeScriptIncludeComments>
+    <TypeScriptSourceMap>true</TypeScriptSourceMap>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)' == 'Release'">
+    <TypeScriptTarget>ES5</TypeScriptTarget>
+    <TypeScriptIncludeComments>false</TypeScriptIncludeComments>
+    <TypeScriptSourceMap>false</TypeScriptSourceMap>
+  </PropertyGroup>
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\TypeScript\Microsoft.TypeScript.targets" />-->
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
