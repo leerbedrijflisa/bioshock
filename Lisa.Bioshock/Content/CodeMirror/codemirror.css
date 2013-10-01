@@ -5,10 +5,12 @@
   font-family: "Droid Sans Mono";
   height: 100%;
   font-size: 15px;
+  -overflow:hidden !important;
+
 }
 .CodeMirror-scroll {
   /* Set scrolling behaviour here */
-  overflow: auto;
+  overflow: hidden;
 }
 
 /* PADDING */
