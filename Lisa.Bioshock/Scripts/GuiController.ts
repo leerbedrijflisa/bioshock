@@ -16,7 +16,8 @@ class GuiController {
         $(this.editorId).draggable({ iframeFix: true, handle: handleId });
         $(editorContainerId).resizable({
             start: () => { $(this.overlayId).toggle(); },
-            stop: () => { $(this.overlayId).toggle(); }
+            stop: () => { $(this.overlayId).toggle(); },
+            handles: "all"
         });
     }
 

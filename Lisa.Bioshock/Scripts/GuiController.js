@@ -27,7 +27,8 @@ var GuiController = (function () {
             },
             stop: function () {
                 $(_this.overlayId).toggle();
-            }
+            },
+            handles: "all"
         });
     }
     return GuiController;

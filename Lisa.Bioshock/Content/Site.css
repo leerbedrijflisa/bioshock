@@ -108,6 +108,7 @@ textarea {
     width: 600px;
     height: 400px;
     border: 1px solid #c1c1c1;
+    padding-bottom: 20px;
 }  
 
 #toolbar {
