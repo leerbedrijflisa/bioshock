@@ -65,7 +65,7 @@ textarea {
 
 #editorTab
 {
-    width: 500px;
+    /*width: 500px;
     height: 400px;
     min-width: 500px;
     min-height: 400px;
@@ -73,19 +73,29 @@ textarea {
     border: 3px solid #c1c1c1;
     border-radius: 5px 5px 5px 5px;
     padding: 0;
-    position: relative;
+    position: relative;*/
     
+    position: absolute;
+    left:200px;
+    top: 100px;
+    padding: 0px;
+    padding: 1em;
 }
 
 #editor
 {
     /*resize: none;*/
-    position: relative;
+    /*position: relative;
     top: 0;
     right: 0;
     bottom: 0;
     left: 0;
-    border: none;
+    border: none;*/
+
+    border: 1px solid blue;
+    width: 400px;
+    margin: 0;
+    resize: none;
 }
 
 #preview
@@ -101,6 +111,14 @@ textarea {
     height: 100%;
 }
 
-    
+#overlay {
+
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+    display: none;
+}    
 
 

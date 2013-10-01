@@ -68,11 +68,15 @@
 </script>
 
 <iframe id="preview" frameborder="0"></iframe>
+<div id="overlay"></div>
 <div id="editorTab">
     <div id="toolbar" style="height:20px;background-color:red;"></div>
-    <textarea id="editor"></textarea>
+    <div id="editorContainer">
+        <textarea id="editor"></textarea>
+    </div>
+    
 </div>
 
 <script type="text/javascript">
-    var guiController = new GuiController('#editorTab', '#toolbar');
+    var guiController = new GuiController('#editorTab', '#toolbar', '#editorContainer', '#overlay');
 </script>
