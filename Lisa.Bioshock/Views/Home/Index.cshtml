@@ -15,32 +15,7 @@
             mode: "htmlmixed",
             theme: "default",
             gutters: ["CodeMirror-linenumbers"]
-        });
-
-        //function editorKeyDown(event) {
-
-        //    lastKeyDown = event.keyCode;
-        //}
-
-        //function editorKeyUp(event) {
-
-        //    if (event.keyCode == 17 && lastKeyDown == 17) {
-
-        //        $('#editorTab').toggle();
-        //        editor.focus();
-        //    }
-        //}
-
-        //$(window).keydown(editorKeyDown);
-        //$(window).keyup(editorKeyUp);
-        
-        //var iframe = document.getElementById('preview');
-        //$(iframe.contentDocument).keydown(editorKeyDown);
-        //$(iframe.contentDocument).keyup(editorKeyUp);
-        
-        //$("#editorTab").draggable({ ifraneFix: true, cancel: '#editor', handle: '#toolbar' }).resizable();
-
-        
+        });        
 
         hub.client.addMessage = function (codeMessage) {
             
@@ -63,6 +38,8 @@
             });
         });
 
+        var guiController = new GuiController('#editorTab', '#toolbar', '#editorContainer', '#overlay');
+        guiController.registerEditor(editor);
     });
 </script>
 
@@ -75,7 +52,3 @@
     </div>
     
 </div>
-
-<script type="text/javascript">
-    var guiController = new GuiController('#editorTab', '#toolbar', '#editorContainer', '#overlay');
-</script>
