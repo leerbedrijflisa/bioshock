@@ -3,11 +3,9 @@
     Layout = "~/Views/Shared/_Layout.cshtml";   
 }
 <script src="~/Scripts/GuiController.js"></script>
+<script src="~/Scripts/Synchronizer.js"></script>
 <script type="text/javascript">
     $(function () {
-
-        var hub = $.connection.customHub;
-        //var lastKeyDown = undefined;
 
         var editor = CodeMirror.fromTextArea(document.getElementById("editor"), {
             value: "",
@@ -17,28 +15,7 @@
             gutters: ["CodeMirror-linenumbers"]
         });        
 
-        hub.client.addMessage = function (codeMessage) {
-            
-            var title = codeMessage.match(/<title>(.+)<\//im);            
-
-            if (title) {
-
-                document.title = title[1];
-            }
-            
-            $('#preview').contents().find('html').html(codeMessage);
-        };
-
-        $.connection.hub.start().done(function () {
-            hub.server.send($('#editor').val());
-
-            editor.on('change', function (codeMirror) {
-                
-                hub.server.send(codeMirror.getValue());
-            });
-        });
-
-        var guiController = new GuiController('#editorTab', '#toolbar', '#editorContainer', '#overlay');
+        var guiController = new GuiController('#editorTab', '#toolbar', '#editorContainer', '#overlay', '#preview');
         guiController.registerEditor(editor);
     });
 </script>

@@ -9,8 +9,9 @@ class GuiController {
      * @param {string} handleId - The id of the HTMLElement that should be used to drag the editor around.
      * @param {string} editorContainerId - The id of the HTMLElement that should be used to resize the editor.
      * @param {string} overlayId - The overlay of the id that will be shown when dragging starts.
+     * @param {string} previewId - The id of the iframe to update
      */
-    constructor(id: string, handleId: string, editorContainerId: string, overlayId: string) {
+    constructor(id: string, handleId: string, editorContainerId: string, overlayId: string, previewId: string) {
 
         this.editorId = id;
         this.overlayId = overlayId;
@@ -28,12 +29,19 @@ class GuiController {
             stop: () => { $(this.overlayId).toggle(); },
             handles: "all"
         });
+
+        this.synchronizer = new Synchronizer(previewId);
+        this.synchronizer.start(() => {
+
+            this.synchronizer.update($(this.editorId).val());
+        });
     }
 
     private editorId: string;
     private lastKeyDown: number;
     private overlayId: string;
     private editor: any;
+    private synchronizer: Synchronizer;
 
     /**
      * Registers the editor on which the change event should be handled
@@ -42,10 +50,9 @@ class GuiController {
      */
     public registerEditor = (editor: any) => {
         this.editor = editor;
-        this.editor.on('change', function (codeMirror) {
+        this.editor.on('change', (codeMirror) => {
 
-            // TODO: Send update to preview
-            
+            this.synchronizer.update(codeMirror.getValue());
         });
     }
 

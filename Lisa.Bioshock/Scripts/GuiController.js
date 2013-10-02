@@ -8,8 +8,9 @@ var GuiController = (function () {
     * @param {string} handleId - The id of the HTMLElement that should be used to drag the editor around.
     * @param {string} editorContainerId - The id of the HTMLElement that should be used to resize the editor.
     * @param {string} overlayId - The overlay of the id that will be shown when dragging starts.
+    * @param {string} previewId - The id of the iframe to update
     */
-    function GuiController(id, handleId, editorContainerId, overlayId) {
+    function GuiController(id, handleId, editorContainerId, overlayId, previewId) {
         var _this = this;
         /**
         * Registers the editor on which the change event should be handled
@@ -19,7 +20,7 @@ var GuiController = (function () {
         this.registerEditor = function (editor) {
             _this.editor = editor;
             _this.editor.on('change', function (codeMirror) {
-                // TODO: Send update to preview
+                _this.synchronizer.write(codeMirror.getValue());
             });
         };
         this.editorKeyDown = function (event) {
@@ -49,6 +50,11 @@ var GuiController = (function () {
                 $(_this.overlayId).toggle();
             },
             handles: "all"
+        });
+
+        this.synchronizer = new Synchronizer(previewId);
+        this.synchronizer.start(function () {
+            _this.synchronizer.write($(_this.editorId).val());
         });
     }
     return GuiController;
