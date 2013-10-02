@@ -19,11 +19,11 @@ class Synchronizer {
     /**
      * Creates a new Synchronizer.
      * 
-     * @param {string} previewId - The id of the iframe that should be updated when a message arrives.
+     * @param {string} preview - The selector of the element that should be updated when a message arrives.
      */
-    constructor(previewId: string) {
+    constructor(preview: string) {
 
-        this.previewId = previewId;
+        this.previewId = preview;
         this.hub.client.addMessage = this.onRead;
     }
 
@@ -40,7 +40,13 @@ class Synchronizer {
     }
 
     private hub = $.connection.synchronizeHub;
-    public start(done: Function) {
+
+    /**
+     * Start a connection with the hub
+     *
+     * @param {function} done (optional) - The callback function to be called when the start of the connection finishes. This parameter can be undefined.
+     */
+    public start(done?: Function) {
 
         if (done) {
 
@@ -51,13 +57,23 @@ class Synchronizer {
         }
     }
 
+    /**
+     * Sends an update with the given message
+     *
+     * @param {*} message - The message to send as an update
+     */ 
     public update(message: any) {
 
         this.hub.server.send(message);
     }
 
-    public setPreview(id: string) {
+    /**
+     * Sets the preview
+     * 
+     * @param {string} selector - The selector of the element that should be updated when a message arrives.
+     */
+    public setPreview(selector: string) {
 
-        this.previewId = id;
+        this.previewId = selector;
     }
 }
