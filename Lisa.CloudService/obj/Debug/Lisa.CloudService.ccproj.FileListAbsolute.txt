@@ -1,0 +1,2 @@
+C:\Lisa\Lisa.CloudService\bin\Debug\ServiceConfiguration.cscfg
+C:\Lisa\Lisa.CloudService\bin\Debug\ServiceDefinition.csdef
