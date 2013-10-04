@@ -1,70 +1,155 @@
 /// <reference path="typings/jquery/jquery.d.ts" />
 class GuiController {
-    
+
     /**
      * Creates a new GuiController
      *
      * @constructor
-     * @param {string} id - The id of the editor.
-     * @param {string} handleId - The id of the HTMLElement that should be used to drag the editor around.
-     * @param {string} editorContainerId - The id of the HTMLElement that should be used to resize the editor.
-     * @param {string} overlayId - The overlay of the id that will be shown when dragging starts.
-     * @param {string} previewId - The id of the iframe to update
+     * @param {object} options - Options used for initializing the GuiController.
      */
-    constructor(id: string, handleId: string, editorContainerId: string, overlayId: string, previewId: string) {
+    constructor(editor:any, options = {}) {
 
-        this.editorId = id;
-        this.overlayId = overlayId;
-
-        $(window).keydown(this.editorKeyDown);
-        $(window).keyup(this.editorKeyUp);
-
-        var iframe: HTMLFrameElement = <HTMLFrameElement> document.getElementById('preview');
-        $(iframe.contentWindow).keydown(this.editorKeyDown);
-        $(iframe.contentWindow).keyup(this.editorKeyUp);
-
-        $(this.editorId).draggable({ iframeFix: true, handle: handleId });
-        $(editorContainerId).resizable({
-            start: () => { $(this.overlayId).toggle(); },
-            stop: () => { $(this.overlayId).toggle(); },
-            handles: "all"
-        });
-
-        this.synchronizer = new Synchronizer(previewId);
-        this.synchronizer.start(() => {
-
-            this.synchronizer.update($(this.editorId).val());
-        });
-    }
-
-    private editorId: string;
-    private lastKeyDown: number;
-    private overlayId: string;
-    private editor: any;
-    private synchronizer: Synchronizer;
+        this.registerEditorHandlers(options);
+        this.registerKeyHandlers();        
+        this.registerSynchronizeHandlers();
+    }    
 
     /**
      * Registers the editor on which the change event should be handled
      * 
-     * @param {*} editor The editor (CodeMirror)
+     * @param {*} editor - The editor (CodeMirror).
      */
     public registerEditor = (editor: any) => {
-        this.editor = editor;
+        this.editor = editor;        
         this.editor.on('change', (codeMirror) => {
 
             this.synchronizer.update(codeMirror.getValue());
         });
     }
 
-    public editorKeyDown = (event) => {
+    /**
+     * Registers the drag handle
+     * 
+     * @param {string} handle - The selector to get the drag handle.
+     */
+    public registerDragHandle = (handle:string) => {
+
+        this.registerEditorHandlers({ handle: handle });
+    }
+
+    /**
+     * Registers the element that will be used to identify the editors window
+     * 
+     * @param {string} window - The selector used to get the window.
+     */
+    public registerWindow = (window: string) => {
+
+        this.registerEditorHandlers({ window: window });
+    }
+
+    /**
+     * Registers the element that will be used to identify the preview
+     * 
+     * @param {string} preview - The selector used to get the preview.
+     */
+    public registerPreview = (preview: string) => {
+
+        this.registerEditorHandlers({ preview: preview });
+    }
+
+    /**
+     * Registers the element that will be used to identify the overlay
+     * 
+     * @param {string} overlay - The selector used to get the overlay.
+     */
+    public registerOverlay = (overlay: string) => {
+
+        this.registerEditorHandlers({ overlay: overlay });
+    }
+
+
+    private editorKeyDown = (event) => {
         this.lastKeyDown = event.keyCode;
     }
 
-    public editorKeyUp = (event) => {
+    private editorKeyUp = (event) => {
 
         if (event.keyCode == 17 && this.lastKeyDown == 17) {
 
-            $(this.editorId).toggle();
+            $(this.editorWindowSelector).toggle();
+            this.editor.refresh();
         }
     }
+
+    private registerKeyHandlers() {
+
+        $(window).keydown(this.editorKeyDown);
+        $(window).keyup(this.editorKeyUp);
+        
+        var iframe: any = $(this.previewSelector)[0];
+        $(iframe.contentWindow).keydown(this.editorKeyDown);
+        $(iframe.contentWindow).keyup(this.editorKeyUp);
+    }
+
+    private registerSynchronizeHandlers() {
+
+        this.synchronizer = new Synchronizer(this.previewSelector);
+        this.synchronizer.start(() => {
+
+            this.synchronizer.update(this.editor.getValue());
+        });
+    }
+
+    private registerEditorHandlers(options:Object) {
+
+        if (options.hasOwnProperty('preview')) {
+
+            this.previewSelector = options['preview'];
+        }
+
+        if (options.hasOwnProperty('overlay')) {
+
+            this.overlaySelector = options['overlay'];
+        }
+
+        if (options.hasOwnProperty('editor')) {
+
+            this.registerEditor(options['editor']);
+        }
+
+        if (options.hasOwnProperty('window')) {
+
+            this.editorWindowSelector = options['window'];
+        }
+
+        $(this.editorWindowSelector).resizable({
+
+            start: () => {
+
+                $(this.overlaySelector).toggle();
+            },
+            stop: () => {
+
+                $(this.overlaySelector).toggle();
+                this.editor.refresh();
+            },
+            handles: 'all'
+        });
+
+        $(this.editorWindowSelector).draggable({ iframeFix: true });
+        if (options.hasOwnProperty('handle')) {
+
+            $(this.editorWindowSelector).draggable('option', 'handle', options['handle']);
+        } else {
+
+            this.registerDragHandle('h1');
+        } 
+    }    
+
+    private editorWindowSelector = '#editorWindow';   
+    private previewSelector = '#preview';
+    private overlaySelector = '#overlay';
+    private synchronizer: Synchronizer;
+    private editor = undefined;    
+    private lastKeyDown: number;          
 }
