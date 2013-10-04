@@ -7,7 +7,7 @@
 <script type="text/javascript">
     $(function () {
 
-        var editor = CodeMirror.fromTextArea(document.getElementById("editor"), {
+        var editor = CodeMirror.fromTextArea($("#editor")[0], {
             value: "",
             lineNumbers: true,
             mode: "htmlmixed",
@@ -15,17 +15,14 @@
             gutters: ["CodeMirror-linenumbers"]
         });        
 
-        var guiController = new GuiController('#editorTab', '#toolbar', '#editorContainer', '#overlay', '#preview');
-        guiController.registerEditor(editor);
+        var guiController = new GuiController();
+        guiController.registerEditor(editor);  
     });
 </script>
 
 <iframe id="preview" frameborder="0"></iframe>
 <div id="overlay"></div>
-<div id="editorTab">
-    <div id="editorContainer">
-        <div id="toolbar"></div>    
-        <textarea id="editor"></textarea>
-    </div>
-    
+<div id="editorWindow">    
+    <h1>File: {filename}.{extension}</h1>
+    <textarea id="editor"></textarea>    
 </div>
