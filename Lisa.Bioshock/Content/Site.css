@@ -81,7 +81,6 @@ textarea {
 
     background-color: #c1c1c1;
     margin: 0;
-    padding: 0;
     font-size: 14pt;
     font-family: 'Segoe UI';
     font-weight: normal;
@@ -116,3 +115,14 @@ textarea {
     width: 100%;
     display: none;
 } 
+
+#editorMenuWindow {
+
+    position: absolute;
+    display: none;
+    height: 100%;
+    z-index: 1000;
+    background-color: white;
+    margin-left: 150px;
+    width: 300px;
+}
