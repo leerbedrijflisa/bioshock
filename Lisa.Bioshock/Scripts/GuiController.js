@@ -52,18 +52,40 @@ var GuiController = (function () {
         this.registerOverlay = function (overlay) {
             _this.registerEditorHandlers({ overlay: overlay });
         };
+        /**
+        * Registers the element that will be used to identify the (escape) menu
+        *
+        * @param {string} overlay - The selector used to get the menu.
+        */
+        this.registerMenu = function (menu) {
+            _this.registerEditorHandlers({ menu: menu });
+        };
         this.editorKeyDown = function (event) {
             _this.lastKeyDown = event.keyCode;
         };
         this.editorKeyUp = function (event) {
-            if (event.keyCode == 17 && _this.lastKeyDown == 17) {
-                $(_this.editorWindowSelector).toggle();
-                _this.editor.refresh();
+            if (!_this.isMenuActive) {
+                if (event.keyCode == 17 && _this.lastKeyDown == 17) {
+                    $(_this.editorWindowSelector).toggle();
+                    _this.editor.refresh();
+                }
+            }
+
+            if (event.keyCode === 27) {
+                _this.toggleOverlay(true);
+                $(_this.menuWindowSelector).toggle().focus();
+                _this.isMenuActive = !_this.isMenuActive;
+
+                if (!_this.isMenuActive) {
+                    _this.editor.focus();
+                }
             }
         };
         this.editorWindowSelector = '#editorWindow';
         this.previewSelector = '#preview';
         this.overlaySelector = '#overlay';
+        this.menuWindowSelector = '#editorMenuWindow';
+        this.isMenuActive = false;
         this.editor = undefined;
         this.registerEditorHandlers(options);
         this.registerKeyHandlers();
@@ -104,12 +126,18 @@ var GuiController = (function () {
             this.editorWindowSelector = options['window'];
         }
 
+        if (options.hasOwnProperty('menu')) {
+            this.menuWindowSelector = options['menu'];
+        }
+
         $(this.editorWindowSelector).resizable({
             start: function () {
-                $(_this.overlaySelector).toggle();
+                //$(this.overlaySelector).toggle();
+                _this.toggleOverlay();
             },
             stop: function () {
-                $(_this.overlaySelector).toggle();
+                //$(this.overlaySelector).toggle();
+                _this.toggleOverlay();
                 _this.editor.refresh();
             },
             handles: 'all'
@@ -120,6 +148,23 @@ var GuiController = (function () {
             $(this.editorWindowSelector).draggable('option', 'handle', options['handle']);
         } else {
             this.registerDragHandle('h1');
+        }
+    };
+
+    GuiController.prototype.toggleOverlay = function (menu) {
+        if (typeof menu === "undefined") { menu = false; }
+        if (menu) {
+            $(this.overlaySelector).css({
+                'background-color': 'black',
+                'opacity': '0.65',
+                'z-index': '999'
+            }).toggle();
+        } else {
+            $(this.overlaySelector).css({
+                'background-color': '',
+                'opacity': '1',
+                'z-index': '0'
+            }).toggle();
         }
     };
     return GuiController;

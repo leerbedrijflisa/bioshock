@@ -67,6 +67,15 @@ class GuiController {
         this.registerEditorHandlers({ overlay: overlay });
     }
 
+    /**
+     * Registers the element that will be used to identify the (escape) menu
+     * 
+     * @param {string} overlay - The selector used to get the menu.
+     */
+    public registerMenu = (menu: string) => {
+
+        this.registerEditorHandlers({ menu: menu });
+    }
 
     private editorKeyDown = (event) => {
         this.lastKeyDown = event.keyCode;
@@ -74,10 +83,25 @@ class GuiController {
 
     private editorKeyUp = (event) => {
 
-        if (event.keyCode == 17 && this.lastKeyDown == 17) {
+        if (!this.isMenuActive) {
 
-            $(this.editorWindowSelector).toggle();
-            this.editor.refresh();
+            if (event.keyCode == 17 && this.lastKeyDown == 17) {
+
+                $(this.editorWindowSelector).toggle();
+                this.editor.refresh();
+            }
+        }
+
+        if (event.keyCode === 27) {
+            
+            this.toggleOverlay(true);            
+            $(this.menuWindowSelector).toggle().focus();
+            this.isMenuActive = !this.isMenuActive;
+
+            if (!this.isMenuActive) {
+
+                this.editor.focus();
+            }
         }
     }
 
@@ -122,15 +146,22 @@ class GuiController {
             this.editorWindowSelector = options['window'];
         }
 
+        if (options.hasOwnProperty('menu')) {
+
+            this.menuWindowSelector = options['menu'];
+        }
+
         $(this.editorWindowSelector).resizable({
 
             start: () => {
 
-                $(this.overlaySelector).toggle();
+                //$(this.overlaySelector).toggle();
+                this.toggleOverlay();
             },
             stop: () => {
 
-                $(this.overlaySelector).toggle();
+                //$(this.overlaySelector).toggle();
+                this.toggleOverlay();
                 this.editor.refresh();
             },
             handles: 'all'
@@ -144,11 +175,32 @@ class GuiController {
 
             this.registerDragHandle('h1');
         } 
+    }
+
+    private toggleOverlay(menu = false) {
+
+        if (menu) {
+
+            $(this.overlaySelector).css({
+                'background-color': 'black',
+                'opacity': '0.65',
+                'z-index': '999'
+            }).toggle();
+        } else {
+
+            $(this.overlaySelector).css({
+                'background-color': '',
+                'opacity': '1',
+                'z-index': '0'
+            }).toggle();
+        }
     }    
 
     private editorWindowSelector = '#editorWindow';   
     private previewSelector = '#preview';
     private overlaySelector = '#overlay';
+    private menuWindowSelector = '#editorMenuWindow';
+    private isMenuActive = false;
     private synchronizer: Synchronizer;
     private editor = undefined;    
     private lastKeyDown: number;          
