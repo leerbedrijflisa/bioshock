@@ -16,32 +16,12 @@
         });        
 
         var guiController = new GuiController();
-        guiController.registerEditor(editor);
-
-        $('#editorMenuWindow ul').click(function (event) {
-
-            $("#dialog-confirm").dialog({
-                dialogClass: "no-close",
-                resizable: false,
-                height: 175,
-                modal: true,
-                buttons: {
-                    Yes: function () {
-                        $(this).dialog("close");
-                        window.location = event.target || event.srcElement;
-                    },
-                    Cancel: function () {
-                        $(this).dialog("close");
-                    }
-                }
-            });
-            return false;
-        });
+        guiController.registerEditor(editor);        
     });
 
     function closeMenu() {
 
-        $.event.trigger({ type: 'keyup', keyCode: 27 });
+        $.event.trigger({ type: 'keyup', keyCode: 27 });        
     }
 </script>
 
@@ -52,14 +32,11 @@
     <h1>File: {filename}.{extension}</h1>
     <textarea id="editor"></textarea>    
 </div>
-<div id="dialog-confirm" title="Confirmation">
-    <p><span class="ui-icon ui-icon-alert" style="float: left; margin: 0 7px 20px 0;"></span>Are you sure you want to continue?</p>
-</div>
 <div id="editorMenuWindow" tabindex="1">
 
     <ul>
         <li>@Html.ActionLink("Create a project", "Create", "Project")</li>
         <li>@Html.ActionLink("View project details", "Details", "Project", new { id = 1 }, null)</li>
-    </ul>
-    <a href="javascript:closeMenu()">Close</a>
+        <li id="editorMenuWindow-close"><a href="javascript:closeMenu();">Close</a></li>
+    </ul>     
 </div>

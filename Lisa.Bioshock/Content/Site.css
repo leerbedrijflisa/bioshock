@@ -133,6 +133,30 @@ textarea {
     z-index: 501;
 }
 
+#editorMenuWindow ul li {
+
+    list-style-type: none;
+    
+}
+#editorMenuWindow ul li a {
+
+    font-family:'Segoe UI';
+    color: rgb(0, 161, 255);
+    font-size:large;
+    text-decoration: none;
+}
+
+#editorMenuWindow-close{
+
+    padding-top: 20px;
+    font-weight: bold;
+}
+
+#editorMenuWindow ul li a:link {text-decoration:none;}
+#editorMenuWindow ul li a:visited {text-decoration:none;}
+#editorMenuWindow ul li a:hover {text-decoration:underline;}
+#editorMenuWindow ul li a:active {text-decoration:underline; color: rgb(0, 161, 255);}
+
 .ui-dialog { z-index: 1000 !important ;}
 
 .no-close .ui-dialog-titlebar-close {
