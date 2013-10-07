@@ -121,8 +121,24 @@ textarea {
     position: absolute;
     display: none;
     height: 100%;
-    z-index: 1000;
+    z-index: 500;
     background-color: white;
     margin-left: 150px;
     width: 300px;
+}
+
+#dialog-confirm{
+
+    display:none;
+    z-index: 501;
+}
+
+.ui-dialog { z-index: 1000 !important ;}
+
+.no-close .ui-dialog-titlebar-close {
+    display: none;
+}
+
+.ui-front {
+    z-index: 1000 !important;
 }

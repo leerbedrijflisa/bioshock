@@ -184,7 +184,7 @@ class GuiController {
             $(this.overlaySelector).css({
                 'background-color': 'black',
                 'opacity': '0.65',
-                'z-index': '999'
+                'z-index': '499'
             }).toggle();
         } else {
 
