@@ -7,7 +7,8 @@ var Synchronizer = (function () {
     function Synchronizer(preview) {
         var _this = this;
         this.onRead = function (message) {
-            var title = message.match(/<title>(.+)<\//im);
+            //var title = message.match(/<title>(.+)<\//im);
+            var title = message.match(/<title>(.+?)(<\/|$)/);
             if (title) {
                 document.title = title[1];
             }

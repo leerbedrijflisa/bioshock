@@ -30,7 +30,8 @@ class Synchronizer {
     private previewId: string;
     private onRead = (message: string) => {
 
-        var title = message.match(/<title>(.+)<\//im);
+        //var title = message.match(/<title>(.+)<\//im);
+        var title = message.match(/<title>(.+?)(<\/|$)/);
         if (title) {
 
             document.title = title[1];
