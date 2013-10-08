@@ -166,3 +166,8 @@ textarea {
 .ui-front {
     z-index: 1000 !important;
 }
+
+.ui-icon-gripsmall-diagonal-se{
+
+    background: none !important;
+}
