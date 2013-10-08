@@ -79,6 +79,18 @@ class GuiController {
 
     private editorKeyDown = (event) => {
         this.lastKeyDown = event.keyCode;
+
+        if (!this.isMenuActive) {
+
+            if (event.ctrlKey && event.keyCode == 13) {
+
+                var lineNumber = this.editor.getCursor().line;
+                var lineText = this.editor.getLineHandle(lineNumber).text;
+
+                this.editor.setLine(lineNumber, "\n" + lineText);
+                this.editor.setCursor(lineNumber);
+            }
+        }
     }
 
     private editorKeyUp = (event) => {
@@ -90,6 +102,7 @@ class GuiController {
                 $(this.editorWindowSelector).toggle();
                 this.editor.refresh();
             }
+
         }
 
         if (event.keyCode === 27) {

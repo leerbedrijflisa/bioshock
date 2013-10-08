@@ -62,6 +62,16 @@ var GuiController = (function () {
         };
         this.editorKeyDown = function (event) {
             _this.lastKeyDown = event.keyCode;
+
+            if (!_this.isMenuActive) {
+                if (event.ctrlKey && event.keyCode == 13) {
+                    var lineNumber = _this.editor.getCursor().line;
+                    var lineText = _this.editor.getLineHandle(lineNumber).text;
+
+                    _this.editor.setLine(lineNumber, "\n" + lineText);
+                    _this.editor.setCursor(lineNumber);
+                }
+            }
         };
         this.editorKeyUp = function (event) {
             if (!_this.isMenuActive) {
