@@ -141,6 +141,9 @@ var GuiController = (function () {
         }
 
         $(this.editorWindowSelector).resizable({
+            resize: function () {
+                _this.editor.refresh();
+            },
             start: function () {
                 //$(this.overlaySelector).toggle();
                 _this.toggleOverlay();
