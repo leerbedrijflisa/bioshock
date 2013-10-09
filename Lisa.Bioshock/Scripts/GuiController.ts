@@ -166,6 +166,10 @@ class GuiController {
 
         $(this.editorWindowSelector).resizable({
 
+            resize: () => {
+                this.editor.refresh();
+            },
+
             start: () => {
 
                 //$(this.overlaySelector).toggle();
