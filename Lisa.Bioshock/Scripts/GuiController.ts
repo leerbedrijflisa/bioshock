@@ -102,19 +102,23 @@ class GuiController {
                 $(this.editorWindowSelector).toggle();
                 this.editor.refresh();
             }
-
         }
 
         if (event.keyCode === 27) {
-            
-            this.toggleOverlay(true);            
-            $(this.menuWindowSelector).toggle().focus();
-            this.isMenuActive = !this.isMenuActive;
 
-            if (!this.isMenuActive) {
+            if (this.isMenuActive) {
 
+                this.isMenuActive = false;
+                this.toggleOverlay();
                 this.editor.focus();
+            } else {
+
+                this.isMenuActive = true;
+                this.toggleOverlay();
             }
+
+            $(this.menuWindowSelector).toggle().focus();
+            
         }
     }
 
@@ -166,25 +170,46 @@ class GuiController {
 
         $(this.editorWindowSelector).resizable({
 
-            resize: () => {
+            minHeight: 52,
+            minWidth: 200,  
+            containment: "#overlay",
+            resize: (event, ui) => {
+                
+                
+                if (this.isMenuActive) {
+
+
+                    $(this.editorWindowSelector).width(this.editorWidth);
+                    $(this.editorWindowSelector).height(this.editorHeight);
+                }
+                else {
+                    this.editorWidth = ui.size.width;
+                    this.editorHeight = ui.size.height;
+                    
+                }
                 this.editor.refresh();
+                
             },
 
             start: () => {
 
-                //$(this.overlaySelector).toggle();
+                this.isEditorDragging = true;
                 this.toggleOverlay();
             },
             stop: () => {
 
-                //$(this.overlaySelector).toggle();
+                this.isEditorDragging = false;
                 this.toggleOverlay();
                 this.editor.refresh();
             },
             handles: 'all'
         });
 
-        $(this.editorWindowSelector).draggable({ iframeFix: true });
+        $(this.editorWindowSelector).draggable({
+
+            iframeFix: true,
+            containment: "window"
+        });
         if (options.hasOwnProperty('handle')) {
 
             $(this.editorWindowSelector).draggable('option', 'handle', options['handle']);
@@ -194,30 +219,41 @@ class GuiController {
         } 
     }
 
-    private toggleOverlay(menu = false) {
+    private toggleOverlay() {
 
-        if (menu) {
+        if (this.isMenuActive) {
 
             $(this.overlaySelector).css({
                 'background-color': 'black',
                 'opacity': '0.65',
                 'z-index': '499'
-            }).toggle();
+            });
         } else {
 
             $(this.overlaySelector).css({
                 'background-color': '',
                 'opacity': '1',
                 'z-index': '0'
-            }).toggle();
+            });
         }
+
+        if (this.isMenuActive || this.isEditorDragging) {
+            $('#overlay').show();
+        }
+        else {
+            $('#overlay').hide();
+        }
+
     }    
 
     private editorWindowSelector = '#editorWindow';   
     private previewSelector = '#preview';
     private overlaySelector = '#overlay';
     private menuWindowSelector = '#editorMenuWindow';
+    private editorWidth;
+    private editorHeight;
     private isMenuActive = false;
+    private isEditorDragging = false;
     private synchronizer: Synchronizer;
     private editor = undefined;    
     private lastKeyDown: number;          

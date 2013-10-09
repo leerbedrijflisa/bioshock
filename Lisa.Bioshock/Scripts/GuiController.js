@@ -82,13 +82,16 @@ var GuiController = (function () {
             }
 
             if (event.keyCode === 27) {
-                _this.toggleOverlay(true);
-                $(_this.menuWindowSelector).toggle().focus();
-                _this.isMenuActive = !_this.isMenuActive;
-
-                if (!_this.isMenuActive) {
+                if (_this.isMenuActive) {
+                    _this.isMenuActive = false;
+                    _this.toggleOverlay();
                     _this.editor.focus();
+                } else {
+                    _this.isMenuActive = true;
+                    _this.toggleOverlay();
                 }
+
+                $(_this.menuWindowSelector).toggle().focus();
             }
         };
         this.editorWindowSelector = '#editorWindow';
@@ -96,6 +99,7 @@ var GuiController = (function () {
         this.overlaySelector = '#overlay';
         this.menuWindowSelector = '#editorMenuWindow';
         this.isMenuActive = false;
+        this.isEditorDragging = false;
         this.editor = undefined;
         this.registerEditorHandlers(options);
         this.registerKeyHandlers();
@@ -141,22 +145,35 @@ var GuiController = (function () {
         }
 
         $(this.editorWindowSelector).resizable({
-            resize: function () {
+            minHeight: 52,
+            minWidth: 200,
+            containment: "#overlay",
+            resize: function (event, ui) {
+                if (_this.isMenuActive) {
+                    $(_this.editorWindowSelector).width(_this.editorWidth);
+                    $(_this.editorWindowSelector).height(_this.editorHeight);
+                } else {
+                    _this.editorWidth = ui.size.width;
+                    _this.editorHeight = ui.size.height;
+                }
                 _this.editor.refresh();
             },
             start: function () {
-                //$(this.overlaySelector).toggle();
+                _this.isEditorDragging = true;
                 _this.toggleOverlay();
             },
             stop: function () {
-                //$(this.overlaySelector).toggle();
+                _this.isEditorDragging = false;
                 _this.toggleOverlay();
                 _this.editor.refresh();
             },
             handles: 'all'
         });
 
-        $(this.editorWindowSelector).draggable({ iframeFix: true });
+        $(this.editorWindowSelector).draggable({
+            iframeFix: true,
+            containment: "window"
+        });
         if (options.hasOwnProperty('handle')) {
             $(this.editorWindowSelector).draggable('option', 'handle', options['handle']);
         } else {
@@ -164,20 +181,25 @@ var GuiController = (function () {
         }
     };
 
-    GuiController.prototype.toggleOverlay = function (menu) {
-        if (typeof menu === "undefined") { menu = false; }
-        if (menu) {
+    GuiController.prototype.toggleOverlay = function () {
+        if (this.isMenuActive) {
             $(this.overlaySelector).css({
                 'background-color': 'black',
                 'opacity': '0.65',
                 'z-index': '499'
-            }).toggle();
+            });
         } else {
             $(this.overlaySelector).css({
                 'background-color': '',
                 'opacity': '1',
                 'z-index': '0'
-            }).toggle();
+            });
+        }
+
+        if (this.isMenuActive || this.isEditorDragging) {
+            $('#overlay').show();
+        } else {
+            $('#overlay').hide();
         }
     };
     return GuiController;
