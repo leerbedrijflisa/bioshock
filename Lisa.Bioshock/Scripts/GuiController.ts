@@ -20,10 +20,14 @@ class GuiController {
      * @param {*} editor - The editor (CodeMirror).
      */
     public registerEditor = (editor: any) => {
-        this.editor = editor;        
+        this.editor = editor;
         this.editor.on('change', (codeMirror) => {
 
             this.synchronizer.update(codeMirror.getValue());
+        });
+        this.editor.on('gutterClick', (codeMirror) => {
+
+            this.editor.setGutterMarker(3, "Errors", this.makeMarker());
         });
     }
 
@@ -90,7 +94,25 @@ class GuiController {
                 this.editor.setLine(lineNumber, "\n" + lineText);
                 this.editor.setCursor(lineNumber);
             }
+
+            if (event.altKey && event.keyCode == 79) {
+                
+                this.isMenuActive = true;
+                this.toggleOverlay();
+                $(this.openFileWindowSelector).toggle(); 
+                this.isMenuAvailable = false;
+            }
+        } else {
+
+            if (event.altKey && event.keyCode == 79) {
+
+                this.isMenuActive = false;
+                $(this.openFileWindowSelector).toggle();
+                this.toggleOverlay();
+                this.isMenuAvailable = true;
+            }
         }
+
     }
 
     private editorKeyUp = (event) => {
@@ -102,23 +124,33 @@ class GuiController {
                 $(this.editorWindowSelector).toggle();
                 this.editor.refresh();
             }
+
+            if (event.keyCode == 20 && this.lastKeyDown == 20) {
+                var msg = document.createElement("div");
+                msg.appendChild(document.createTextNode("Hallo"));
+                msg.className = "lint-error";
+                this.editor.addLineWidget(3, msg, { coverGutter: false, noHScroll: true });
+                this.editor.setGutterMarker(3, "Errors", this.makeMarker());
+            }
         }
 
         if (event.keyCode === 27) {
 
-            if (this.isMenuActive) {
+            if (this.isMenuAvailable) {
 
-                this.isMenuActive = false;
-                this.toggleOverlay();
-                this.editor.focus();
-            } else {
+                if (this.isMenuActive) {
 
-                this.isMenuActive = true;
-                this.toggleOverlay();
+                    this.isMenuActive = false;
+                    this.toggleOverlay();
+                    this.editor.focus();
+                } else {
+
+                    this.isMenuActive = true;
+                    this.toggleOverlay();
+                }
+
+                $(this.menuWindowSelector).toggle().focus();
             }
-
-            $(this.menuWindowSelector).toggle().focus();
-            
         }
     }
 
@@ -219,6 +251,13 @@ class GuiController {
         } 
     }
 
+    private makeMarker() {
+        var errorMarker = document.createElement("div");
+        errorMarker.innerHTML = "<img style='width:10px; margin-left:15px; margin-bottom:1px;' src='/Content/Images/ErrorIcon.png'/>";
+        return errorMarker;
+    }
+
+
     private toggleOverlay() {
 
         if (this.isMenuActive) {
@@ -250,9 +289,12 @@ class GuiController {
     private previewSelector = '#preview';
     private overlaySelector = '#overlay';
     private menuWindowSelector = '#editorMenuWindow';
+    private openFileWindowSelector = '#openFileWindow';
+    public IE = false;
     private editorWidth;
     private editorHeight;
     private isMenuActive = false;
+    private isMenuAvailable = true;
     private isEditorDragging = false;
     private synchronizer: Synchronizer;
     private editor = undefined;    

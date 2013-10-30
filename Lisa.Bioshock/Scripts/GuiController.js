@@ -19,6 +19,9 @@ var GuiController = (function () {
             _this.editor.on('change', function (codeMirror) {
                 _this.synchronizer.update(codeMirror.getValue());
             });
+            _this.editor.on('gutterClick', function (codeMirror) {
+                _this.editor.setGutterMarker(3, "Errors", _this.makeMarker());
+            });
         };
         /**
         * Registers the drag handle
@@ -71,6 +74,20 @@ var GuiController = (function () {
                     _this.editor.setLine(lineNumber, "\n" + lineText);
                     _this.editor.setCursor(lineNumber);
                 }
+
+                if (event.altKey && event.keyCode == 79) {
+                    _this.isMenuActive = true;
+                    _this.toggleOverlay();
+                    $(_this.openFileWindowSelector).toggle();
+                    _this.isMenuAvailable = false;
+                }
+            } else {
+                if (event.altKey && event.keyCode == 79) {
+                    _this.isMenuActive = false;
+                    $(_this.openFileWindowSelector).toggle();
+                    _this.toggleOverlay();
+                    _this.isMenuAvailable = true;
+                }
             }
         };
         this.editorKeyUp = function (event) {
@@ -79,26 +96,39 @@ var GuiController = (function () {
                     $(_this.editorWindowSelector).toggle();
                     _this.editor.refresh();
                 }
+
+                if (event.keyCode == 20 && _this.lastKeyDown == 20) {
+                    var msg = document.createElement("div");
+                    msg.appendChild(document.createTextNode("Hallo"));
+                    msg.className = "lint-error";
+                    _this.editor.addLineWidget(3, msg, { coverGutter: false, noHScroll: true });
+                    _this.editor.setGutterMarker(3, "Errors", _this.makeMarker());
+                }
             }
 
             if (event.keyCode === 27) {
-                if (_this.isMenuActive) {
-                    _this.isMenuActive = false;
-                    _this.toggleOverlay();
-                    _this.editor.focus();
-                } else {
-                    _this.isMenuActive = true;
-                    _this.toggleOverlay();
-                }
+                if (_this.isMenuAvailable) {
+                    if (_this.isMenuActive) {
+                        _this.isMenuActive = false;
+                        _this.toggleOverlay();
+                        _this.editor.focus();
+                    } else {
+                        _this.isMenuActive = true;
+                        _this.toggleOverlay();
+                    }
 
-                $(_this.menuWindowSelector).toggle().focus();
+                    $(_this.menuWindowSelector).toggle().focus();
+                }
             }
         };
         this.editorWindowSelector = '#editorWindow';
         this.previewSelector = '#preview';
         this.overlaySelector = '#overlay';
         this.menuWindowSelector = '#editorMenuWindow';
+        this.openFileWindowSelector = '#openFileWindow';
+        this.IE = false;
         this.isMenuActive = false;
+        this.isMenuAvailable = true;
         this.isEditorDragging = false;
         this.editor = undefined;
         this.registerEditorHandlers(options);
@@ -179,6 +209,12 @@ var GuiController = (function () {
         } else {
             this.registerDragHandle('h1');
         }
+    };
+
+    GuiController.prototype.makeMarker = function () {
+        var errorMarker = document.createElement("div");
+        errorMarker.innerHTML = "<img style='width:10px; margin-left:15px; margin-bottom:1px;' src='/Content/Images/ErrorIcon.png'/>";
+        return errorMarker;
     };
 
     GuiController.prototype.toggleOverlay = function () {

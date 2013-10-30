@@ -4,6 +4,7 @@
 }
 <script src="~/Scripts/GuiController.js"></script>
 <script src="~/Scripts/Synchronizer.js"></script>
+
 <script type="text/javascript">
     $(function () {
 
@@ -14,7 +15,7 @@
             smartIndent: false,
             tabSize: 2,
             theme: "default",
-            gutters: ["CodeMirror-linenumbers"]
+            gutters: ["Errors", "CodeMirror-linenumbers"]
         });        
 
         var guiController = new GuiController();
@@ -27,7 +28,7 @@
     }
 </script>
 
-<iframe id="preview" frameborder="0"></iframe>
+<iframe id="preview" frameborder="0" ></iframe>
 <div id="overlay"></div>
 <div id="editorWindow">    
     
@@ -41,4 +42,8 @@
         <li>@Html.ActionLink("View project details", "Details", "Project", new { id = 1 }, null)</li>
         <li id="editorMenuWindow-close"><a href="javascript:closeMenu();">Close</a></li>
     </ul>     
+</div>
+
+<div id="openFileWindow">
+
 </div>

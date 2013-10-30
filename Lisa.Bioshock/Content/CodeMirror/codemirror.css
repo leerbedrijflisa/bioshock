@@ -8,6 +8,15 @@
   -overflow:hidden !important;
 
 }
+
+.lint-error {
+    font-family: arial; 
+    font-size: 70%; 
+    background: #ffa; 
+    color: #a00; 
+    padding: 2px 5px 3px; 
+}
+
 .CodeMirror-scroll {
   /* Set scrolling behaviour here */
   overflow: hidden;
