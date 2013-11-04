@@ -30,6 +30,7 @@ class Synchronizer {
     private previewId: string;
     private onRead = (message: string) => {
 
+        
         //var title = message.match(/<title>(.+)<\//im);
         var title = message.match(/<title>(.+?)(<\/|$)/);
         if (title) {
@@ -38,6 +39,7 @@ class Synchronizer {
         }
 
         $(this.previewId).contents().find('html').html(message);
+
     }
 
     private hub = $.connection.synchronizeHub;

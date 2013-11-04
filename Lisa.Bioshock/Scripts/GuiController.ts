@@ -19,11 +19,14 @@ class GuiController {
      * 
      * @param {*} editor - The editor (CodeMirror).
      */
+    private ready = true;
+    private widgets = [];
     public registerEditor = (editor: any) => {
         this.editor = editor;
         this.editor.on('change', (codeMirror) => {
 
             this.synchronizer.update(codeMirror.getValue());
+
         });
         this.editor.on('gutterClick', (codeMirror) => {
 
@@ -114,9 +117,9 @@ class GuiController {
         }
 
     }
-
+    
     private editorKeyUp = (event) => {
-
+        
         if (!this.isMenuActive) {
 
             if (event.keyCode == 17 && this.lastKeyDown == 17) {
@@ -125,12 +128,36 @@ class GuiController {
                 this.editor.refresh();
             }
 
-            if (event.keyCode == 20 && this.lastKeyDown == 20) {
-                var msg = document.createElement("div");
-                msg.appendChild(document.createTextNode("Hallo"));
-                msg.className = "lint-error";
-                this.editor.addLineWidget(3, msg, { coverGutter: false, noHScroll: true });
-                this.editor.setGutterMarker(3, "Errors", this.makeMarker());
+            //if (event.keyCode == 20 && this.lastKeyDown == 20) {
+            //    var msg = document.createElement("div");
+            //    msg.appendChild(document.createTextNode("Hallo"));
+            //    msg.className = "lint-error";
+            //    this.editor.addLineWidget(3, msg, { coverGutter: false, noHScroll: true });
+            //    this.editor.setGutterMarker(3, "Errors", this.makeMarker());
+            //}
+
+            if (event.keyCode == 144 && this.lastKeyDown == 144) {
+                if (this.ready) {
+                    this.ready = false;
+                    $.get("/validate/validate", { source: this.editor.getValue() }, (data) => {
+                        for (var i: any = 0; i < this.widgets.length; ++i) {
+                            this.editor.removeLineWidget(this.widgets[i]);
+                            this.editor.clearGutter("Errors");
+                        }
+                        this.widgets.length = 0;
+                        for (var i in data) {
+                            if (data[i].Type == 2) {
+
+                                var msg = document.createElement("div");
+                                msg.appendChild(document.createTextNode(data[i].Message));
+                                msg.className = "lint-error";
+                                this.widgets.push(this.editor.addLineWidget(data[i].Line -1, msg, { coverGutter: false, noHScroll: true }));
+                                this.editor.setGutterMarker(data[i].Line -1, "Errors", this.makeMarker());
+                            }
+                        }
+                        this.ready = true;
+                    }, "json");
+                }
             }
         }
 
@@ -290,7 +317,6 @@ class GuiController {
     private overlaySelector = '#overlay';
     private menuWindowSelector = '#editorMenuWindow';
     private openFileWindowSelector = '#openFileWindow';
-    public IE = false;
     private editorWidth;
     private editorHeight;
     private isMenuActive = false;

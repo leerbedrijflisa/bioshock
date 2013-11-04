@@ -14,6 +14,8 @@ var GuiController = (function () {
         *
         * @param {*} editor - The editor (CodeMirror).
         */
+        this.ready = true;
+        this.widgets = [];
         this.registerEditor = function (editor) {
             _this.editor = editor;
             _this.editor.on('change', function (codeMirror) {
@@ -97,12 +99,27 @@ var GuiController = (function () {
                     _this.editor.refresh();
                 }
 
-                if (event.keyCode == 20 && _this.lastKeyDown == 20) {
-                    var msg = document.createElement("div");
-                    msg.appendChild(document.createTextNode("Hallo"));
-                    msg.className = "lint-error";
-                    _this.editor.addLineWidget(3, msg, { coverGutter: false, noHScroll: true });
-                    _this.editor.setGutterMarker(3, "Errors", _this.makeMarker());
+                if (event.keyCode == 144 && _this.lastKeyDown == 144) {
+                    if (_this.ready) {
+                        _this.ready = false;
+                        $.get("/validate/validate", { source: _this.editor.getValue() }, function (data) {
+                            for (var i = 0; i < _this.widgets.length; ++i) {
+                                _this.editor.removeLineWidget(_this.widgets[i]);
+                                _this.editor.clearGutter("Errors");
+                            }
+                            _this.widgets.length = 0;
+                            for (var i in data) {
+                                if (data[i].Type == 2) {
+                                    var msg = document.createElement("div");
+                                    msg.appendChild(document.createTextNode(data[i].Message));
+                                    msg.className = "lint-error";
+                                    _this.widgets.push(_this.editor.addLineWidget(data[i].Line - 1, msg, { coverGutter: false, noHScroll: true }));
+                                    _this.editor.setGutterMarker(data[i].Line - 1, "Errors", _this.makeMarker());
+                                }
+                            }
+                            _this.ready = true;
+                        }, "json");
+                    }
                 }
             }
 
@@ -126,7 +143,6 @@ var GuiController = (function () {
         this.overlaySelector = '#overlay';
         this.menuWindowSelector = '#editorMenuWindow';
         this.openFileWindowSelector = '#openFileWindow';
-        this.IE = false;
         this.isMenuActive = false;
         this.isMenuAvailable = true;
         this.isEditorDragging = false;
