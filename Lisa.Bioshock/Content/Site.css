@@ -22,6 +22,11 @@ header, footer, nav, section {
     text-align: right;  
 }
 
+.errorinfo{
+
+    display: none;
+}
+
 #editorheader{
 
     background-color: #c1c1c1;

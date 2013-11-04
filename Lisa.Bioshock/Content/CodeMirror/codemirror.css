@@ -13,6 +13,7 @@
     font-family: arial; 
     font-size: 70%; 
     background: #ffa; 
+    cursor: pointer;
     color: #a00; 
     padding: 2px 5px 3px; 
 }

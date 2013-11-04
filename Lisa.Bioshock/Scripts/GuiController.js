@@ -113,6 +113,13 @@ var GuiController = (function () {
                                     var msg = document.createElement("div");
                                     msg.appendChild(document.createTextNode(data[i].Message));
                                     msg.className = "lint-error";
+                                    var errorinfo = document.createElement("div");
+                                    errorinfo.appendChild(document.createTextNode("More error information"));
+                                    errorinfo.className = "errorinfo";
+                                    msg.appendChild(errorinfo);
+                                    $(msg).click(function (event) {
+                                        $(event.target).children().toggle();
+                                    });
                                     _this.widgets.push(_this.editor.addLineWidget(data[i].Line - 1, msg, { coverGutter: false, noHScroll: true }));
                                     _this.editor.setGutterMarker(data[i].Line - 1, "Errors", _this.makeMarker());
                                 }
