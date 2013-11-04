@@ -117,6 +117,7 @@ var GuiController = (function () {
                                     _this.editor.setGutterMarker(data[i].Line - 1, "Errors", _this.makeMarker());
                                 }
                             }
+                            $(_this.errorCount).text(_this.widgets.length);
                             _this.ready = true;
                         }, "json");
                     }
@@ -143,6 +144,7 @@ var GuiController = (function () {
         this.overlaySelector = '#overlay';
         this.menuWindowSelector = '#editorMenuWindow';
         this.openFileWindowSelector = '#openFileWindow';
+        this.errorCount = '#errorcount';
         this.isMenuActive = false;
         this.isMenuAvailable = true;
         this.isEditorDragging = false;

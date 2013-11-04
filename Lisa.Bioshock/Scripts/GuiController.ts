@@ -155,6 +155,7 @@ class GuiController {
                                 this.editor.setGutterMarker(data[i].Line -1, "Errors", this.makeMarker());
                             }
                         }
+                        $(this.errorCount).text(this.widgets.length);
                         this.ready = true;
                     }, "json");
                 }
@@ -317,6 +318,7 @@ class GuiController {
     private overlaySelector = '#overlay';
     private menuWindowSelector = '#editorMenuWindow';
     private openFileWindowSelector = '#openFileWindow';
+    private errorCount = '#errorcount';
     private editorWidth;
     private editorHeight;
     private isMenuActive = false;

@@ -12,6 +12,32 @@ header, footer, nav, section {
     display: block;
 }
 
+#errors{
+
+    float: right;
+    width: 20%;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    text-align: right;  
+}
+
+#editorheader{
+
+    background-color: #c1c1c1;
+    width: auto;
+    height: 30px;
+}
+
+#filename{
+
+    padding: 0 0 3px 5px;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    width: 70%;
+    float: left;
+}
 
 /* Styles for basic forms
 -----------------------------------------------------------*/
@@ -24,6 +50,11 @@ fieldset {
 legend {
     font-size: 1.2em;
     font-weight: bold;
+}
+
+.CodeMirror{
+
+    clear: both;
 }
 
 textarea {
@@ -77,18 +108,14 @@ textarea {
     padding-bottom: 30px;
 }
 
-#editorWindow h1 {
+#editorWindow h1{
 
     background-color: #c1c1c1;
     margin: 0;
     font-size: 14pt;
     font-family: 'Segoe UI';
     font-weight: normal;
-    padding: 0 0 3px 5px;
-
-    white-space: nowrap;
-    text-overflow: ellipsis;
-    overflow: hidden;
+    
 
 }
 
@@ -167,7 +194,6 @@ textarea {
     display: none;
     z-index: 999;
     position:absolute;
-
 }
 
 #editorMenuWindow ul li a:link {text-decoration:none;}
