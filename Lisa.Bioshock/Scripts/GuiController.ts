@@ -110,6 +110,7 @@ class GuiController {
                 this.isMenuActive = true;
                 this.toggleOverlay();
                 $(this.newFileWindow).toggle();
+                $("#newFileName").focus();
                 this.isMenuAvailable = false;
             }
         } else {
@@ -119,6 +120,14 @@ class GuiController {
                 this.isMenuActive = false;
                 $(this.openFileWindowSelector).toggle();
                 this.toggleOverlay();
+                this.isMenuAvailable = true;
+            }
+
+            else if (event.altKey && event.keyCode == 78) {
+
+                this.isMenuActive = false;
+                this.toggleOverlay();
+                $(this.newFileWindow).toggle();
                 this.isMenuAvailable = true;
             }
         }

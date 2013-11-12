@@ -86,6 +86,7 @@ var GuiController = (function () {
                     _this.isMenuActive = true;
                     _this.toggleOverlay();
                     $(_this.newFileWindow).toggle();
+                    $("#newFileName").focus();
                     _this.isMenuAvailable = false;
                 }
             } else {
@@ -93,6 +94,11 @@ var GuiController = (function () {
                     _this.isMenuActive = false;
                     $(_this.openFileWindowSelector).toggle();
                     _this.toggleOverlay();
+                    _this.isMenuAvailable = true;
+                } else if (event.altKey && event.keyCode == 78) {
+                    _this.isMenuActive = false;
+                    _this.toggleOverlay();
+                    $(_this.newFileWindow).toggle();
                     _this.isMenuAvailable = true;
                 }
             }
