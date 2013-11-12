@@ -22,7 +22,6 @@ var GuiController = (function () {
                 _this.synchronizer.update(codeMirror.getValue());
             });
             _this.editor.on('gutterClick', function (codeMirror) {
-                _this.editor.setGutterMarker(3, "Errors", _this.makeMarker());
             });
         };
         /**
@@ -83,6 +82,12 @@ var GuiController = (function () {
                     $(_this.openFileWindowSelector).toggle();
                     _this.isMenuAvailable = false;
                 }
+                if (event.altKey && event.keyCode == 78) {
+                    _this.isMenuActive = true;
+                    _this.toggleOverlay();
+                    $(_this.newFileWindow).toggle();
+                    _this.isMenuAvailable = false;
+                }
             } else {
                 if (event.altKey && event.keyCode == 79) {
                     _this.isMenuActive = false;
@@ -111,17 +116,20 @@ var GuiController = (function () {
                             for (var i in data) {
                                 if (data[i].Type == 2) {
                                     var msg = document.createElement("div");
-                                    msg.appendChild(document.createTextNode(data[i].Message));
-                                    msg.className = "lint-error";
-                                    var errorinfo = document.createElement("div");
-                                    errorinfo.appendChild(document.createTextNode("More error information"));
-                                    errorinfo.className = "errorinfo";
-                                    msg.appendChild(errorinfo);
-                                    $(msg).click(function (event) {
-                                        $(event.target).children().toggle();
-                                    });
+                                    $(msg).append(document.createTextNode(data[i].Message));
+                                    $(msg).addClass("lint-error");
+                                    $(msg).hide();
                                     _this.widgets.push(_this.editor.addLineWidget(data[i].Line - 1, msg, { coverGutter: false, noHScroll: true }));
-                                    _this.editor.setGutterMarker(data[i].Line - 1, "Errors", _this.makeMarker());
+
+                                    var marker = _this.makeMarker();
+                                    var handle = _this.editor.setGutterMarker(data[i].Line - 1, "Errors", marker);
+                                    var lineNumber = _this.editor.getLineNumber(handle);
+
+                                    $(marker).attr("data-error-line-number", lineNumber).click(function (event) {
+                                        var errorDivId = $(this).attr("data-error-line-number");
+                                        $('.error-line-number' + errorDivId).toggle();
+                                    });
+                                    $(msg).addClass("error-line-number" + lineNumber);
                                 }
                             }
                             $(_this.errorCount).text(_this.widgets.length);
@@ -152,6 +160,7 @@ var GuiController = (function () {
         this.menuWindowSelector = '#editorMenuWindow';
         this.openFileWindowSelector = '#openFileWindow';
         this.errorCount = '#errorcount';
+        this.newFileWindow = '#newFileWindow';
         this.isMenuActive = false;
         this.isMenuAvailable = true;
         this.isEditorDragging = false;
@@ -238,7 +247,9 @@ var GuiController = (function () {
 
     GuiController.prototype.makeMarker = function () {
         var errorMarker = document.createElement("div");
-        errorMarker.innerHTML = "<img style='width:10px; margin-left:15px; margin-bottom:1px;' src='/Content/Images/ErrorIcon.png'/>";
+        $(errorMarker).click(function (event) {
+        });
+        errorMarker.innerHTML = "<img style='cursor: pointer; width:10px; margin-left:15px; margin-bottom:1px;' src='/Content/Images/ErrorIcon.png'/>";
         return errorMarker;
     };
 

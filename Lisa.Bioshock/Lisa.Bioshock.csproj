@@ -371,6 +371,9 @@
     <Content Include="Content\CodeMirror\theme\xq-light.css" />
     <Content Include="Content\Images\ErrorIcon.png" />
     <Content Include="Content\Images\ErrorIcon.jpg" />
+    <Content Include="Content\Images\AddFile.png" />
+    <Content Include="Content\Images\Sprite.png" />
+    <Content Include="Content\Images\Sprite2.png" />
     <Content Include="Content\themes\base\images\ui-bg_flat_0_aaaaaa_40x100.png" />
     <Content Include="Content\themes\base\images\ui-bg_flat_75_ffffff_40x100.png" />
     <Content Include="Content\themes\base\images\ui-bg_glass_55_fbf9ee_1x400.png" />

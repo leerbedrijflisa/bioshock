@@ -30,7 +30,7 @@ class GuiController {
         });
         this.editor.on('gutterClick', (codeMirror) => {
 
-            this.editor.setGutterMarker(3, "Errors", this.makeMarker());
+            
         });
     }
 
@@ -105,6 +105,13 @@ class GuiController {
                 $(this.openFileWindowSelector).toggle(); 
                 this.isMenuAvailable = false;
             }
+            if (event.altKey && event.keyCode == 78) {
+
+                this.isMenuActive = true;
+                this.toggleOverlay();
+                $(this.newFileWindow).toggle();
+                this.isMenuAvailable = false;
+            }
         } else {
 
             if (event.altKey && event.keyCode == 79) {
@@ -115,6 +122,7 @@ class GuiController {
                 this.isMenuAvailable = true;
             }
         }
+
 
     }
     
@@ -147,20 +155,23 @@ class GuiController {
                         this.widgets.length = 0;
                         for (var i in data) {
                             if (data[i].Type == 2) {
-
                                 var msg = document.createElement("div");
-                                msg.appendChild(document.createTextNode(data[i].Message));
-                                msg.className = "lint-error";
-                                var errorinfo = document.createElement("div");
-                                errorinfo.appendChild(document.createTextNode("More error information"));
-                                errorinfo.className = "errorinfo";
-                                msg.appendChild(errorinfo);
-                                $(msg).click(function (event) {
-
-                                    $(event.target).children().toggle();
-                                });
+                                $(msg).append(document.createTextNode(data[i].Message));
+                                $(msg).addClass("lint-error");
+                                $(msg).hide();
                                 this.widgets.push(this.editor.addLineWidget(data[i].Line -1, msg, { coverGutter: false, noHScroll: true }));
-                                this.editor.setGutterMarker(data[i].Line -1, "Errors", this.makeMarker());
+
+                                var marker = this.makeMarker();
+                                var handle = this.editor.setGutterMarker(data[i].Line - 1, "Errors", marker);
+                                var lineNumber = this.editor.getLineNumber(handle);
+
+                                $(marker).attr("data-error-line-number", lineNumber)
+                                    .click(function (event) {
+
+                                        var errorDivId = $(this).attr("data-error-line-number");
+                                        $('.error-line-number' + errorDivId).toggle();
+                                    });
+                                $(msg).addClass("error-line-number" + lineNumber);
                             }
                         }
                         $(this.errorCount).text(this.widgets.length);
@@ -289,7 +300,11 @@ class GuiController {
 
     private makeMarker() {
         var errorMarker = document.createElement("div");
-        errorMarker.innerHTML = "<img style='width:10px; margin-left:15px; margin-bottom:1px;' src='/Content/Images/ErrorIcon.png'/>";
+        $(errorMarker).click(function (event) {
+
+            
+        });
+        errorMarker.innerHTML = "<img style='cursor: pointer; width:10px; margin-left:15px; margin-bottom:1px;' src='/Content/Images/ErrorIcon.png'/>";
         return errorMarker;
     }
 
@@ -327,6 +342,7 @@ class GuiController {
     private menuWindowSelector = '#editorMenuWindow';
     private openFileWindowSelector = '#openFileWindow';
     private errorCount = '#errorcount';
+    private newFileWindow = '#newFileWindow';
     private editorWidth;
     private editorHeight;
     private isMenuActive = false;
