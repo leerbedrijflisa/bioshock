@@ -20,19 +20,13 @@
         });        
 
         var guiController = new GuiController();
-        guiController.registerEditor(editor);        
+        guiController.registerEditor(editor);
     });
 
     function closeMenu() {
 
         $.event.trigger({ type: 'keyup', keyCode: 27 });        
     }
-
-    $('.lint-error').bind('click', function (event) {
-        alert("haoi");
-    });
-
-    
 </script>
 
 <iframe id="preview" frameborder="0" ></iframe>
@@ -64,8 +58,8 @@
     <div id="newFileContent">
         <div id="plusImage"></div>
         <div class="filter_query_wrap">
-            <input type="text" placeholder="Type here to create file..." id="newFileName">
-            <div id="addButton" value=""></div>
+            <input type="text" placeholder="Type here to create file..." id="newFileName" title="HOI">
+            <div id="addButton"></div>
         </div>
     </div>
 </div>

@@ -7,12 +7,13 @@ class GuiController {
      * @constructor
      * @param {object} options - Options used for initializing the GuiController.
      */
-    constructor(editor:any, options = {}) {
+    constructor(editor: any, options = {}) {
 
         this.registerEditorHandlers(options);
-        this.registerKeyHandlers();        
-        this.registerSynchronizeHandlers();
-    }    
+        this.registerKeyHandlers();
+        this.registerSynchronizeHandlers();     
+        this.registerEvents();   
+    }
 
     /**
      * Registers the editor on which the change event should be handled
@@ -30,16 +31,14 @@ class GuiController {
         });
         this.editor.on('gutterClick', (codeMirror) => {
 
-            
         });
     }
-
     /**
      * Registers the drag handle
      * 
      * @param {string} handle - The selector to get the drag handle.
      */
-    public registerDragHandle = (handle:string) => {
+    public registerDragHandle = (handle: string) => {
 
         this.registerEditorHandlers({ handle: handle });
     }
@@ -129,6 +128,7 @@ class GuiController {
                 this.toggleOverlay();
                 $(this.newFileWindow).toggle();
                 this.isMenuAvailable = true;
+                $("#newFileName").val("");
             }
         }
 
@@ -229,7 +229,7 @@ class GuiController {
         });
     }
 
-    private registerEditorHandlers(options:Object) {
+    public registerEditorHandlers = (options:Object) => {
 
         if (options.hasOwnProperty('preview')) {
 
@@ -307,6 +307,38 @@ class GuiController {
         } 
     }
 
+    private registerEvents = () => {
+
+        $(this.addButton).bind("click", this.createFile);
+        $("#newFileName").bind("keydown", (event) => {
+
+            if (event.keyCode == 13) {
+                this.createFile();
+                return false;
+            }
+        });
+    }
+
+    private createFile = () => {
+
+        var fileName = $("#newFileName").val();
+        if (fileName.endsWith(".css") || fileName.endsWith(".html")) {
+
+            $("#filename").text(fileName);
+            this.isMenuActive = false;
+            this.toggleOverlay();
+            $(this.newFileWindow).toggle();
+            this.isMenuAvailable = true;
+        } else {
+
+            //$("#newFileName").tooltip();
+            $("#newFileName").tooltip({ content: "Kan geen bestand maken zonder extensie" });
+            $("#newFileName").tooltip("option", "show", { effect: "blind", duration: 700 });
+            $("#newFileName").tooltip("open");
+        }
+        
+    }
+
     private makeMarker() {
         var errorMarker = document.createElement("div");
         $(errorMarker).click(function (event) {
@@ -352,6 +384,7 @@ class GuiController {
     private openFileWindowSelector = '#openFileWindow';
     private errorCount = '#errorcount';
     private newFileWindow = '#newFileWindow';
+    private addButton = '#addButton';
     private editorWidth;
     private editorHeight;
     private isMenuActive = false;

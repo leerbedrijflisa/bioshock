@@ -307,3 +307,9 @@ textarea {
 
     background: none !important;
 }
+
+.ui-tooltip
+{
+    /* tooltip container box */
+    max-width: 410px !important;
+}
