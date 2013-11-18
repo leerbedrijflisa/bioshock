@@ -21,6 +21,15 @@
 
         var guiController = new GuiController();
         guiController.registerEditor(editor);
+
+       
+
+        $(".highlights").niceScroll({ autohidemode: false, touchbehavior: false, horizrailenabled: false, cursorcolor: "#fff", cursoropacitymax: 1, cursorwidth: 16, cursorborder: false, cursorborderradius: false, background: "#121012", autohidemode: false, railpadding: { top: 2, right: 2, bottom: 2 } }).cursor.css({ "background": "#434343" });
+
+        if ($.event.trigger({ type: 'keyup', keyCode: 79 && event.altKey }))
+        {
+            $("#file_list").getNiceScroll().show();
+        }
     });
 
     function closeMenu() {
@@ -48,18 +57,37 @@
     </ul>     
 </div>
 
-<div id="openFileWindow">
-
-</div>
-
 <div id="newFileWindow">
     <div id="opacityOverlay">
     </div>
     <div id="newFileContent">
         <div id="plusImage"></div>
         <div class="filter_query_wrap">
-            <input type="text" placeholder="Type here to create file..." id="newFileName" title="HOI">
+            <input type="text" placeholder="Type here to create file..." id="newFileName">
             <div id="addButton"></div>
         </div>
     </div>
 </div>
+
+<div id="openFileWindow">
+		<div id="wrap">
+			<form method="post" id="filter">
+				<input class="filter_button" type="submit" name="s" value="">
+				<div class="filter_query_wrap">
+					<input autocomplete="off" class="filter_query" type="text" name="q" placeholder="Type here to filter..." autofocus>
+				</div>
+			</form>
+
+			<div id="block">
+                <div class="highlights">
+
+                </div>
+			</div>
+
+			<div id="file_list">
+
+				
+			</div>
+			<div class="clear"></div>
+		</div>
+	</div>

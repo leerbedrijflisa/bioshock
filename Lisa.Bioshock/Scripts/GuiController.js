@@ -80,6 +80,7 @@ var GuiController = (function () {
                     _this.isMenuActive = true;
                     _this.toggleOverlay();
                     $(_this.openFileWindowSelector).toggle();
+                    $(".filter_query").focus();
                     _this.isMenuAvailable = false;
                 }
                 if (event.altKey && event.keyCode == 78) {
@@ -93,6 +94,9 @@ var GuiController = (function () {
                 if (event.altKey && event.keyCode == 79) {
                     _this.isMenuActive = false;
                     $(_this.openFileWindowSelector).toggle();
+                    $('#wrap .filter_query').val("");
+                    _this.applyFilter();
+                    $('.nicescroll-rails').hide();
                     _this.toggleOverlay();
                     _this.isMenuAvailable = true;
                 } else if (event.altKey && event.keyCode == 78) {
@@ -160,6 +164,10 @@ var GuiController = (function () {
                     $(_this.menuWindowSelector).toggle().focus();
                 }
             }
+        };
+        this.applyFilter = function () {
+            var filter = $('#openFileWindow .filter_query').val();
+            _this.showFilterResults(filter);
         };
         this.registerEditorHandlers = function (options) {
             if (options.hasOwnProperty('preview')) {
@@ -254,11 +262,68 @@ var GuiController = (function () {
         this.isMenuAvailable = true;
         this.isEditorDragging = false;
         this.editor = undefined;
+        this.files = {
+            '\\': ['index.html', 'contact.html', 'lol.html', 'houdoe.html', 'rap.html'],
+            '\\css': ['style.css'],
+            '\\css\\images': ['background.jpg', 'contact-map.png']
+        };
         this.registerEditorHandlers(options);
         this.registerKeyHandlers();
         this.registerSynchronizeHandlers();
         this.registerEvents();
+        this.initFilesView();
     }
+    GuiController.prototype.initFilesView = function () {
+        $('#openFileWindow .filter_query').keyup(this.applyFilter);
+        this.createFileList();
+        var scrollbar = $("#file_list");
+        scrollbar.niceScroll({ autohidemode: false, touchbehavior: false, cursorcolor: "#fff", cursoropacitymax: 1, cursorwidth: 16, cursorborder: false, cursorborderradius: false, background: "#121012", autohidemode: false, railpadding: { top: 2, right: 2, bottom: 2 } }).cursor.css({ "background": "#FF4200" });
+        $('.nicescroll-rails').show({
+            complete: function () {
+                var scroll = $("#file_list");
+                scroll.getNiceScroll().resize();
+            }
+        });
+    };
+
+    GuiController.prototype.createFileList = function () {
+        var fileList = $('#file_list');
+
+        for (var i in this.files) {
+            fileList.append('<div class="folder"><span class="folder_name">' + i + '</span><ul></ul><div class="clear"></div></div>');
+
+            //table.append('<tr><th data-type="folder">' + i + '</th><td></td></tr>');
+            // var cell = $('#file_list table tr:last td');
+            var ul = $('#file_list .folder ul:last');
+
+            for (var j in this.files[i]) {
+                //cell.append('<div class="file"><p data-type="file">' + this.files[i][j] + '</p><p><img src="."></p></div>');
+                ul.append('<li><a><img src="/Content/Images/item.png" alt=""><span>' + this.files[i][j] + '</span></a></li>');
+            }
+            //table.append('</ul><div class="clear"></div></div>');
+        }
+    };
+
+    GuiController.prototype.showFilterResults = function (filter) {
+        var block = $('#block .highlights');
+        $('#block .highlights ul').remove();
+
+        if (filter.length > 0) {
+            block.append('<ul></ul>');
+            var li = $('#block .highlights ul');
+
+            for (var i in this.files) {
+                for (var j in this.files[i]) {
+                    var fileName = this.files[i][j];
+
+                    if (fileName.search(filter) > -1) {
+                        li.prepend('<li><a><img src="/Content/Images/filter_item_logo.png" alt=""><span>' + fileName + '</span></a></li>');
+                    }
+                }
+            }
+        }
+    };
+
     GuiController.prototype.registerKeyHandlers = function () {
         $(window).keydown(this.editorKeyDown);
         $(window).keyup(this.editorKeyUp);

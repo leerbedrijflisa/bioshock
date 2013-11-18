@@ -372,6 +372,10 @@
     <Content Include="Content\Images\ErrorIcon.png" />
     <Content Include="Content\Images\ErrorIcon.jpg" />
     <Content Include="Content\Images\AddFile.png" />
+    <Content Include="Content\Images\filter_button.png" />
+    <Content Include="Content\Images\filter_item_logo.png" />
+    <Content Include="Content\Images\item.png" />
+    <Content Include="Content\Images\scroll.jpg" />
     <Content Include="Content\Images\Sprite.png" />
     <Content Include="Content\Images\Sprite2.png" />
     <Content Include="Content\themes\base\images\ui-bg_flat_0_aaaaaa_40x100.png" />
@@ -438,6 +442,7 @@
     <Content Include="Scripts\GuiController.js.map" />
     <Content Include="Scripts\jquery-1.9.1.js" />
     <Content Include="Scripts\jquery-ui-1.10.3.js" />
+    <Content Include="Scripts\jquery.nicescroll.min.js" />
     <Content Include="Scripts\Prototypes.js" />
     <Content Include="Scripts\Synchronizer.js.map" />
     <Content Include="Views\Project\Create.cshtml" />
