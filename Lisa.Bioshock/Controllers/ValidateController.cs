@@ -5,6 +5,7 @@ using System.Web;
 using System.ComponentModel.DataAnnotations;
 using System.Web.Mvc;
 using Lisa.Skyrim;
+using System.IO;
 
 namespace Lisa.Bioshock.Controllers
 {
@@ -27,7 +28,7 @@ namespace Lisa.Bioshock.Controllers
             if (source != null)
             {
                 var checker = new HtmlChecker();
-                var result = checker.Check(source, "filename.txt");
+                var result = checker.Check(new StringReader(source), "");
                 returnVal = Json(result, JsonRequestBehavior.AllowGet);
             }
             return returnVal;
