@@ -13,6 +13,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lisa.Checkers", "Lisa.Check
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lisa.Daggerfall", "Lisa.Daggerfall\Lisa.Daggerfall.csproj", "{F6B25977-E139-4C93-B0CB-92744615A291}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lisa.Storage.FileSystem", "Lisa.Storage.FileSystem\Lisa.Storage.FileSystem.csproj", "{7971748A-8148-485A-BEE2-7CC1A2A4E54B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -83,6 +85,16 @@ Global
 		{F6B25977-E139-4C93-B0CB-92744615A291}.Release|Mixed Platforms.Build.0 = Release|x86
 		{F6B25977-E139-4C93-B0CB-92744615A291}.Release|x86.ActiveCfg = Release|x86
 		{F6B25977-E139-4C93-B0CB-92744615A291}.Release|x86.Build.0 = Release|x86
+		{7971748A-8148-485A-BEE2-7CC1A2A4E54B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7971748A-8148-485A-BEE2-7CC1A2A4E54B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7971748A-8148-485A-BEE2-7CC1A2A4E54B}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{7971748A-8148-485A-BEE2-7CC1A2A4E54B}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{7971748A-8148-485A-BEE2-7CC1A2A4E54B}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{7971748A-8148-485A-BEE2-7CC1A2A4E54B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7971748A-8148-485A-BEE2-7CC1A2A4E54B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7971748A-8148-485A-BEE2-7CC1A2A4E54B}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{7971748A-8148-485A-BEE2-7CC1A2A4E54B}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{7971748A-8148-485A-BEE2-7CC1A2A4E54B}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
