@@ -10,15 +10,7 @@ using System.IO;
 namespace Lisa.Bioshock.Controllers
 {
     public class ValidateController : Controller
-    {
-        //
-        // GET: /Validate/
-
-        public ActionResult Index()
-        {
-            return View();
-        }
-        
+    {        
         [ValidateInput(false)]
         [HttpGet]
         public JsonResult Validate(string source)

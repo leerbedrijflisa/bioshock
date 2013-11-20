@@ -431,10 +431,6 @@
     <Content Include="Scripts\jquery.nicescroll.min.js" />
     <Content Include="Scripts\Prototypes.js" />
     <Content Include="Scripts\Synchronizer.js.map" />
-    <Content Include="Views\Project\Create.cshtml" />
-    <Content Include="Views\Project\Details.cshtml" />
-    <Content Include="Views\File\Create.cshtml" />
-    <Content Include="Views\Folder\Create.cshtml" />
     <TypeScriptCompile Include="Scripts\GuiController.ts" />
     <Content Include="Scripts\GuiController.js" />
     <None Include="Scripts\jquery.validate-vsdoc.js" />
