@@ -237,7 +237,7 @@ class GuiController {
         this.showFilterResults(filter);
     }
 
-    private createFileList() {
+    private createFileList = () => {
         var fileList = $('#file_list');
 
         $.get("/test/getFiles", { }, (data) => {
@@ -251,6 +251,7 @@ class GuiController {
 
                     var ul = $('#file_list .folder ul:last');
                     ul.append('<li><a><img src="/Content/Images/item.png" alt=""><span>' + item.Name + '</span></a></li>');
+                    this.files.push(item);
 
                     data.splice(i, 1);
                 }
@@ -275,6 +276,7 @@ class GuiController {
 
                 var ul = $('#file_list .folder ul:last');
                 ul.append('<li><a><img src="/Content/Images/item.png" alt=""><span>' + sub.Name + '</span></a></li>');
+                this.files.push(sub);
 
                 item.Subs.splice(i, 1);
             }
@@ -296,16 +298,14 @@ class GuiController {
             block.append('<ul></ul>');
             var li = $('#block .highlights ul');
 
-            for (var i in this.files) {
-                for (var j in this.files[i]) {
-                    var fileName = this.files[i][j];
+            for (var i = 0; i < this.files.length; i++) {
 
-                    if (fileName.search(filter) > -1) {
-                        li.prepend('<li><a><img src="/Content/Images/filter_item_logo.png" alt=""><span>' + fileName + '</span></a></li>');
-                    }
+                var file = this.files[i];
+                if (file.Name.search(filter) > -1 || file.FullPath.search(filter) > -1) {
+
+                    li.prepend('<li><a><img src="/Content/Images/filter_item_logo.png" alt=""><span>' + file.Name + '</span></a></li>');
                 }
             }
-           
         }
     }
 
@@ -492,9 +492,10 @@ class GuiController {
     private synchronizer: Synchronizer;
     private editor = undefined;    
     private lastKeyDown: number;     
-    private files = {
-    '\\': ['index.html', 'contact.html', 'lol.html', 'houdoe.html', 'rap.html'],
-    '\\css': ['style.css'],
-    '\\css\\images': ['background.jpg', 'contact-map.png']
-    }     
+    //private files = {
+    //'\\': ['index.html', 'contact.html', 'lol.html', 'houdoe.html', 'rap.html'],
+    //'\\css': ['style.css'],
+    //'\\css\\images': ['background.jpg', 'contact-map.png']
+    //}     
+    private files = [];
 }

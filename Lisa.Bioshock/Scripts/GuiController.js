@@ -169,6 +169,28 @@ var GuiController = (function () {
             var filter = $('#openFileWindow .filter_query').val();
             _this.showFilterResults(filter);
         };
+        this.createFileList = function () {
+            var fileList = $('#file_list');
+
+            $.get("/test/getFiles", {}, function (data) {
+                fileList.append('<div class="folder"><span class="folder_name">/root/</span><ul></ul><div class="clear"></div></div>');
+                for (var i = data.length - 1; i >= 0; i--) {
+                    var item = data[i];
+
+                    if (item.Type == "File") {
+                        var ul = $('#file_list .folder ul:last');
+                        ul.append('<li><a><img src="/Content/Images/item.png" alt=""><span>' + item.Name + '</span></a></li>');
+                        _this.files.push(item);
+
+                        data.splice(i, 1);
+                    }
+                }
+
+                for (i = 0; i < data.length; i++) {
+                    _this.generateFolderTree(data[i], fileList);
+                }
+            });
+        };
         this.generateFolderTree = function (item, fileList) {
             fileList.append('<div class="folder"><span class="folder_name">' + item.FullPath + '</span><ul></ul><div class="clear"></div></div>');
 
@@ -177,6 +199,7 @@ var GuiController = (function () {
                 if (sub.Type == "File") {
                     var ul = $('#file_list .folder ul:last');
                     ul.append('<li><a><img src="/Content/Images/item.png" alt=""><span>' + sub.Name + '</span></a></li>');
+                    _this.files.push(sub);
 
                     item.Subs.splice(i, 1);
                 }
@@ -280,11 +303,12 @@ var GuiController = (function () {
         this.isMenuAvailable = true;
         this.isEditorDragging = false;
         this.editor = undefined;
-        this.files = {
-            '\\': ['index.html', 'contact.html', 'lol.html', 'houdoe.html', 'rap.html'],
-            '\\css': ['style.css'],
-            '\\css\\images': ['background.jpg', 'contact-map.png']
-        };
+        //private files = {
+        //'\\': ['index.html', 'contact.html', 'lol.html', 'houdoe.html', 'rap.html'],
+        //'\\css': ['style.css'],
+        //'\\css\\images': ['background.jpg', 'contact-map.png']
+        //}
+        this.files = [];
         this.registerEditorHandlers(options);
         this.registerKeyHandlers();
         this.registerSynchronizeHandlers();
@@ -304,29 +328,6 @@ var GuiController = (function () {
         });
     };
 
-    GuiController.prototype.createFileList = function () {
-        var _this = this;
-        var fileList = $('#file_list');
-
-        $.get("/test/getFiles", {}, function (data) {
-            fileList.append('<div class="folder"><span class="folder_name">/root/</span><ul></ul><div class="clear"></div></div>');
-            for (var i = data.length - 1; i >= 0; i--) {
-                var item = data[i];
-
-                if (item.Type == "File") {
-                    var ul = $('#file_list .folder ul:last');
-                    ul.append('<li><a><img src="/Content/Images/item.png" alt=""><span>' + item.Name + '</span></a></li>');
-
-                    data.splice(i, 1);
-                }
-            }
-
-            for (i = 0; i < data.length; i++) {
-                _this.generateFolderTree(data[i], fileList);
-            }
-        });
-    };
-
     GuiController.prototype.showFilterResults = function (filter) {
         var block = $('#block .highlights');
         $('#block .highlights ul').remove();
@@ -335,13 +336,10 @@ var GuiController = (function () {
             block.append('<ul></ul>');
             var li = $('#block .highlights ul');
 
-            for (var i in this.files) {
-                for (var j in this.files[i]) {
-                    var fileName = this.files[i][j];
-
-                    if (fileName.search(filter) > -1) {
-                        li.prepend('<li><a><img src="/Content/Images/filter_item_logo.png" alt=""><span>' + fileName + '</span></a></li>');
-                    }
+            for (var i = 0; i < this.files.length; i++) {
+                var file = this.files[i];
+                if (file.Name.search(filter) > -1 || file.FullPath.search(filter) > -1) {
+                    li.prepend('<li><a><img src="/Content/Images/filter_item_logo.png" alt=""><span>' + file.Name + '</span></a></li>');
                 }
             }
         }
