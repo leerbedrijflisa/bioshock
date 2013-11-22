@@ -169,6 +169,24 @@ var GuiController = (function () {
             var filter = $('#openFileWindow .filter_query').val();
             _this.showFilterResults(filter);
         };
+        this.generateFolderTree = function (item, fileList) {
+            fileList.append('<div class="folder"><span class="folder_name">' + item.FullPath + '</span><ul></ul><div class="clear"></div></div>');
+
+            for (var i = item.Subs.length - 1; i >= 0; i--) {
+                var sub = item.Subs[i];
+                if (sub.Type == "File") {
+                    var ul = $('#file_list .folder ul:last');
+                    ul.append('<li><a><img src="/Content/Images/item.png" alt=""><span>' + sub.Name + '</span></a></li>');
+
+                    item.Subs.splice(i, 1);
+                }
+            }
+
+            for (var i = 0; i < item.Subs.length; i++) {
+                var sub = item.Subs[i];
+                _this.generateFolderTree(sub, fileList);
+            }
+        };
         this.registerEditorHandlers = function (options) {
             if (options.hasOwnProperty('preview')) {
                 _this.previewSelector = options['preview'];
@@ -287,21 +305,26 @@ var GuiController = (function () {
     };
 
     GuiController.prototype.createFileList = function () {
+        var _this = this;
         var fileList = $('#file_list');
 
-        for (var i in this.files) {
-            fileList.append('<div class="folder"><span class="folder_name">' + i + '</span><ul></ul><div class="clear"></div></div>');
+        $.get("/test/getFiles", {}, function (data) {
+            fileList.append('<div class="folder"><span class="folder_name">/root/</span><ul></ul><div class="clear"></div></div>');
+            for (var i = data.length - 1; i >= 0; i--) {
+                var item = data[i];
 
-            //table.append('<tr><th data-type="folder">' + i + '</th><td></td></tr>');
-            // var cell = $('#file_list table tr:last td');
-            var ul = $('#file_list .folder ul:last');
+                if (item.Type == "File") {
+                    var ul = $('#file_list .folder ul:last');
+                    ul.append('<li><a><img src="/Content/Images/item.png" alt=""><span>' + item.Name + '</span></a></li>');
 
-            for (var j in this.files[i]) {
-                //cell.append('<div class="file"><p data-type="file">' + this.files[i][j] + '</p><p><img src="."></p></div>');
-                ul.append('<li><a><img src="/Content/Images/item.png" alt=""><span>' + this.files[i][j] + '</span></a></li>');
+                    data.splice(i, 1);
+                }
             }
-            //table.append('</ul><div class="clear"></div></div>');
-        }
+
+            for (i = 0; i < data.length; i++) {
+                _this.generateFolderTree(data[i], fileList);
+            }
+        });
     };
 
     GuiController.prototype.showFilterResults = function (filter) {
