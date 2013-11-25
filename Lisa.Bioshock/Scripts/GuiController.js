@@ -280,6 +280,7 @@ var GuiController = (function () {
             var fileName = $("#newFileName").val();
             if (fileName.endsWith(".css") || fileName.endsWith(".html")) {
                 $("#filename").text(fileName);
+                $.get("/test/CreateFile", { filename: fileName });
                 _this.isMenuActive = false;
                 _this.toggleOverlay();
                 $(_this.newFileWindow).toggle();
@@ -339,9 +340,12 @@ var GuiController = (function () {
             for (var i = 0; i < this.files.length; i++) {
                 var file = this.files[i];
                 if (file.Name.search(filter) > -1 || file.FullPath.search(filter) > -1) {
-                    li.prepend('<li><a><img src="/Content/Images/filter_item_logo.png" alt=""><span>' + file.Name + '</span></a></li>');
+                    li.prepend('<li><a href="javascript:void(0);" data-id="' + file.ID + '"><img src=" / Content / Images / filter_item_logo.png" alt=""><span>' + file.Name + '</span></a></li>');
                 }
             }
+            li.find("a").click(function () {
+                alert($(this).text());
+            });
         }
     };
 

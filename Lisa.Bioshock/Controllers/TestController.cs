@@ -51,16 +51,29 @@ namespace Lisa.Bioshock.Controllers
             LocalStorageProvider provider = new LocalStorageProvider("/Storage");
             FileSystem fileSystem = new FileSystem(provider);
 
-            fileSystem.Root.Files.Add("index.html", "text/html");
-            fileSystem.Root.Files.Add("user.xml", "text/xml");
-            Folder css = fileSystem.Root.Folders.Add("css");
-            css.Files.Add("stylesheet.css", "text/css");
-            var theme = css.Folders.Add("theme");
-            theme.Files.Add("custom.css", "text/css");
-            theme.Files.Add("default.css", "text/css");
-            theme.Files.Add("admin.css", "text/css");
+            //fileSystem.Root.Files.Add("index.html", "text/html");
+            //fileSystem.Root.Files.Add("user.xml", "text/xml");
+            //Folder css = fileSystem.Root.Folders.Add("css");
+            //css.Files.Add("stylesheet.css", "text/css");
+            //var theme = css.Folders.Add("theme");
+            //theme.Files.Add("custom.css", "text/css");
+            //theme.Files.Add("default.css", "text/css");
+            //theme.Files.Add("admin.css", "text/css");
             
             return new JsonItemResult(fileSystem.Root.Items);
+        }
+
+        public ActionResult CreateFile(string filename)
+        {
+            LocalStorageProvider provider = new LocalStorageProvider("/Storage");
+            FileSystem fileSystem = new FileSystem(provider);
+            
+            if(filename.EndsWith(".css"))
+                fileSystem.Root.Files.Add(filename, "text/css");
+            else if(filename.EndsWith(".html"))
+                fileSystem.Root.Files.Add(filename, "text/html");
+
+            return Json(new { Result = true });
         }
     }
 }

@@ -303,9 +303,13 @@ class GuiController {
                 var file = this.files[i];
                 if (file.Name.search(filter) > -1 || file.FullPath.search(filter) > -1) {
 
-                    li.prepend('<li><a><img src="/Content/Images/filter_item_logo.png" alt=""><span>' + file.Name + '</span></a></li>');
+                    li.prepend('<li><a href="javascript:void(0);" data-id="'+ file.ID +'"><img src=" / Content / Images / filter_item_logo.png" alt=""><span>' + file.Name + '</span></a></li>');
                 }
             }
+            li.find("a").click(function () {
+
+                alert($(this).text());
+            });  
         }
     }
 
@@ -424,6 +428,7 @@ class GuiController {
         if (fileName.endsWith(".css") || fileName.endsWith(".html")) {
 
             $("#filename").text(fileName);
+            $.get("/test/CreateFile", { filename: fileName });
             this.isMenuActive = false;
             this.toggleOverlay();
             $(this.newFileWindow).toggle();
