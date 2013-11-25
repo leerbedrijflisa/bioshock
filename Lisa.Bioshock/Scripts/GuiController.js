@@ -210,6 +210,33 @@ var GuiController = (function () {
                 _this.generateFolderTree(sub, fileList);
             }
         };
+        this.showFilterResults = function (filter) {
+            var block = $('#block .highlights');
+            $('#block .highlights ul').remove();
+
+            if (filter.length > 0) {
+                block.append('<ul></ul>');
+                var li = $('#block .highlights ul');
+
+                for (var i = 0; i < _this.files.length; i++) {
+                    var file = _this.files[i];
+                    if (file.Name.search(filter) > -1 || file.FullPath.search(filter) > -1) {
+                        li.prepend('<li><a href="javascript:void(0);" data-id="' + file.ID + '"><img src=" / Content / Images / filter_item_logo.png" alt=""><span>' + file.Name + '</span></a></li>');
+                    }
+                }
+                li.find("a").click(function (event) {
+                    var id = $(event.currentTarget).attr("data-id");
+
+                    $.get("/test/GetFileContent", { guid: id }, function (data) {
+                        _this.editor.setValue(data.content);
+                        _this.isMenuActive = false;
+                        _this.toggleOverlay();
+                        $(_this.openFileWindowSelector).toggle();
+                        _this.isMenuAvailable = true;
+                    });
+                });
+            }
+        };
         this.registerEditorHandlers = function (options) {
             if (options.hasOwnProperty('preview')) {
                 _this.previewSelector = options['preview'];
@@ -327,26 +354,6 @@ var GuiController = (function () {
                 scroll.getNiceScroll().resize();
             }
         });
-    };
-
-    GuiController.prototype.showFilterResults = function (filter) {
-        var block = $('#block .highlights');
-        $('#block .highlights ul').remove();
-
-        if (filter.length > 0) {
-            block.append('<ul></ul>');
-            var li = $('#block .highlights ul');
-
-            for (var i = 0; i < this.files.length; i++) {
-                var file = this.files[i];
-                if (file.Name.search(filter) > -1 || file.FullPath.search(filter) > -1) {
-                    li.prepend('<li><a href="javascript:void(0);" data-id="' + file.ID + '"><img src=" / Content / Images / filter_item_logo.png" alt=""><span>' + file.Name + '</span></a></li>');
-                }
-            }
-            li.find("a").click(function () {
-                alert($(this).text());
-            });
-        }
     };
 
     GuiController.prototype.registerKeyHandlers = function () {

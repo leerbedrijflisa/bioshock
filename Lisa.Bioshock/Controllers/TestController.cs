@@ -3,6 +3,7 @@ using Lisa.Storage;
 using Lisa.Storage.Data;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
@@ -34,7 +35,7 @@ namespace Lisa.Bioshock.Controllers
             {
                 s += "<li>" + folder.Name + Loop(folder) + "</li>";
             }
-            foreach (File file in parent.Files)
+            foreach (Lisa.Storage.File file in parent.Files)
             {
                 s += "<li>" + file.Name + "</li>";
             }
@@ -61,6 +62,25 @@ namespace Lisa.Bioshock.Controllers
             //theme.Files.Add("admin.css", "text/css");
             
             return new JsonItemResult(fileSystem.Root.Items);
+        }
+
+        public JsonResult GetFileContent(string guid)
+        {
+            LocalStorageProvider provider = new LocalStorageProvider("/Storage");
+            FileSystem fileSystem = new FileSystem(provider);
+
+            var file = fileSystem.Root.Files.Where(f => f.ID == guid).FirstOrDefault();
+            var content = string.Empty;
+            using (var contents = new StreamReader(file.InputStream))
+            {
+                content = contents.ReadToEnd();
+            }
+
+            return Json(new
+            {
+
+                content = content
+            }, JsonRequestBehavior.AllowGet );
         }
 
         public ActionResult CreateFile(string filename)

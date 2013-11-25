@@ -289,7 +289,7 @@ class GuiController {
         }
     }
 
-    private showFilterResults(filter) {
+    private showFilterResults = (filter) => {
 
         var block = $('#block .highlights');
         $('#block .highlights ul').remove();
@@ -303,14 +303,23 @@ class GuiController {
                 var file = this.files[i];
                 if (file.Name.search(filter) > -1 || file.FullPath.search(filter) > -1) {
 
-                    li.prepend('<li><a href="javascript:void(0);" data-id="'+ file.ID +'"><img src=" / Content / Images / filter_item_logo.png" alt=""><span>' + file.Name + '</span></a></li>');
+                    li.prepend('<li><a href="javascript:void(0);" data-id="' + file.ID + '"><img src=" / Content / Images / filter_item_logo.png" alt=""><span>' + file.Name + '</span></a></li>');
                 }
             }
-            li.find("a").click(function () {
+            li.find("a").click((event) => {
 
-                alert($(this).text());
-            });  
-        }
+                var id = $(event.currentTarget).attr("data-id");
+                
+                $.get("/test/GetFileContent", { guid: id }, (data) => {
+
+                    this.editor.setValue(data.content);
+                    this.isMenuActive = false;
+                    this.toggleOverlay();
+                    $(this.openFileWindowSelector).toggle();
+                    this.isMenuAvailable = true;
+                });
+            });
+        } 
     }
 
     private registerKeyHandlers() {
