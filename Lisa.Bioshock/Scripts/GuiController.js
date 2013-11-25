@@ -19,6 +19,7 @@ var GuiController = (function () {
         this.registerEditor = function (editor) {
             _this.editor = editor;
             _this.editor.on('change', function (codeMirror) {
+                $.post("/Test/WriteFile", { guid: _this.currentGuid, source: _this.editor.getValue() });
                 _this.synchronizer.update(codeMirror.getValue());
             });
             _this.editor.on('gutterClick', function (codeMirror) {
@@ -171,7 +172,8 @@ var GuiController = (function () {
         };
         this.createFileList = function () {
             var fileList = $('#file_list');
-
+            _this.files = [];
+            fileList.empty();
             $.get("/test/getFiles", {}, function (data) {
                 fileList.append('<div class="folder"><span class="folder_name">/root/</span><ul></ul><div class="clear"></div></div>');
                 for (var i = data.length - 1; i >= 0; i--) {
@@ -221,13 +223,14 @@ var GuiController = (function () {
                 for (var i = 0; i < _this.files.length; i++) {
                     var file = _this.files[i];
                     if (file.Name.search(filter) > -1 || file.FullPath.search(filter) > -1) {
-                        li.prepend('<li><a href="javascript:void(0);" data-id="' + file.ID + '"><img src=" / Content / Images / filter_item_logo.png" alt=""><span>' + file.Name + '</span></a></li>');
+                        li.prepend('<li><a href="javascript:void(0);" data-id="' + file.ID + '"><img src="/Content/Images/filter_item_logo.png" alt=""><span>' + file.Name + '</span></a></li>');
                     }
                 }
                 li.find("a").click(function (event) {
                     var id = $(event.currentTarget).attr("data-id");
 
                     $.get("/test/GetFileContent", { guid: id }, function (data) {
+                        _this.currentGuid = id;
                         _this.editor.setValue(data.content);
                         _this.isMenuActive = false;
                         _this.toggleOverlay();
@@ -307,7 +310,10 @@ var GuiController = (function () {
             var fileName = $("#newFileName").val();
             if (fileName.endsWith(".css") || fileName.endsWith(".html")) {
                 $("#filename").text(fileName);
-                $.get("/test/CreateFile", { filename: fileName });
+                $.get("/test/CreateFile", { filename: fileName }, function (data) {
+                    _this.currentGuid = data.ID;
+                    _this.createFileList();
+                });
                 _this.isMenuActive = false;
                 _this.toggleOverlay();
                 $(_this.newFileWindow).toggle();
@@ -331,6 +337,7 @@ var GuiController = (function () {
         this.isMenuAvailable = true;
         this.isEditorDragging = false;
         this.editor = undefined;
+        this.currentGuid = "";
         //private files = {
         //'\\': ['index.html', 'contact.html', 'lol.html', 'houdoe.html', 'rap.html'],
         //'\\css': ['style.css'],

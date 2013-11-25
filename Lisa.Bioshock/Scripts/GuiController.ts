@@ -27,6 +27,7 @@ class GuiController {
         this.editor = editor;
         this.editor.on('change', (codeMirror) => {
 
+            $.post("/Test/WriteFile", { guid: this.currentGuid, source: this.editor.getValue() });
             this.synchronizer.update(codeMirror.getValue());
 
         });
@@ -239,7 +240,8 @@ class GuiController {
 
     private createFileList = () => {
         var fileList = $('#file_list');
-
+        this.files = [];
+        fileList.empty();
         $.get("/test/getFiles", { }, (data) => {
 
             fileList.append('<div class="folder"><span class="folder_name">/root/</span><ul></ul><div class="clear"></div></div>');
@@ -303,7 +305,7 @@ class GuiController {
                 var file = this.files[i];
                 if (file.Name.search(filter) > -1 || file.FullPath.search(filter) > -1) {
 
-                    li.prepend('<li><a href="javascript:void(0);" data-id="' + file.ID + '"><img src=" / Content / Images / filter_item_logo.png" alt=""><span>' + file.Name + '</span></a></li>');
+                    li.prepend('<li><a href="javascript:void(0);" data-id="' + file.ID + '"><img src="/Content/Images/filter_item_logo.png" alt=""><span>' + file.Name + '</span></a></li>');
                 }
             }
             li.find("a").click((event) => {
@@ -312,6 +314,7 @@ class GuiController {
                 
                 $.get("/test/GetFileContent", { guid: id }, (data) => {
 
+                    this.currentGuid = id;
                     this.editor.setValue(data.content);
                     this.isMenuActive = false;
                     this.toggleOverlay();
@@ -437,7 +440,11 @@ class GuiController {
         if (fileName.endsWith(".css") || fileName.endsWith(".html")) {
 
             $("#filename").text(fileName);
-            $.get("/test/CreateFile", { filename: fileName });
+            $.get("/test/CreateFile", { filename: fileName }, (data) => {
+
+                this.currentGuid = data.ID;
+                this.createFileList();
+            });
             this.isMenuActive = false;
             this.toggleOverlay();
             $(this.newFileWindow).toggle();
@@ -505,7 +512,8 @@ class GuiController {
     private isEditorDragging = false;
     private synchronizer: Synchronizer;
     private editor = undefined;    
-    private lastKeyDown: number;     
+    private lastKeyDown: number;  
+    private currentGuid = "";   
     //private files = {
     //'\\': ['index.html', 'contact.html', 'lol.html', 'houdoe.html', 'rap.html'],
     //'\\css': ['style.css'],

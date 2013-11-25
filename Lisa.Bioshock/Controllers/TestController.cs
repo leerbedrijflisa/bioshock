@@ -14,6 +14,7 @@ namespace Lisa.Bioshock.Controllers
     {
         LocalStorageProvider provider;
         FileSystem fileSystem;
+        Lisa.Storage.File file;
         //
         // GET: /Test/
         public string Index()
@@ -87,13 +88,33 @@ namespace Lisa.Bioshock.Controllers
         {
             LocalStorageProvider provider = new LocalStorageProvider("/Storage");
             FileSystem fileSystem = new FileSystem(provider);
-            
-            if(filename.EndsWith(".css"))
-                fileSystem.Root.Files.Add(filename, "text/css");
-            else if(filename.EndsWith(".html"))
-                fileSystem.Root.Files.Add(filename, "text/html");
 
-            return Json(new { Result = true });
+            
+
+            if(filename.EndsWith(".css"))
+                file = fileSystem.Root.Files.Add(filename, "text/css");
+            else if(filename.EndsWith(".html"))
+                file = fileSystem.Root.Files.Add(filename, "text/html");
+
+            return Json(new { Result = true, guid = file.ID }, JsonRequestBehavior.AllowGet);
+        }
+
+        [ValidateInput(false)]
+        [HttpPost]
+        public ActionResult WriteFile(string guid, string source)
+        {
+            LocalStorageProvider provider = new LocalStorageProvider("/Storage");
+            FileSystem fileSystem = new FileSystem(provider);
+
+            var file = fileSystem.Root.Files.Where(f => f.ID == guid).FirstOrDefault();
+            var content = string.Empty;
+            using (var contents = new StreamWriter(file.OutputStream))
+            {
+                contents.Write(source);
+                contents.BaseStream.SetLength(source.Length);
+            }
+
+            return Json(null);
         }
     }
 }
