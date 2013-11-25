@@ -441,6 +441,8 @@
     <Content Include="Scripts\Synchronizer.js.map" />
     <TypeScriptCompile Include="Scripts\GuiController.ts" />
     <Content Include="Scripts\GuiController.js" />
+    <None Include="Properties\PublishProfiles\bioshock - FTP.pubxml" />
+    <None Include="Properties\PublishProfiles\bioshock - Web Deploy.pubxml" />
     <None Include="Scripts\jquery.validate-vsdoc.js" />
     <Content Include="Scripts\jquery-ui-1.10.3.custom.js" />
     <Content Include="Scripts\jquery-ui-1.10.3.custom.min.js" />

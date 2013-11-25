@@ -237,6 +237,7 @@ var GuiController = (function () {
                         $(_this.openFileWindowSelector).toggle();
                         _this.isMenuAvailable = true;
                     });
+                    $("#filename").text($(event.currentTarget).text());
                 });
             }
         };

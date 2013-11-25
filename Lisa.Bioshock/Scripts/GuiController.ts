@@ -321,6 +321,7 @@ class GuiController {
                     $(this.openFileWindowSelector).toggle();
                     this.isMenuAvailable = true;
                 });
+                $("#filename").text($(event.currentTarget).text());
             });
         } 
     }
