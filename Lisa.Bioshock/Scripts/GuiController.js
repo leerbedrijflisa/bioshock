@@ -78,6 +78,7 @@ var GuiController = (function () {
                 }
 
                 if (event.altKey && event.keyCode == 79) {
+                    _this.createFileList();
                     _this.isMenuActive = true;
                     _this.toggleOverlay();
                     $(_this.openFileWindowSelector).toggle();
@@ -93,13 +94,15 @@ var GuiController = (function () {
                 }
             } else {
                 if (event.altKey && event.keyCode == 79) {
-                    _this.isMenuActive = false;
-                    $(_this.openFileWindowSelector).toggle();
-                    $('#wrap .filter_query').val("");
-                    _this.applyFilter();
-                    $('.nicescroll-rails').hide();
-                    _this.toggleOverlay();
-                    _this.isMenuAvailable = true;
+                    if (_this.isMenuActive) {
+                        _this.isMenuActive = false;
+                        $(_this.openFileWindowSelector).toggle();
+                        $('#wrap .filter_query').val("");
+                        _this.applyFilter();
+                        $('.nicescroll-rails').hide();
+                        _this.toggleOverlay();
+                        _this.isMenuAvailable = true;
+                    }
                 } else if (event.altKey && event.keyCode == 78) {
                     _this.isMenuActive = false;
                     _this.toggleOverlay();
@@ -229,7 +232,7 @@ var GuiController = (function () {
                 li.find("a").click(function (event) {
                     var id = $(event.currentTarget).attr("data-id");
 
-                    $.get("/test/GetFileContent", { guid: id }, function (data) {
+                    $.post("/test/GetFileContent", { guid: id }, function (data) {
                         _this.currentGuid = id;
                         _this.editor.setValue(data.content);
                         _this.isMenuActive = false;

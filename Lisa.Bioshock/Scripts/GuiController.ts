@@ -101,7 +101,8 @@ class GuiController {
             }
 
             if (event.altKey && event.keyCode == 79) {
-                
+
+                this.createFileList();
                 this.isMenuActive = true;
                 this.toggleOverlay();
                 $(this.openFileWindowSelector).toggle();
@@ -121,13 +122,15 @@ class GuiController {
 
             if (event.altKey && event.keyCode == 79) {
 
-                this.isMenuActive = false;
-                $(this.openFileWindowSelector).toggle();
-                $('#wrap .filter_query').val("");
-                this.applyFilter();
-                $('.nicescroll-rails').hide();
-                this.toggleOverlay();
-                this.isMenuAvailable = true;
+                if (this.isMenuActive) {
+                    this.isMenuActive = false;
+                    $(this.openFileWindowSelector).toggle();
+                    $('#wrap .filter_query').val("");
+                    this.applyFilter();
+                    $('.nicescroll-rails').hide();
+                    this.toggleOverlay();
+                    this.isMenuAvailable = true;
+                }
             }
 
             else if (event.altKey && event.keyCode == 78) {
@@ -312,7 +315,7 @@ class GuiController {
 
                 var id = $(event.currentTarget).attr("data-id");
                 
-                $.get("/test/GetFileContent", { guid: id }, (data) => {
+                $.post("/test/GetFileContent", { guid: id }, (data) => {
 
                     this.currentGuid = id;
                     this.editor.setValue(data.content);

@@ -1,4 +1,5 @@
 ﻿using Lisa.Bioshock.ActionResults;
+using Lisa.Bioshock.Models;
 using Lisa.Storage;
 using Lisa.Storage.Data;
 using System;
@@ -7,6 +8,7 @@ using System.IO;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using System.Web.UI;
 
 namespace Lisa.Bioshock.Controllers
 {
@@ -65,6 +67,8 @@ namespace Lisa.Bioshock.Controllers
             return new JsonItemResult(fileSystem.Root.Items);
         }
 
+        [HttpPost]
+        [OutputCache(NoStore = true, Location = OutputCacheLocation.None)]
         public JsonResult GetFileContent(string guid)
         {
             LocalStorageProvider provider = new LocalStorageProvider("/Storage");
@@ -76,12 +80,12 @@ namespace Lisa.Bioshock.Controllers
             {
                 content = contents.ReadToEnd();
             }
-
+        
             return Json(new
             {
 
                 content = content
-            }, JsonRequestBehavior.AllowGet );
+            }, JsonRequestBehavior.AllowGet);
         }
 
         public ActionResult CreateFile(string filename)
@@ -112,6 +116,7 @@ namespace Lisa.Bioshock.Controllers
             {
                 contents.Write(source);
                 contents.BaseStream.SetLength(source.Length);
+                contents.Flush();
             }
 
             return Json(null);
