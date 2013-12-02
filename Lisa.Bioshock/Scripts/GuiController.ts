@@ -115,7 +115,7 @@ class GuiController {
 
                 this.isMenuActive = true;
                 this.toggleOverlay();
-                $(this.newFileWindow).toggle();
+                this.$newFileWindow.toggle();
                 $("#newFileName").focus();
                 this.isMenuAvailable = false;
             }
@@ -139,7 +139,7 @@ class GuiController {
 
                 this.isMenuActive = false;
                 this.toggleOverlay();
-                $(this.newFileWindow).toggle();
+                this.$newFileWindow.toggle();
                 this.isMenuAvailable = true;
                 $("#newFileName").val("");
             }
@@ -455,7 +455,7 @@ class GuiController {
             });
             this.isMenuActive = false;
             this.toggleOverlay();
-            $(this.newFileWindow).toggle();
+            this.$newFileWindow.toggle();
             this.isMenuAvailable = true;
         } else {
 
@@ -512,10 +512,10 @@ class GuiController {
     private $preview = $('#preview');
     private $menuWindow = $('#editorMenuWindow');
     private $openFileWindow = $('#openFileWindow');
+    private $newFileWindow = $('#newFileWindow');
 
     private previewSelector = '#preview';
     private errorCount = '#errorcount';
-    private newFileWindow = '#newFileWindow';
     private addButton = '#addButton';
     private editorWidth;
     private editorHeight;

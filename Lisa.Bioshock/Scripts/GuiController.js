@@ -89,7 +89,7 @@ var GuiController = (function () {
                 if (event.altKey && event.keyCode == 78) {
                     _this.isMenuActive = true;
                     _this.toggleOverlay();
-                    $(_this.newFileWindow).toggle();
+                    _this.$newFileWindow.toggle();
                     $("#newFileName").focus();
                     _this.isMenuAvailable = false;
                 }
@@ -108,7 +108,7 @@ var GuiController = (function () {
                 } else if (event.altKey && event.keyCode == 78) {
                     _this.isMenuActive = false;
                     _this.toggleOverlay();
-                    $(_this.newFileWindow).toggle();
+                    _this.$newFileWindow.toggle();
                     _this.isMenuAvailable = true;
                     $("#newFileName").val("");
                 }
@@ -322,7 +322,7 @@ var GuiController = (function () {
                 });
                 _this.isMenuActive = false;
                 _this.toggleOverlay();
-                $(_this.newFileWindow).toggle();
+                _this.$newFileWindow.toggle();
                 _this.isMenuAvailable = true;
             } else {
                 //$("#newFileName").tooltip();
@@ -336,9 +336,9 @@ var GuiController = (function () {
         this.$preview = $('#preview');
         this.$menuWindow = $('#editorMenuWindow');
         this.$openFileWindow = $('#openFileWindow');
+        this.$newFileWindow = $('#newFileWindow');
         this.previewSelector = '#preview';
         this.errorCount = '#errorcount';
-        this.newFileWindow = '#newFileWindow';
         this.addButton = '#addButton';
         this.isMenuActive = false;
         this.isMenuAvailable = true;
