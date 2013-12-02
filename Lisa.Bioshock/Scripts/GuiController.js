@@ -115,7 +115,7 @@ var GuiController = (function () {
         this.editorKeyUp = function (event) {
             if (!_this.isMenuActive) {
                 if (event.keyCode == 17 && _this.lastKeyDown == 17) {
-                    $(_this.editorWindowSelector).toggle();
+                    _this.$editorWindow.toggle();
                     _this.editor.refresh();
                 }
 
@@ -250,7 +250,6 @@ var GuiController = (function () {
             }
 
             if (options.hasOwnProperty('overlay')) {
-                //this.overlaySelector = options['overlay'];
                 _this.$overlay = $(options['overlay']);
             }
 
@@ -259,25 +258,25 @@ var GuiController = (function () {
             }
 
             if (options.hasOwnProperty('window')) {
-                _this.editorWindowSelector = options['window'];
+                _this.$editorWindow = $(options['window']);
             }
 
             if (options.hasOwnProperty('menu')) {
                 _this.menuWindowSelector = options['menu'];
             }
 
-            $(_this.editorWindowSelector).resizable({
+            _this.$editorWindow.resizable({
                 minHeight: 52,
                 minWidth: 200,
                 containment: "#overlay",
                 resize: function (event, ui) {
                     if (_this.isMenuActive) {
-                        $(_this.editorWindowSelector).width(_this.editorWidth);
-                        $(_this.editorWindowSelector).height(_this.editorHeight);
+                        _this.$editorWindow.width(_this.editorWidth).height(_this.editorHeight);
                     } else {
                         _this.editorWidth = ui.size.width;
                         _this.editorHeight = ui.size.height;
                     }
+
                     _this.editor.refresh();
                 },
                 start: function () {
@@ -290,14 +289,13 @@ var GuiController = (function () {
                     _this.editor.refresh();
                 },
                 handles: 'all'
+            }).draggable({
+                iframeFix: true,
+                containment: 'window'
             });
 
-            $(_this.editorWindowSelector).draggable({
-                iframeFix: true,
-                containment: "window"
-            });
             if (options.hasOwnProperty('handle')) {
-                $(_this.editorWindowSelector).draggable('option', 'handle', options['handle']);
+                _this.$editorWindow.draggable('option', 'handle', options['handle']);
             } else {
                 _this.registerDragHandle('h1');
             }
@@ -331,6 +329,7 @@ var GuiController = (function () {
             }
         };
         this.$overlay = $('#overlay');
+        this.$editorWindow = $('#editorWindow');
         this.editorWindowSelector = '#editorWindow';
         this.previewSelector = '#preview';
         this.overlaySelector = '#overlay';

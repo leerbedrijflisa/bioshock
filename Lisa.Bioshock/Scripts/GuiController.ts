@@ -151,8 +151,8 @@ class GuiController {
         if (!this.isMenuActive) {
 
             if (event.keyCode == 17 && this.lastKeyDown == 17) {
-
-                $(this.editorWindowSelector).toggle();
+                
+                this.$editorWindow.toggle();
                 this.editor.refresh();
             }
 
@@ -366,8 +366,8 @@ class GuiController {
         }
 
         if (options.hasOwnProperty('window')) {
-
-            this.editorWindowSelector = options['window'];
+                        
+            this.$editorWindow = $(options['window']);
         }
 
         if (options.hasOwnProperty('menu')) {
@@ -375,27 +375,27 @@ class GuiController {
             this.menuWindowSelector = options['menu'];
         }
 
-        $(this.editorWindowSelector).resizable({
+        this.$editorWindow.resizable({
 
             minHeight: 52,
-            minWidth: 200,  
+            minWidth: 200,
             containment: "#overlay",
             resize: (event, ui) => {
-                
-                
+
+
                 if (this.isMenuActive) {
 
-
-                    $(this.editorWindowSelector).width(this.editorWidth);
-                    $(this.editorWindowSelector).height(this.editorHeight);
+                    this.$editorWindow
+                        .width(this.editorWidth)
+                        .height(this.editorHeight);
                 }
                 else {
+
                     this.editorWidth = ui.size.width;
                     this.editorHeight = ui.size.height;
-                    
                 }
+
                 this.editor.refresh();
-                
             },
 
             start: () => {
@@ -410,16 +410,15 @@ class GuiController {
                 this.editor.refresh();
             },
             handles: 'all'
-        });
-
-        $(this.editorWindowSelector).draggable({
+        }).draggable({
 
             iframeFix: true,
-            containment: "window"
+            containment: 'window'
         });
+
         if (options.hasOwnProperty('handle')) {
 
-            $(this.editorWindowSelector).draggable('option', 'handle', options['handle']);
+            this.$editorWindow.draggable('option', 'handle', options['handle']);
         } else {
 
             this.registerDragHandle('h1');
@@ -504,6 +503,7 @@ class GuiController {
     }    
 
     private $overlay = $('#overlay');
+    private $editorWindow = $('#editorWindow');
 
     private editorWindowSelector = '#editorWindow';   
     private previewSelector = '#preview';
