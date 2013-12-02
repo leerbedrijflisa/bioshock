@@ -357,7 +357,7 @@ class GuiController {
 
         if (options.hasOwnProperty('overlay')) {
 
-            this.overlaySelector = options['overlay'];
+            this.$overlay = $(options['overlay']);
         }
 
         if (options.hasOwnProperty('editor')) {
@@ -478,14 +478,16 @@ class GuiController {
 
         if (this.isMenuActive) {
 
-            $(this.overlaySelector).css({
+            this.$overlay.css({
+
                 'background-color': 'black',
                 'opacity': '0.65',
                 'z-index': '499'
             });
         } else {
 
-            $(this.overlaySelector).css({
+            this.$overlay.css({
+
                 'background-color': '',
                 'opacity': '1',
                 'z-index': '0'
@@ -500,6 +502,8 @@ class GuiController {
         }
 
     }    
+
+    private $overlay = $('#overlay');
 
     private editorWindowSelector = '#editorWindow';   
     private previewSelector = '#preview';

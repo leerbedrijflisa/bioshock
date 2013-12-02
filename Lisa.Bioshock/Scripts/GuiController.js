@@ -250,7 +250,8 @@ var GuiController = (function () {
             }
 
             if (options.hasOwnProperty('overlay')) {
-                _this.overlaySelector = options['overlay'];
+                //this.overlaySelector = options['overlay'];
+                _this.$overlay = $(options['overlay']);
             }
 
             if (options.hasOwnProperty('editor')) {
@@ -329,6 +330,7 @@ var GuiController = (function () {
                 $("#newFileName").tooltip("open");
             }
         };
+        this.$overlay = $('#overlay');
         this.editorWindowSelector = '#editorWindow';
         this.previewSelector = '#preview';
         this.overlaySelector = '#overlay';
@@ -394,13 +396,13 @@ var GuiController = (function () {
 
     GuiController.prototype.toggleOverlay = function () {
         if (this.isMenuActive) {
-            $(this.overlaySelector).css({
+            this.$overlay.css({
                 'background-color': 'black',
                 'opacity': '0.65',
                 'z-index': '499'
             });
         } else {
-            $(this.overlaySelector).css({
+            this.$overlay.css({
                 'background-color': '',
                 'opacity': '1',
                 'z-index': '0'
