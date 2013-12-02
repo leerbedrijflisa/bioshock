@@ -170,7 +170,7 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Models\SynchronizeHub.cs" />
-    <Compile Include="Modules\ClaimsTransformationManager.cs" />
+    <Compile Include="Modules\ClaimsTransformationModule.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
