@@ -215,8 +215,8 @@ class GuiController {
                     this.isMenuActive = true;
                     this.toggleOverlay();
                 }
-
-                $(this.menuWindowSelector).toggle().focus();
+                
+                this.$menuWindow.toggle().focus();
             }
         }
     }
@@ -374,8 +374,8 @@ class GuiController {
         }
 
         if (options.hasOwnProperty('menu')) {
-
-            this.menuWindowSelector = options['menu'];
+                        
+            this.$menuWindow = $(options['menu']);
         }
 
         this.$editorWindow.resizable({
@@ -508,11 +508,9 @@ class GuiController {
     private $overlay = $('#overlay');
     private $editorWindow = $('#editorWindow');
     private $preview = $('#preview');
-
-    private editorWindowSelector = '#editorWindow';   
+    private $menuWindow = $('#editorMenuWindow');
+  
     private previewSelector = '#preview';
-    private overlaySelector = '#overlay';
-    private menuWindowSelector = '#editorMenuWindow';
     private openFileWindowSelector = '#openFileWindow';
     private errorCount = '#errorcount';
     private newFileWindow = '#newFileWindow';

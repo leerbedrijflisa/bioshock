@@ -165,7 +165,8 @@ var GuiController = (function () {
                         _this.toggleOverlay();
                     }
 
-                    $(_this.menuWindowSelector).toggle().focus();
+                    //$(this.menuWindowSelector).toggle().focus();
+                    _this.$menuWindow.toggle().focus();
                 }
             }
         };
@@ -263,7 +264,8 @@ var GuiController = (function () {
             }
 
             if (options.hasOwnProperty('menu')) {
-                _this.menuWindowSelector = options['menu'];
+                //this.menuWindowSelector = options['menu'];
+                _this.$menuWindow = $(options['menu']);
             }
 
             _this.$editorWindow.resizable({
@@ -332,6 +334,7 @@ var GuiController = (function () {
         this.$overlay = $('#overlay');
         this.$editorWindow = $('#editorWindow');
         this.$preview = $('#preview');
+        this.$menuWindow = $('#editorMenuWindow');
         this.editorWindowSelector = '#editorWindow';
         this.previewSelector = '#preview';
         this.overlaySelector = '#overlay';
@@ -374,10 +377,8 @@ var GuiController = (function () {
         $(window).keydown(this.editorKeyDown);
         $(window).keyup(this.editorKeyUp);
 
-        //var iframe: any = $(this.previewSelector)[0];
         var iframe = this.$preview[0];
         $(iframe.contentWindow).keydown(this.editorKeyDown).keyup(this.editorKeyUp);
-        //$(iframe.contentWindow).keyup(this.editorKeyUp);
     };
 
     GuiController.prototype.registerSynchronizeHandlers = function () {
