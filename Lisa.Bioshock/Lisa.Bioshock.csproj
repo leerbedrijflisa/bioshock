@@ -165,6 +165,7 @@
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\TestController.cs" />
+    <Compile Include="Controllers\UserController.cs" />
     <Compile Include="Controllers\ValidateController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -433,6 +434,7 @@
     <Content Include="Scripts\jquery.nicescroll.min.js" />
     <Content Include="Scripts\Prototypes.js" />
     <Content Include="Scripts\Synchronizer.js.map" />
+    <Content Include="Views\User\Index.cshtml" />
     <TypeScriptCompile Include="Scripts\GuiController.ts" />
     <Content Include="Scripts\GuiController.js" />
     <None Include="Properties\PublishProfiles\bioshock - FTP.pubxml" />
