@@ -81,7 +81,8 @@ var GuiController = (function () {
                     _this.createFileList();
                     _this.isMenuActive = true;
                     _this.toggleOverlay();
-                    $(_this.openFileWindowSelector).toggle();
+                    _this.$openFileWindow.toggle();
+
                     $(".filter_query").focus();
                     _this.isMenuAvailable = false;
                 }
@@ -96,7 +97,8 @@ var GuiController = (function () {
                 if (event.altKey && event.keyCode == 79) {
                     if (_this.isMenuActive) {
                         _this.isMenuActive = false;
-                        $(_this.openFileWindowSelector).toggle();
+                        _this.$openFileWindow.toggle();
+
                         $('#wrap .filter_query').val("");
                         _this.applyFilter();
                         $('.nicescroll-rails').hide();
@@ -165,7 +167,6 @@ var GuiController = (function () {
                         _this.toggleOverlay();
                     }
 
-                    //$(this.menuWindowSelector).toggle().focus();
                     _this.$menuWindow.toggle().focus();
                 }
             }
@@ -238,7 +239,7 @@ var GuiController = (function () {
                         _this.editor.setValue(data.content);
                         _this.isMenuActive = false;
                         _this.toggleOverlay();
-                        $(_this.openFileWindowSelector).toggle();
+                        _this.$openFileWindow.toggle();
                         _this.isMenuAvailable = true;
                     });
                     $("#filename").text($(event.currentTarget).text());
@@ -264,7 +265,6 @@ var GuiController = (function () {
             }
 
             if (options.hasOwnProperty('menu')) {
-                //this.menuWindowSelector = options['menu'];
                 _this.$menuWindow = $(options['menu']);
             }
 
@@ -335,11 +335,8 @@ var GuiController = (function () {
         this.$editorWindow = $('#editorWindow');
         this.$preview = $('#preview');
         this.$menuWindow = $('#editorMenuWindow');
-        this.editorWindowSelector = '#editorWindow';
+        this.$openFileWindow = $('#openFileWindow');
         this.previewSelector = '#preview';
-        this.overlaySelector = '#overlay';
-        this.menuWindowSelector = '#editorMenuWindow';
-        this.openFileWindowSelector = '#openFileWindow';
         this.errorCount = '#errorcount';
         this.newFileWindow = '#newFileWindow';
         this.addButton = '#addButton';

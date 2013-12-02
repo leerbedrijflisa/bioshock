@@ -105,7 +105,8 @@ class GuiController {
                 this.createFileList();
                 this.isMenuActive = true;
                 this.toggleOverlay();
-                $(this.openFileWindowSelector).toggle();
+                this.$openFileWindow.toggle();
+
                 $(".filter_query").focus();
                 this.isMenuAvailable = false;
                 
@@ -124,7 +125,8 @@ class GuiController {
 
                 if (this.isMenuActive) {
                     this.isMenuActive = false;
-                    $(this.openFileWindowSelector).toggle();
+                    this.$openFileWindow.toggle();
+
                     $('#wrap .filter_query').val("");
                     this.applyFilter();
                     $('.nicescroll-rails').hide();
@@ -321,7 +323,7 @@ class GuiController {
                     this.editor.setValue(data.content);
                     this.isMenuActive = false;
                     this.toggleOverlay();
-                    $(this.openFileWindowSelector).toggle();
+                    this.$openFileWindow.toggle();
                     this.isMenuAvailable = true;
                 });
                 $("#filename").text($(event.currentTarget).text());
@@ -509,9 +511,9 @@ class GuiController {
     private $editorWindow = $('#editorWindow');
     private $preview = $('#preview');
     private $menuWindow = $('#editorMenuWindow');
-  
+    private $openFileWindow = $('#openFileWindow');
+
     private previewSelector = '#preview';
-    private openFileWindowSelector = '#openFileWindow';
     private errorCount = '#errorcount';
     private newFileWindow = '#newFileWindow';
     private addButton = '#addButton';
