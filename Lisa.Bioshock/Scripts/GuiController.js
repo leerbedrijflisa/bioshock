@@ -247,6 +247,7 @@ var GuiController = (function () {
         this.registerEditorHandlers = function (options) {
             if (options.hasOwnProperty('preview')) {
                 _this.previewSelector = options['preview'];
+                _this.$preview = $(_this.previewSelector);
             }
 
             if (options.hasOwnProperty('overlay')) {
@@ -330,6 +331,7 @@ var GuiController = (function () {
         };
         this.$overlay = $('#overlay');
         this.$editorWindow = $('#editorWindow');
+        this.$preview = $('#preview');
         this.editorWindowSelector = '#editorWindow';
         this.previewSelector = '#preview';
         this.overlaySelector = '#overlay';
@@ -372,9 +374,10 @@ var GuiController = (function () {
         $(window).keydown(this.editorKeyDown);
         $(window).keyup(this.editorKeyUp);
 
-        var iframe = $(this.previewSelector)[0];
-        $(iframe.contentWindow).keydown(this.editorKeyDown);
-        $(iframe.contentWindow).keyup(this.editorKeyUp);
+        //var iframe: any = $(this.previewSelector)[0];
+        var iframe = this.$preview[0];
+        $(iframe.contentWindow).keydown(this.editorKeyDown).keyup(this.editorKeyUp);
+        //$(iframe.contentWindow).keyup(this.editorKeyUp);
     };
 
     GuiController.prototype.registerSynchronizeHandlers = function () {

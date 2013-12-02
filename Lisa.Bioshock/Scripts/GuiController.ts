@@ -334,9 +334,11 @@ class GuiController {
         $(window).keydown(this.editorKeyDown);
         $(window).keyup(this.editorKeyUp);
         
-        var iframe: any = $(this.previewSelector)[0];
-        $(iframe.contentWindow).keydown(this.editorKeyDown);
-        $(iframe.contentWindow).keyup(this.editorKeyUp);
+        var iframe: any = this.$preview[0];
+        $(iframe.contentWindow)
+            .keydown(this.editorKeyDown)
+            .keyup(this.editorKeyUp);
+
     }
 
     private registerSynchronizeHandlers() {
@@ -353,6 +355,7 @@ class GuiController {
         if (options.hasOwnProperty('preview')) {
 
             this.previewSelector = options['preview'];
+            this.$preview = $(this.previewSelector);
         }
 
         if (options.hasOwnProperty('overlay')) {
@@ -504,6 +507,7 @@ class GuiController {
 
     private $overlay = $('#overlay');
     private $editorWindow = $('#editorWindow');
+    private $preview = $('#preview');
 
     private editorWindowSelector = '#editorWindow';   
     private previewSelector = '#preview';
