@@ -431,6 +431,10 @@
     <Content Include="Scripts\jquery.nicescroll.min.js" />
     <Content Include="Scripts\Prototypes.js" />
     <Content Include="Scripts\Synchronizer.js.map" />
+    <Content Include="Views\Shared\_EditorWindow.cshtml" />
+    <Content Include="Views\Shared\_EditorMenuWindow.cshtml" />
+    <Content Include="Views\Shared\_NewFileWindow.cshtml" />
+    <Content Include="Views\Shared\_OpenFileWindow.cshtml" />
     <TypeScriptCompile Include="Scripts\GuiController.ts" />
     <Content Include="Scripts\GuiController.js" />
     <None Include="Properties\PublishProfiles\bioshock - FTP.pubxml" />
