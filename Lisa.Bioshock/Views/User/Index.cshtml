@@ -4,6 +4,7 @@
 
 @if (User.Identity.IsAuthenticated) {
     <h2>Welcome, @User.Identity.Name</h2>
+    @Html.ActionLink("Logoff", "Logoff")
     
     <table>
         <thead>
