@@ -457,9 +457,8 @@ class GuiController {
             this.toggleOverlay();
             this.$newFileWindow.toggle();
             this.isMenuAvailable = true;
+            this.editor.setValue("");
         } else {
-
-            //$("#newFileName").tooltip();
             $("#newFileName").tooltip({ content: "Kan geen bestand maken zonder extensie" });
             $("#newFileName").tooltip("option", "show", { effect: "blind", duration: 700 });
             $("#newFileName").tooltip("open");
@@ -525,11 +524,6 @@ class GuiController {
     private synchronizer: Synchronizer;
     private editor = undefined;    
     private lastKeyDown: number;  
-    private currentGuid = "";   
-    //private files = {
-    //'\\': ['index.html', 'contact.html', 'lol.html', 'houdoe.html', 'rap.html'],
-    //'\\css': ['style.css'],
-    //'\\css\\images': ['background.jpg', 'contact-map.png']
-    //}     
+    private currentGuid = "";     
     private files = [];
 }

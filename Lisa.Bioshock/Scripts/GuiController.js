@@ -324,8 +324,8 @@ var GuiController = (function () {
                 _this.toggleOverlay();
                 _this.$newFileWindow.toggle();
                 _this.isMenuAvailable = true;
+                _this.editor.setValue("");
             } else {
-                //$("#newFileName").tooltip();
                 $("#newFileName").tooltip({ content: "Kan geen bestand maken zonder extensie" });
                 $("#newFileName").tooltip("option", "show", { effect: "blind", duration: 700 });
                 $("#newFileName").tooltip("open");
@@ -345,11 +345,6 @@ var GuiController = (function () {
         this.isEditorDragging = false;
         this.editor = undefined;
         this.currentGuid = "";
-        //private files = {
-        //'\\': ['index.html', 'contact.html', 'lol.html', 'houdoe.html', 'rap.html'],
-        //'\\css': ['style.css'],
-        //'\\css\\images': ['background.jpg', 'contact-map.png']
-        //}
         this.files = [];
         this.registerEditorHandlers(options);
         this.registerKeyHandlers();
