@@ -5,6 +5,7 @@ using System.Web;
 using System.ComponentModel.DataAnnotations;
 using System.Web.Mvc;
 using Lisa.Skyrim;
+using Lisa.Daggerfall;
 using System.IO;
 
 namespace Lisa.Bioshock.Controllers
@@ -13,13 +14,28 @@ namespace Lisa.Bioshock.Controllers
     {        
         [ValidateInput(false)]
         [HttpGet]
-        public JsonResult Validate(string source)
+        public JsonResult ValidateHTML(string source)
         {
             var returnVal = new JsonResult();
             returnVal.JsonRequestBehavior = JsonRequestBehavior.AllowGet;
             if (source != null)
             {
                 var checker = new HtmlChecker();
+                var result = checker.Check(new StringReader(source), "");
+                returnVal = Json(result, JsonRequestBehavior.AllowGet);
+            }
+            return returnVal;
+        }
+
+        [ValidateInput(false)]
+        [HttpGet]
+        public JsonResult ValidateCSS(string source)
+        {
+            var returnVal = new JsonResult();
+            returnVal.JsonRequestBehavior = JsonRequestBehavior.AllowGet;
+            if (source != null)
+            {
+                var checker = new CSSChecker();
                 var result = checker.Check(new StringReader(source), "");
                 returnVal = Json(result, JsonRequestBehavior.AllowGet);
             }

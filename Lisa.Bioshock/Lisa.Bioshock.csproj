@@ -522,6 +522,14 @@
       <Project>{eb2833ff-7ff8-44e8-af04-8bff1cfa6dae}</Project>
       <Name>Lisa.Checkers</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Lisa.Daggerfall.Languages\Lisa.Daggerfall.Languages.csproj">
+      <Project>{4e321fc5-8215-4a13-956f-9475bf7786ea}</Project>
+      <Name>Lisa.Daggerfall.Languages</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Lisa.Daggerfall\Lisa.Daggerfall.csproj">
+      <Project>{f6b25977-e139-4c93-b0cb-92744615a291}</Project>
+      <Name>Lisa.Daggerfall</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Lisa.Skyrim.Languages\Lisa.Skyrim.Languages.csproj">
       <Project>{7fa170a3-8eee-4ce7-85c0-d6890cc3d4ff}</Project>
       <Name>Lisa.Skyrim.Languages</Name>

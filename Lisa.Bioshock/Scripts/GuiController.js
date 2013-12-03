@@ -124,34 +124,23 @@ var GuiController = (function () {
                 if (event.keyCode == 144 && _this.lastKeyDown == 144) {
                     if (_this.ready) {
                         _this.ready = false;
-                        $.get("/validate/validate", { source: _this.editor.getValue() }, function (data) {
-                            for (var i = 0; i < _this.widgets.length; ++i) {
-                                _this.editor.removeLineWidget(_this.widgets[i]);
-                                _this.editor.clearGutter("Errors");
-                            }
-                            _this.widgets.length = 0;
-                            for (var i in data) {
-                                if (data[i].Type == 2) {
-                                    var msg = document.createElement("div");
-                                    $(msg).append(document.createTextNode(data[i].Message));
-                                    $(msg).addClass("lint-error");
-                                    $(msg).hide();
-                                    _this.widgets.push(_this.editor.addLineWidget(data[i].Line - 1, msg, { coverGutter: false, noHScroll: true }));
+                        for (var i = 0; i < _this.widgets.length; ++i) {
+                            _this.editor.removeLineWidget(_this.widgets[i]);
+                            _this.editor.clearGutter("Errors");
+                        }
+                        _this.widgets.length = 0;
+                        var filename = $("#filename").text();
+                        if (filename.indexOf(".html") > -1) {
+                            $.get("/validate/validatehtml", { source: _this.editor.getValue() }, function (data) {
+                                _this.getErrors(data);
+                            }, "json");
+                        } else if (filename.indexOf(".css") > -1) {
+                            $.get("/validate/validatecss", { source: _this.editor.getValue() }, function (data) {
+                                _this.getErrors(data);
+                            }, "json");
+                        }
 
-                                    var marker = _this.makeMarker();
-                                    var handle = _this.editor.setGutterMarker(data[i].Line - 1, "Errors", marker);
-                                    var lineNumber = _this.editor.getLineNumber(handle);
-
-                                    $(marker).attr("data-error-line-number", lineNumber).click(function (event) {
-                                        var errorDivId = $(this).attr("data-error-line-number");
-                                        $('.error-line-number' + errorDivId).toggle();
-                                    });
-                                    $(msg).addClass("error-line-number" + lineNumber);
-                                }
-                            }
-                            $(_this.errorCount).text(_this.widgets.length);
-                            _this.ready = true;
-                        }, "json");
+                        _this.ready = true;
                     }
                 }
             }
@@ -170,6 +159,28 @@ var GuiController = (function () {
                     _this.$menuWindow.toggle().focus();
                 }
             }
+        };
+        this.getErrors = function (data) {
+            for (var i in data) {
+                if (data[i].Type == 2) {
+                    var msg = document.createElement("div");
+                    $(msg).append(document.createTextNode(data[i].Message));
+                    $(msg).addClass("lint-error");
+                    $(msg).hide();
+                    _this.widgets.push(_this.editor.addLineWidget(data[i].Line - 1, msg, { coverGutter: false, noHScroll: true }));
+
+                    var marker = _this.makeMarker();
+                    var handle = _this.editor.setGutterMarker(data[i].Line - 1, "Errors", marker);
+                    var lineNumber = _this.editor.getLineNumber(handle);
+
+                    $(marker).attr("data-error-line-number", lineNumber).click(function (event) {
+                        var errorDivId = $(this).attr("data-error-line-number");
+                        $('.error-line-number' + errorDivId).toggle();
+                    });
+                    $(msg).addClass("error-line-number" + lineNumber);
+                }
+            }
+            $(_this.errorCount).text(_this.widgets.length);
         };
         this.applyFilter = function () {
             var filter = $('#openFileWindow .filter_query').val();
@@ -315,16 +326,18 @@ var GuiController = (function () {
         this.createFile = function () {
             var fileName = $("#newFileName").val();
             if (fileName.endsWith(".css") || fileName.endsWith(".html")) {
-                $("#filename").text(fileName);
                 $.get("/test/CreateFile", { filename: fileName }, function (data) {
-                    _this.currentGuid = data.ID;
-                    _this.createFileList();
+                    if (data.Result) {
+                        _this.currentGuid = data.ID;
+                        _this.createFileList();
+                        _this.isMenuActive = false;
+                        _this.toggleOverlay();
+                        _this.$newFileWindow.toggle();
+                        _this.isMenuAvailable = true;
+                        _this.editor.setValue("");
+                        $("#filename").text(fileName);
+                    }
                 });
-                _this.isMenuActive = false;
-                _this.toggleOverlay();
-                _this.$newFileWindow.toggle();
-                _this.isMenuAvailable = true;
-                _this.editor.setValue("");
             } else {
                 $("#newFileName").tooltip({ content: "Kan geen bestand maken zonder extensie" });
                 $("#newFileName").tooltip("option", "show", { effect: "blind", duration: 700 });

@@ -93,14 +93,36 @@ namespace Lisa.Bioshock.Controllers
             LocalStorageProvider provider = new LocalStorageProvider("/Storage");
             FileSystem fileSystem = new FileSystem(provider);
 
-            
+            if (!FileExists(fileSystem, filename))
+            {
+                if (filename.EndsWith(".css"))
+                    file = fileSystem.Root.Files.Add(filename, "text/css");
+                else if (filename.EndsWith(".html"))
+                    file = fileSystem.Root.Files.Add(filename, "text/html");
+                return Json(new
+                {
+                    Result = true,
+                    guid = file.ID
+                }, JsonRequestBehavior.AllowGet);
+            }
+        
 
-            if(filename.EndsWith(".css"))
-                file = fileSystem.Root.Files.Add(filename, "text/css");
-            else if(filename.EndsWith(".html"))
-                file = fileSystem.Root.Files.Add(filename, "text/html");
+            return Json(new { Result = false}, JsonRequestBehavior.AllowGet);
+        }
 
-            return Json(new { Result = true, guid = file.ID }, JsonRequestBehavior.AllowGet);
+        public bool FileExists(FileSystem filesystem, string filename)
+        {
+            if (filesystem != null)
+            {
+                foreach (Storage.File file in filesystem.Root.Files)
+                {
+                    if (file.Name == filename)
+                    {
+                        return true;
+                    }
+                }
+            }
+            return false;
         }
 
         [ValidateInput(false)]

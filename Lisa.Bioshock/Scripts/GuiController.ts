@@ -169,36 +169,25 @@ class GuiController {
             if (event.keyCode == 144 && this.lastKeyDown == 144) {
                 if (this.ready) {
                     this.ready = false;
-                    $.get("/validate/validate", { source: this.editor.getValue() }, (data) => {
-                        for (var i: any = 0; i < this.widgets.length; ++i) {
-                            this.editor.removeLineWidget(this.widgets[i]);
-                            this.editor.clearGutter("Errors");
-                        }
-                        this.widgets.length = 0;
-                        for (var i in data) {
-                            if (data[i].Type == 2) {
-                                var msg = document.createElement("div");
-                                $(msg).append(document.createTextNode(data[i].Message));
-                                $(msg).addClass("lint-error");
-                                $(msg).hide();
-                                this.widgets.push(this.editor.addLineWidget(data[i].Line -1, msg, { coverGutter: false, noHScroll: true }));
+                    for (var i: any = 0; i < this.widgets.length; ++i) {
+                        this.editor.removeLineWidget(this.widgets[i]);
+                        this.editor.clearGutter("Errors");
+                    }
+                    this.widgets.length = 0;
+                    var filename = $("#filename").text();
+                    if (filename.indexOf(".html") > -1) {
+                        $.get("/validate/validatehtml", { source: this.editor.getValue() }, (data) => {
 
-                                var marker = this.makeMarker();
-                                var handle = this.editor.setGutterMarker(data[i].Line - 1, "Errors", marker);
-                                var lineNumber = this.editor.getLineNumber(handle);
+                            this.getErrors(data);
+                        }, "json");
+                    } else if (filename.indexOf(".css") > -1) {
+                        $.get("/validate/validatecss", { source: this.editor.getValue() }, (data) => {
 
-                                $(marker).attr("data-error-line-number", lineNumber)
-                                    .click(function (event) {
-
-                                        var errorDivId = $(this).attr("data-error-line-number");
-                                        $('.error-line-number' + errorDivId).toggle();
-                                    });
-                                $(msg).addClass("error-line-number" + lineNumber);
-                            }
-                        }
-                        $(this.errorCount).text(this.widgets.length);
-                        this.ready = true;
-                    }, "json");
+                            this.getErrors(data);
+                        }, "json");
+                    }
+                    
+                    this.ready = true;
                 }
             }
         }
@@ -221,6 +210,32 @@ class GuiController {
                 this.$menuWindow.toggle().focus();
             }
         }
+    }
+
+    private getErrors = (data) => {
+
+        for (var i in data) {
+            if (data[i].Type == 2) {
+                var msg = document.createElement("div");
+                $(msg).append(document.createTextNode(data[i].Message));
+                $(msg).addClass("lint-error");
+                $(msg).hide();
+                this.widgets.push(this.editor.addLineWidget(data[i].Line - 1, msg, { coverGutter: false, noHScroll: true }));
+
+                var marker = this.makeMarker();
+                var handle = this.editor.setGutterMarker(data[i].Line - 1, "Errors", marker);
+                var lineNumber = this.editor.getLineNumber(handle);
+
+                $(marker).attr("data-error-line-number", lineNumber)
+                    .click(function (event) {
+
+                        var errorDivId = $(this).attr("data-error-line-number");
+                        $('.error-line-number' + errorDivId).toggle();
+                    });
+                $(msg).addClass("error-line-number" + lineNumber);
+            }
+        }
+        $(this.errorCount).text(this.widgets.length);
     }
 
     private initFilesView() {
@@ -447,17 +462,23 @@ class GuiController {
         var fileName = $("#newFileName").val();
         if (fileName.endsWith(".css") || fileName.endsWith(".html")) {
 
-            $("#filename").text(fileName);
+            
             $.get("/test/CreateFile", { filename: fileName }, (data) => {
 
-                this.currentGuid = data.ID;
-                this.createFileList();
+                if (data.Result) {
+
+                    this.currentGuid = data.ID;
+                    this.createFileList();
+                    this.isMenuActive = false;
+                    this.toggleOverlay();
+                    this.$newFileWindow.toggle();
+                    this.isMenuAvailable = true;
+                    this.editor.setValue("");
+                    $("#filename").text(fileName);
+                }
+                
             });
-            this.isMenuActive = false;
-            this.toggleOverlay();
-            this.$newFileWindow.toggle();
-            this.isMenuAvailable = true;
-            this.editor.setValue("");
+            
         } else {
             $("#newFileName").tooltip({ content: "Kan geen bestand maken zonder extensie" });
             $("#newFileName").tooltip("option", "show", { effect: "blind", duration: 700 });
