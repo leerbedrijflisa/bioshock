@@ -1,0 +1,32 @@
+﻿@{
+    ViewBag.Title = "Fullscreen";
+}
+
+<style>
+    body {  
+        position: fixed;
+        top: 0; left: 0; right: 0; bottom: 0;
+        height: auto;
+        z-index: 9;
+    }
+</style>
+
+<script type="text/javascript">
+    $(function () {
+
+        var editor = CodeMirror(document.body, {
+            value: "",
+            lineNumbers: true,
+            mode: "htmlmixed",
+            smartIndent: false,
+            tabSize: 2,
+            theme: "default",
+            fullScreen: true,
+            gutters: ["Errors", "CodeMirror-linenumbers"]
+        });
+        
+        //editor.setOption("fullScreen", !editor.getOption("fullScreen"));
+        var guiController = new GuiController();
+        guiController.registerEditor(editor);
+    });
+</script>

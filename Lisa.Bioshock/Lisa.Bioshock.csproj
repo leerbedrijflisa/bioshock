@@ -179,6 +179,7 @@
     <Content Include="Content\CodeMirror\bullet_error.png" />
     <Content Include="Content\CodeMirror\codemirror.css" />
     <Content Include="Content\CodeMirror\codemirror.js" />
+    <Content Include="Content\CodeMirror\display\fullscreen.js" />
     <Content Include="Content\CodeMirror\mode\apl\apl.js" />
     <Content Include="Content\CodeMirror\mode\apl\index.html" />
     <Content Include="Content\CodeMirror\mode\asterisk\asterisk.js" />
@@ -440,6 +441,7 @@
     <Content Include="Views\Shared\_EditorMenuWindow.cshtml" />
     <Content Include="Views\Shared\_NewFileWindow.cshtml" />
     <Content Include="Views\Shared\_OpenFileWindow.cshtml" />
+    <Content Include="Views\Home\Fullscreen.cshtml" />
     <TypeScriptCompile Include="Scripts\GuiController.ts" />
     <Content Include="Scripts\GuiController.js" />
     <None Include="Properties\PublishProfiles\bioshock - FTP.pubxml" />
