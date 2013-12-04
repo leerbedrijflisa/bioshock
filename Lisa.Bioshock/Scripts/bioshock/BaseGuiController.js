@@ -89,8 +89,8 @@ var BaseGuiController = (function () {
         this.editorKeyDown = function (event) {
             _this.lastKeyDown = event.keyCode;
 
-            if (!_this.isMenuActive) {
-                if (event.ctrlKey && event.keyCode == 13) {
+            if (_this.canExecuteAction()) {
+                if (event.ctrlKey && event.keyCode === _this.keys.ENTER) {
                     var lineNumber = _this.editor.getCursor().line;
                     var lineText = _this.editor.getLineHandle(lineNumber).text;
 
@@ -98,25 +98,34 @@ var BaseGuiController = (function () {
                     _this.editor.setCursor(lineNumber);
                 }
 
-                if (event.altKey && event.keyCode == 79) {
-                    _this.createFileList();
-                    _this.isMenuActive = true;
-                    _this.toggleOverlay();
-                    _this.$openFileWindow.toggle();
+                if (event.altKey) {
+                    if (event.keyCode === _this.keys.O) {
+                        _this.createFileList();
+                        _this.isMenuActive = true;
+                        _this.toggleOverlay();
+                        _this.$openFileWindow.toggle();
 
-                    $(".filter_query").focus();
-                    _this.isMenuAvailable = false;
-                }
-                if (event.altKey && event.keyCode == 78) {
-                    _this.isMenuActive = true;
-                    _this.toggleOverlay();
-                    _this.$newFileWindow.toggle();
-                    $("#newFileName").focus();
-                    _this.isMenuAvailable = false;
+                        $(".filter_query").focus();
+                        _this.isMenuAvailable = false;
+                    }
+
+                    if (event.keyCode === _this.keys.N) {
+                        _this.isMenuActive = true;
+                        _this.toggleOverlay();
+                        _this.$newFileWindow.toggle();
+                        $("newFileName").focus();
+                        _this.isMenuAvailable = false;
+                    }
+
+                    if (event.keyCode === _this.keys.F) {
+                        _this.canToggleEditor = false;
+                        _this.$editorWindow.toggle();
+                        window.open("/home/fullscreen", "_blank");
+                    }
                 }
             } else {
-                if (event.altKey && event.keyCode == 79) {
-                    if (_this.isMenuActive) {
+                if (event.altKey) {
+                    if (event.keyCode === _this.keys.O && _this.isMenuActive) {
                         _this.isMenuActive = false;
                         _this.$openFileWindow.toggle();
 
@@ -126,17 +135,19 @@ var BaseGuiController = (function () {
                         _this.toggleOverlay();
                         _this.isMenuAvailable = true;
                     }
-                } else if (event.altKey && event.keyCode == 78) {
-                    _this.isMenuActive = false;
-                    _this.toggleOverlay();
-                    _this.$newFileWindow.toggle();
-                    _this.isMenuAvailable = true;
-                    $("#newFileName").val("");
+
+                    if (event.keyCode === _this.keys.N && _this.canToggleEditor) {
+                        _this.isMenuActive = false;
+                        _this.toggleOverlay();
+                        _this.$newFileWindow.toggle();
+                        _this.isMenuAvailable = true;
+                        $("#newFileName").val("");
+                    }
                 }
             }
         };
         this.editorKeyUp = function (event) {
-            if (!_this.isMenuActive) {
+            if (!_this.isMenuActive && _this.canToggleEditor) {
                 if (event.keyCode == 17 && _this.lastKeyDown == 17) {
                     _this.$editorWindow.toggle();
                     _this.editor.refresh();
@@ -308,6 +319,24 @@ var BaseGuiController = (function () {
                 $("#newFileName").tooltip("open");
             }
         };
+        this.keys = {
+            ENTER: 13,
+            A: 65,
+            B: 66,
+            C: 67,
+            D: 68,
+            E: 69,
+            F: 70,
+            G: 71,
+            H: 72,
+            I: 73,
+            J: 74,
+            K: 75,
+            L: 76,
+            M: 77,
+            N: 78,
+            O: 79
+        };
         this.$overlay = $('#overlay');
         this.$editorWindow = $('#editorWindow');
         this.$preview = $('#preview');
@@ -320,6 +349,7 @@ var BaseGuiController = (function () {
         this.isMenuActive = false;
         this.isMenuAvailable = true;
         this.isEditorDragging = false;
+        this.canToggleEditor = true;
         this.currentGuid = "";
         this.files = [];
         this.widgets = [];
@@ -337,6 +367,23 @@ var BaseGuiController = (function () {
     BaseGuiController.prototype.registerPreviewHandlers = function () {
         var iframe = this.$preview[0];
         $(iframe.contentWindow).keydown(this.editorKeyDown).keyup(this.editorKeyUp);
+    };
+
+    BaseGuiController.prototype.insertWhitespace = function () {
+        var lineNumber = this.editor.getCursor().line;
+        var lineText = this.editor.getLineHandle(lineNumber).text;
+
+        this.editor.setLine(lineNumber, "\n" + lineText);
+        this.editor.setCursor(lineNumber);
+    };
+    BaseGuiController.prototype.updateMenuState = function () {
+        this.isMenuActive = true;
+        this.toggleOverlay();
+        this.isMenuAvailable = false;
+    };
+
+    BaseGuiController.prototype.canExecuteAction = function () {
+        return (!this.isMenuActive && this.canToggleEditor);
     };
 
     BaseGuiController.prototype.initFilesView = function () {

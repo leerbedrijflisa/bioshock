@@ -140,12 +140,33 @@ class BaseGuiController {
             .keyup(this.editorKeyUp);
     }
 
+    public insertWhitespace() {
+
+        var lineNumber = this.editor.getCursor().line;
+        var lineText = this.editor.getLineHandle(lineNumber).text;
+
+        this.editor.setLine(lineNumber, "\n" + lineText);
+        this.editor.setCursor(lineNumber);
+    }
+    public updateMenuState() {
+
+        this.isMenuActive = true;
+        this.toggleOverlay();
+        this.isMenuAvailable = false;
+    }
+
+    private canExecuteAction() {
+
+        return (!this.isMenuActive && this.canToggleEditor);
+    }
+
     private editorKeyDown = (event) => {
         this.lastKeyDown = event.keyCode;
 
-        if (!this.isMenuActive) {
+        if (this.canExecuteAction()) {
 
-            if (event.ctrlKey && event.keyCode == 13) {
+            // Insert line above current
+            if (event.ctrlKey && event.keyCode === this.keys.ENTER) {
 
                 var lineNumber = this.editor.getCursor().line;
                 var lineText = this.editor.getLineHandle(lineNumber).text;
@@ -154,30 +175,45 @@ class BaseGuiController {
                 this.editor.setCursor(lineNumber);
             }
 
-            if (event.altKey && event.keyCode == 79) {
+            if (event.altKey) {
 
-                this.createFileList();
-                this.isMenuActive = true;
-                this.toggleOverlay();
-                this.$openFileWindow.toggle();
+                // File browser
+                if (event.keyCode === this.keys.O) {
 
-                $(".filter_query").focus();
-                this.isMenuAvailable = false;
+                    this.createFileList();
+                    this.isMenuActive = true;
+                    this.toggleOverlay();
+                    this.$openFileWindow.toggle();
 
-            }
-            if (event.altKey && event.keyCode == 78) {
+                    $(".filter_query").focus();
+                    this.isMenuAvailable = false;
+                }
 
-                this.isMenuActive = true;
-                this.toggleOverlay();
-                this.$newFileWindow.toggle();
-                $("#newFileName").focus();
-                this.isMenuAvailable = false;
+                // New file dialog
+                if (event.keyCode === this.keys.N) {
+
+                    this.isMenuActive = true;
+                    this.toggleOverlay();
+                    this.$newFileWindow.toggle();
+                    $("newFileName").focus();
+                    this.isMenuAvailable = false;
+                }
+
+                // Open fullscreen
+                if (event.keyCode === this.keys.F) {
+
+                    this.canToggleEditor = false;
+                    this.$editorWindow.toggle();
+                    window.open("/home/fullscreen", "_blank");
+                }
             }
         } else {
 
-            if (event.altKey && event.keyCode == 79) {
+            if (event.altKey) {
 
-                if (this.isMenuActive) {
+                // Close file dialog
+                if (event.keyCode === this.keys.O && this.isMenuActive) {
+
                     this.isMenuActive = false;
                     this.$openFileWindow.toggle();
 
@@ -187,38 +223,29 @@ class BaseGuiController {
                     this.toggleOverlay();
                     this.isMenuAvailable = true;
                 }
-            }
 
-            else if (event.altKey && event.keyCode == 78) {
+                // Close new file dialog if allowed
+                if (event.keyCode === this.keys.N && this.canToggleEditor) {
 
-                this.isMenuActive = false;
-                this.toggleOverlay();
-                this.$newFileWindow.toggle();
-                this.isMenuAvailable = true;
-                $("#newFileName").val("");
+                    this.isMenuActive = false;
+                    this.toggleOverlay();
+                    this.$newFileWindow.toggle();
+                    this.isMenuAvailable = true;
+                    $("#newFileName").val("");
+                }
             }
         }
-
-
     }
 
     private editorKeyUp = (event) => {
 
-        if (!this.isMenuActive) {
+        if (!this.isMenuActive && this.canToggleEditor) {
 
             if (event.keyCode == 17 && this.lastKeyDown == 17) {
 
                 this.$editorWindow.toggle();
                 this.editor.refresh();
             }
-
-            //if (event.keyCode == 20 && this.lastKeyDown == 20) {
-            //    var msg = document.createElement("div");
-            //    msg.appendChild(document.createTextNode("Hallo"));
-            //    msg.className = "lint-error";
-            //    this.editor.addLineWidget(3, msg, { coverGutter: false, noHScroll: true });
-            //    this.editor.setGutterMarker(3, "Errors", this.makeMarker());
-            //}
 
             if (event.keyCode == 144 && this.lastKeyDown == 144) {
                 if (this.ready) {
@@ -498,6 +525,25 @@ class BaseGuiController {
     }
 
     public editor: any;
+    public keys = {
+
+        ENTER: 13,
+        A: 65,
+        B: 66,
+        C: 67,
+        D: 68,
+        E: 69,
+        F: 70,
+        G: 71,
+        H: 72,
+        I: 73,
+        J: 74,
+        K: 75,
+        L: 76,
+        M: 77,
+        N: 78,
+        O: 79
+    }
 
     private $overlay = $('#overlay');
     private $editorWindow = $('#editorWindow');
@@ -514,6 +560,7 @@ class BaseGuiController {
     private isMenuActive = false;
     private isMenuAvailable = true;
     private isEditorDragging = false;
+    private canToggleEditor = true;
     private synchronizer: Synchronizer;
     private lastKeyDown: number;
     private currentGuid = "";
