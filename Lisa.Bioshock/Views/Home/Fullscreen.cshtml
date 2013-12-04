@@ -26,7 +26,11 @@
         });
         
         //editor.setOption("fullScreen", !editor.getOption("fullScreen"));
-        var guiController = new GuiController();
+        var guiController = new FullScreenGuiController();
         guiController.registerEditor(editor);
     });
 </script>
+
+@Html.Partial("_EditorMenuWindow")
+@Html.Partial("_NewFileWindow")
+@Html.Partial("_OpenFileWindow")

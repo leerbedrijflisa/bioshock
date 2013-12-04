@@ -2,9 +2,6 @@
     ViewBag.Title = "Index";
     Layout = "~/Views/Shared/_Layout.cshtml";   
 }
-<script src="~/Scripts/GuiController.js"></script>
-<script src="~/Scripts/Synchronizer.js"></script>
-
 
 <script type="text/javascript">
     $(function () {
@@ -19,7 +16,7 @@
             gutters: ["Errors", "CodeMirror-linenumbers"]
         });        
 
-        var guiController = new GuiController();
+        var guiController = new BaseGuiController();
         guiController.registerEditor(editor);
 
        
