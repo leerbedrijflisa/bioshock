@@ -1,89 +1,143 @@
-/// <reference path="typings/jquery/jquery.d.ts" />
-class GuiController {
+/// <reference path="../typings/jquery/jquery.d.ts" />
+class BaseGuiController {
 
-    /**
-     * Creates a new GuiController
-     *
-     * @constructor
-     * @param {object} options - Options used for initializing the GuiController.
-     */
-    constructor(editor: any, options = {}) {
+    constructor(editor: any, options = {}, preview = true) {
 
         this.registerEditorHandlers(options);
-        this.registerKeyHandlers();
-        this.registerSynchronizeHandlers();     
-        this.registerEvents();   
-        this.initFilesView();
+        this.registerKeyHandlers();        
+        this.registerSynchronizeHandlers();
+        this.registerEvents();
+        this.initFilesView();   
+
+        if (preview) {
+
+            this.registerPreviewHandlers();
+        }     
     }
 
-    /**
-     * Registers the editor on which the change event should be handled
-     * 
-     * @param {*} editor - The editor (CodeMirror).
-     */
-    private ready = true;
-    private widgets = [];
     public registerEditor = (editor: any) => {
+
         this.editor = editor;
         this.editor.on('change', (codeMirror) => {
 
             $.post("/Test/WriteFile", { guid: this.currentGuid, source: this.editor.getValue() });
             this.synchronizer.update(codeMirror.getValue());
-
         });
+
         this.editor.on('gutterClick', (codeMirror) => {
 
         });
     }
 
-    /**
-     * Registers the drag handle
-     * 
-     * @param {string} handle - The selector to get the drag handle.
-     */
     public registerDragHandle = (handle: string) => {
 
         this.registerEditorHandlers({ handle: handle });
     }
 
-    /**
-     * Registers the element that will be used to identify the editors window
-     * 
-     * @param {string} window - The selector used to get the window.
-     */
     public registerWindow = (window: string) => {
 
         this.registerEditorHandlers({ window: window });
     }
 
-    /**
-     * Registers the element that will be used to identify the preview
-     * 
-     * @param {string} preview - The selector used to get the preview.
-     */
     public registerPreview = (preview: string) => {
 
         this.registerEditorHandlers({ preview: preview });
     }
 
-    /**
-     * Registers the element that will be used to identify the overlay
-     * 
-     * @param {string} overlay - The selector used to get the overlay.
-     */
     public registerOverlay = (overlay: string) => {
 
         this.registerEditorHandlers({ overlay: overlay });
     }
 
-    /**
-     * Registers the element that will be used to identify the (escape) menu
-     * 
-     * @param {string} overlay - The selector used to get the menu.
-     */
     public registerMenu = (menu: string) => {
 
         this.registerEditorHandlers({ menu: menu });
+    }
+
+    public registerEditorHandlers = (options: Object) => {
+
+        if (options.hasOwnProperty('preview')) {
+
+            this.previewSelector = options['preview'];
+            this.$preview = $(this.previewSelector);
+        }
+
+        if (options.hasOwnProperty('overlay')) {
+
+            this.$overlay = $(options['overlay']);
+        }
+
+        if (options.hasOwnProperty('editor')) {
+
+            this.registerEditor(options['editor']);
+        }
+
+        if (options.hasOwnProperty('window')) {
+
+            this.$editorWindow = $(options['window']);
+        }
+
+        if (options.hasOwnProperty('menu')) {
+
+            this.$menuWindow = $(options['menu']);
+        }
+
+        this.$editorWindow.resizable({
+
+            minHeight: 52,
+            minWidth: 200,
+            containment: "#overlay",
+            resize: (event, ui) => {
+
+
+                if (this.isMenuActive) {
+
+                    this.$editorWindow
+                        .width(this.editorWidth)
+                        .height(this.editorHeight);
+                }
+                else {
+
+                    this.editorWidth = ui.size.width;
+                    this.editorHeight = ui.size.height;
+                }
+
+                this.editor.refresh();
+            },
+
+            start: () => {
+
+                this.isEditorDragging = true;
+                this.toggleOverlay();
+            },
+            stop: () => {
+
+                this.isEditorDragging = false;
+                this.toggleOverlay();
+                this.editor.refresh();
+            },
+            handles: 'all'
+        }).draggable({
+
+                iframeFix: true,
+                containment: 'window'
+            });
+
+        if (options.hasOwnProperty('handle')) {
+
+            this.$editorWindow.draggable('option', 'handle', options['handle']);
+        } else {
+
+            this.registerDragHandle('h1');
+        }
+    }
+
+    public registerPreviewHandlers() {
+
+        var iframe: any = this.$preview[0];
+        $(iframe.contentWindow)
+            .keydown(this.editorKeyDown)
+            .keyup(this.editorKeyUp);
     }
 
     private editorKeyDown = (event) => {
@@ -109,7 +163,7 @@ class GuiController {
 
                 $(".filter_query").focus();
                 this.isMenuAvailable = false;
-                
+
             }
             if (event.altKey && event.keyCode == 78) {
 
@@ -147,13 +201,13 @@ class GuiController {
 
 
     }
-    
+
     private editorKeyUp = (event) => {
-        
+
         if (!this.isMenuActive) {
 
             if (event.keyCode == 17 && this.lastKeyDown == 17) {
-                
+
                 this.$editorWindow.toggle();
                 this.editor.refresh();
             }
@@ -186,7 +240,7 @@ class GuiController {
                             this.getErrors(data);
                         }, "json");
                     }
-                    
+
                     this.ready = true;
                 }
             }
@@ -206,7 +260,7 @@ class GuiController {
                     this.isMenuActive = true;
                     this.toggleOverlay();
                 }
-                
+
                 this.$menuWindow.toggle().focus();
             }
         }
@@ -238,8 +292,8 @@ class GuiController {
         $(this.errorCount).text(this.widgets.length);
     }
 
-    private initFilesView() {
-        
+    public initFilesView() {
+
         $('#openFileWindow .filter_query').keyup(this.applyFilter);
         this.createFileList();
         var scrollbar: any = $("#file_list");
@@ -262,7 +316,7 @@ class GuiController {
         var fileList = $('#file_list');
         this.files = [];
         fileList.empty();
-        $.get("/test/getFiles", { }, (data) => {
+        $.get("/test/getFiles", {}, (data) => {
 
             fileList.append('<div class="folder"><span class="folder_name">/root/</span><ul></ul><div class="clear"></div></div>');
             for (var i = data.length - 1; i >= 0; i--) {
@@ -331,7 +385,7 @@ class GuiController {
             li.find("a").click((event) => {
 
                 var id = $(event.currentTarget).attr("data-id");
-                
+
                 $.post("/test/GetFileContent", { guid: id }, (data) => {
 
                     this.currentGuid = id;
@@ -343,22 +397,16 @@ class GuiController {
                 });
                 $("#filename").text($(event.currentTarget).text());
             });
-        } 
+        }
     }
 
-    private registerKeyHandlers() {
+    public registerKeyHandlers() {
 
         $(window).keydown(this.editorKeyDown);
-        $(window).keyup(this.editorKeyUp);
-        
-        var iframe: any = this.$preview[0];
-        $(iframe.contentWindow)
-            .keydown(this.editorKeyDown)
-            .keyup(this.editorKeyUp);
-
+        $(window).keyup(this.editorKeyUp);        
     }
 
-    private registerSynchronizeHandlers() {
+    public registerSynchronizeHandlers() {
 
         this.synchronizer = new Synchronizer(this.previewSelector);
         this.synchronizer.start(() => {
@@ -367,85 +415,7 @@ class GuiController {
         });
     }
 
-    public registerEditorHandlers = (options:Object) => {
-
-        if (options.hasOwnProperty('preview')) {
-
-            this.previewSelector = options['preview'];
-            this.$preview = $(this.previewSelector);
-        }
-
-        if (options.hasOwnProperty('overlay')) {
-
-            this.$overlay = $(options['overlay']);
-        }
-
-        if (options.hasOwnProperty('editor')) {
-
-            this.registerEditor(options['editor']);
-        }
-
-        if (options.hasOwnProperty('window')) {
-                        
-            this.$editorWindow = $(options['window']);
-        }
-
-        if (options.hasOwnProperty('menu')) {
-                        
-            this.$menuWindow = $(options['menu']);
-        }
-
-        this.$editorWindow.resizable({
-
-            minHeight: 52,
-            minWidth: 200,
-            containment: "#overlay",
-            resize: (event, ui) => {
-
-
-                if (this.isMenuActive) {
-
-                    this.$editorWindow
-                        .width(this.editorWidth)
-                        .height(this.editorHeight);
-                }
-                else {
-
-                    this.editorWidth = ui.size.width;
-                    this.editorHeight = ui.size.height;
-                }
-
-                this.editor.refresh();
-            },
-
-            start: () => {
-
-                this.isEditorDragging = true;
-                this.toggleOverlay();
-            },
-            stop: () => {
-
-                this.isEditorDragging = false;
-                this.toggleOverlay();
-                this.editor.refresh();
-            },
-            handles: 'all'
-        }).draggable({
-
-            iframeFix: true,
-            containment: 'window'
-        });
-
-        if (options.hasOwnProperty('handle')) {
-
-            this.$editorWindow.draggable('option', 'handle', options['handle']);
-        } else {
-
-            this.registerDragHandle('h1');
-        } 
-    }
-
-    private registerEvents = () => {
+    public registerEvents = () => {
 
         $(this.addButton).bind("click", this.createFile);
         $("#newFileName").bind("keydown", (event) => {
@@ -462,7 +432,7 @@ class GuiController {
         var fileName = $("#newFileName").val();
         if (fileName.endsWith(".css") || fileName.endsWith(".html")) {
 
-            
+
             $.get("/test/CreateFile", { filename: fileName }, (data) => {
 
                 if (data.Result) {
@@ -476,22 +446,22 @@ class GuiController {
                     this.editor.setValue("");
                     $("#filename").text(fileName);
                 }
-                
+
             });
-            
+
         } else {
             $("#newFileName").tooltip({ content: "Kan geen bestand maken zonder extensie" });
             $("#newFileName").tooltip("option", "show", { effect: "blind", duration: 700 });
             $("#newFileName").tooltip("open");
         }
-        
+
     }
 
     private makeMarker() {
         var errorMarker = document.createElement("div");
         $(errorMarker).click(function (event) {
 
-            
+
         });
         errorMarker.innerHTML = "<img style='cursor: pointer; width:10px; margin-left:15px; margin-bottom:1px;' src='/Content/Images/ErrorIcon.png'/>";
         return errorMarker;
@@ -525,7 +495,9 @@ class GuiController {
             $('#overlay').hide();
         }
 
-    }    
+    }
+
+    public editor: any;
 
     private $overlay = $('#overlay');
     private $editorWindow = $('#editorWindow');
@@ -543,8 +515,9 @@ class GuiController {
     private isMenuAvailable = true;
     private isEditorDragging = false;
     private synchronizer: Synchronizer;
-    private editor = undefined;    
-    private lastKeyDown: number;  
-    private currentGuid = "";     
+    private lastKeyDown: number;
+    private currentGuid = "";
     private files = [];
+    private widgets = [];
+    private ready = true;
 }

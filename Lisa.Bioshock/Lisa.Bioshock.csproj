@@ -430,22 +430,27 @@
     <Content Include="Global.asax" />
     <Content Include="Content\Site.css" />
     <Content Include="Content\CodeMirror\mode\livescript\livescript.ls" />
-    <Content Include="Scripts\GuiController.js.map" />
+    <Content Include="Scripts\bioshock\BaseGuiController.js" />
+    <Content Include="Scripts\bioshock\BaseGuiController.ts" />
+    <Content Include="Scripts\bioshock\FullScreenGuiController.js" />
+    <Content Include="Scripts\bioshock\FullScreenGuiController.ts" />
+    <Content Include="Scripts\bioshock\GuiController.js.map" />
     <Content Include="Scripts\jquery-1.9.1.js" />
     <Content Include="Scripts\jquery-ui-1.10.3.js" />
     <Content Include="Scripts\jquery.nicescroll.min.js" />
     <Content Include="Scripts\Prototypes.js" />
-    <Content Include="Scripts\Synchronizer.js.map" />
+    <Content Include="Scripts\bioshock\Synchronizer.js.map" />
     <Content Include="Views\User\Index.cshtml" />
     <Content Include="Views\Shared\_EditorWindow.cshtml" />
     <Content Include="Views\Shared\_EditorMenuWindow.cshtml" />
     <Content Include="Views\Shared\_NewFileWindow.cshtml" />
     <Content Include="Views\Shared\_OpenFileWindow.cshtml" />
     <Content Include="Views\Home\Fullscreen.cshtml" />
-    <TypeScriptCompile Include="Scripts\GuiController.ts" />
-    <Content Include="Scripts\GuiController.js" />
+    <Content Include="Scripts\bioshock\GuiController.js" />
     <None Include="Properties\PublishProfiles\bioshock - FTP.pubxml" />
     <None Include="Properties\PublishProfiles\bioshock - Web Deploy.pubxml" />
+    <Content Include="Scripts\bioshock\BaseGuiController.js.map" />
+    <Content Include="Scripts\bioshock\FullScreenGuiController.js.map" />
     <None Include="Scripts\jquery.validate-vsdoc.js" />
     <Content Include="Scripts\jquery-ui-1.10.3.custom.js" />
     <Content Include="Scripts\jquery-ui-1.10.3.custom.min.js" />
@@ -460,8 +465,8 @@
     <Content Include="Scripts\knockout-2.2.0.debug.js" />
     <Content Include="Scripts\knockout-2.2.0.js" />
     <Content Include="Scripts\modernizr-2.6.2.js" />
-    <TypeScriptCompile Include="Scripts\Synchronizer.ts" />
-    <Content Include="Scripts\Synchronizer.js" />
+    <TypeScriptCompile Include="Scripts\bioshock\Synchronizer.ts" />
+    <Content Include="Scripts\bioshock\Synchronizer.js" />
     <Content Include="Scripts\typings\jqueryui\jqueryui.d.ts" />
     <Content Include="Scripts\typings\jquery\jquery.d.ts" />
     <Content Include="Scripts\typings\signalr\signalr.d.ts" />
@@ -501,12 +506,11 @@
     <VisualStudio>
       <FlavorProperties GUID="{349c5851-65df-11da-9384-00065b846f21}">
         <WebProjectProperties>
-          <UseIIS>False</UseIIS>
+          <UseIIS>True</UseIIS>
           <AutoAssignPort>True</AutoAssignPort>
           <DevelopmentServerPort>18836</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
-          <IISUrl>
-          </IISUrl>
+          <IISUrl>http://localhost:49246/</IISUrl>
           <NTLMAuthentication>False</NTLMAuthentication>
           <UseCustomServer>False</UseCustomServer>
           <CustomServerUrl>

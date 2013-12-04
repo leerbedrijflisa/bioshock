@@ -1,5 +1,5 @@
-/// <reference path="typings/jquery/jquery.d.ts" />
-/// <reference path="typings/signalr/signalr.d.ts" />
+/// <reference path="../typings/jquery/jquery.d.ts" />
+/// <reference path="../typings/signalr/signalr.d.ts" />
 interface SignalR {
     synchronizeHub: HubProxy;
 }
