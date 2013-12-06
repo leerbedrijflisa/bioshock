@@ -1,101 +1,127 @@
-/// <reference path="typings/jquery/jquery.d.ts" />
-var GuiController = (function () {
-    /**
-    * Creates a new GuiController
-    *
-    * @constructor
-    * @param {object} options - Options used for initializing the GuiController.
-    */
-    function GuiController(editor, options) {
+/// <reference path="../typings/jquery/jquery.d.ts" />
+var BaseGuiController = (function () {
+    function BaseGuiController(editor, options, preview) {
         if (typeof options === "undefined") { options = {}; }
+        if (typeof preview === "undefined") { preview = true; }
         var _this = this;
-        /**
-        * Registers the editor on which the change event should be handled
-        *
-        * @param {*} editor - The editor (CodeMirror).
-        */
-        this.ready = true;
-        this.widgets = [];
         this.registerEditor = function (editor) {
             _this.editor = editor;
             _this.editor.on('change', function (codeMirror) {
                 $.post("/Test/WriteFile", { guid: _this.currentGuid, source: _this.editor.getValue() });
                 _this.synchronizer.update(codeMirror.getValue());
             });
+
             _this.editor.on('gutterClick', function (codeMirror) {
             });
         };
-        /**
-        * Registers the drag handle
-        *
-        * @param {string} handle - The selector to get the drag handle.
-        */
         this.registerDragHandle = function (handle) {
             _this.registerEditorHandlers({ handle: handle });
         };
-        /**
-        * Registers the element that will be used to identify the editors window
-        *
-        * @param {string} window - The selector used to get the window.
-        */
         this.registerWindow = function (window) {
             _this.registerEditorHandlers({ window: window });
         };
-        /**
-        * Registers the element that will be used to identify the preview
-        *
-        * @param {string} preview - The selector used to get the preview.
-        */
         this.registerPreview = function (preview) {
             _this.registerEditorHandlers({ preview: preview });
         };
-        /**
-        * Registers the element that will be used to identify the overlay
-        *
-        * @param {string} overlay - The selector used to get the overlay.
-        */
         this.registerOverlay = function (overlay) {
             _this.registerEditorHandlers({ overlay: overlay });
         };
-        /**
-        * Registers the element that will be used to identify the (escape) menu
-        *
-        * @param {string} overlay - The selector used to get the menu.
-        */
         this.registerMenu = function (menu) {
             _this.registerEditorHandlers({ menu: menu });
+        };
+        this.registerEditorHandlers = function (options) {
+            if (options.hasOwnProperty('preview')) {
+                _this.previewSelector = options['preview'];
+                _this.$preview = $(_this.previewSelector);
+            }
+
+            if (options.hasOwnProperty('overlay')) {
+                _this.$overlay = $(options['overlay']);
+            }
+
+            if (options.hasOwnProperty('editor')) {
+                _this.registerEditor(options['editor']);
+            }
+
+            if (options.hasOwnProperty('window')) {
+                _this.$editorWindow = $(options['window']);
+            }
+
+            if (options.hasOwnProperty('menu')) {
+                _this.$menuWindow = $(options['menu']);
+            }
+
+            _this.$editorWindow.resizable({
+                minHeight: 52,
+                minWidth: 200,
+                containment: "#overlay",
+                resize: function (event, ui) {
+                    if (_this.isMenuActive) {
+                        _this.$editorWindow.width(_this.editorWidth).height(_this.editorHeight);
+                    } else {
+                        _this.editorWidth = ui.size.width;
+                        _this.editorHeight = ui.size.height;
+                    }
+
+                    _this.editor.refresh();
+                },
+                start: function () {
+                    _this.isEditorDragging = true;
+                    _this.toggleOverlay();
+                },
+                stop: function () {
+                    _this.isEditorDragging = false;
+                    _this.toggleOverlay();
+                    _this.editor.refresh();
+                },
+                handles: 'all'
+            }).draggable({
+                iframeFix: true,
+                containment: 'window'
+            });
+
+            if (options.hasOwnProperty('handle')) {
+                _this.$editorWindow.draggable('option', 'handle', options['handle']);
+            } else {
+                _this.registerDragHandle('h1');
+            }
         };
         this.editorKeyDown = function (event) {
             _this.lastKeyDown = event.keyCode;
 
-            if (!_this.isMenuActive) {
-                if (event.ctrlKey && event.keyCode == 13) {
-                    var lineNumber = _this.editor.getCursor().line;
-                    var lineText = _this.editor.getLineHandle(lineNumber).text;
-
-                    _this.editor.setLine(lineNumber, "\n" + lineText);
-                    _this.editor.setCursor(lineNumber);
+            if (_this.canExecuteAction()) {
+                if (event.ctrlKey && event.keyCode === _this.keys.ENTER) {
+                    _this.insertWhitespace();
                 }
 
-                if (event.altKey && event.keyCode == 79) {
-                    _this.createFileList();
-                    _this.isMenuActive = true;
-                    _this.toggleOverlay();
-                    _this.$openFileWindow.toggle();
+                if (event.altKey) {
+                    if (event.keyCode === _this.keys.O) {
+                        _this.createFileList();
+                        _this.isMenuActive = true;
+                        _this.toggleOverlay();
+                        _this.$openFileWindow.toggle();
 
-                    $(".filter_query").focus();
-                    _this.isMenuAvailable = false;
-                }
-                if (event.altKey && event.keyCode == 78) {
-                    _this.isMenuActive = true;
-                    _this.toggleOverlay();
-                    _this.$newFileWindow.toggle();
-                    $("#newFileName").focus();
-                    _this.isMenuAvailable = false;
+                        $(".filter_query").focus();
+                        _this.isMenuAvailable = false;
+                    }
+
+                    if (event.keyCode === _this.keys.N) {
+                        _this.isMenuActive = true;
+                        _this.toggleOverlay();
+                        _this.$newFileWindow.toggle();
+                        $("newFileName").focus();
+                        _this.isMenuAvailable = false;
+                    }
+
+                    if (event.keyCode === _this.keys.F) {
+                        _this.canToggleEditor = false;
+                        _this.$editorWindow.toggle();
+                        window.open("/home/fullscreen", "_blank");
+                    }
                 }
             } else {
-                if (event.altKey && event.keyCode == 79) {
-                    if (_this.isMenuActive) {
+                if (event.altKey) {
+                    if (event.keyCode === _this.keys.O && _this.isMenuActive) {
                         _this.isMenuActive = false;
                         _this.$openFileWindow.toggle();
 
@@ -105,17 +131,19 @@ var GuiController = (function () {
                         _this.toggleOverlay();
                         _this.isMenuAvailable = true;
                     }
-                } else if (event.altKey && event.keyCode == 78) {
-                    _this.isMenuActive = false;
-                    _this.toggleOverlay();
-                    _this.$newFileWindow.toggle();
-                    _this.isMenuAvailable = true;
-                    $("#newFileName").val("");
+
+                    if (event.keyCode === _this.keys.N && _this.canToggleEditor) {
+                        _this.isMenuActive = false;
+                        _this.toggleOverlay();
+                        _this.$newFileWindow.toggle();
+                        _this.isMenuAvailable = true;
+                        $("#newFileName").val("");
+                    }
                 }
             }
         };
         this.editorKeyUp = function (event) {
-            if (!_this.isMenuActive) {
+            if (!_this.isMenuActive && _this.canToggleEditor) {
                 if (event.keyCode == 17 && _this.lastKeyDown == 17) {
                     _this.$editorWindow.toggle();
                     _this.editor.refresh();
@@ -257,63 +285,6 @@ var GuiController = (function () {
                 });
             }
         };
-        this.registerEditorHandlers = function (options) {
-            if (options.hasOwnProperty('preview')) {
-                _this.previewSelector = options['preview'];
-                _this.$preview = $(_this.previewSelector);
-            }
-
-            if (options.hasOwnProperty('overlay')) {
-                _this.$overlay = $(options['overlay']);
-            }
-
-            if (options.hasOwnProperty('editor')) {
-                _this.registerEditor(options['editor']);
-            }
-
-            if (options.hasOwnProperty('window')) {
-                _this.$editorWindow = $(options['window']);
-            }
-
-            if (options.hasOwnProperty('menu')) {
-                _this.$menuWindow = $(options['menu']);
-            }
-
-            _this.$editorWindow.resizable({
-                minHeight: 52,
-                minWidth: 200,
-                containment: "#overlay",
-                resize: function (event, ui) {
-                    if (_this.isMenuActive) {
-                        _this.$editorWindow.width(_this.editorWidth).height(_this.editorHeight);
-                    } else {
-                        _this.editorWidth = ui.size.width;
-                        _this.editorHeight = ui.size.height;
-                    }
-
-                    _this.editor.refresh();
-                },
-                start: function () {
-                    _this.isEditorDragging = true;
-                    _this.toggleOverlay();
-                },
-                stop: function () {
-                    _this.isEditorDragging = false;
-                    _this.toggleOverlay();
-                    _this.editor.refresh();
-                },
-                handles: 'all'
-            }).draggable({
-                iframeFix: true,
-                containment: 'window'
-            });
-
-            if (options.hasOwnProperty('handle')) {
-                _this.$editorWindow.draggable('option', 'handle', options['handle']);
-            } else {
-                _this.registerDragHandle('h1');
-            }
-        };
         this.registerEvents = function () {
             $(_this.addButton).bind("click", _this.createFile);
             $("#newFileName").bind("keydown", function (event) {
@@ -344,6 +315,24 @@ var GuiController = (function () {
                 $("#newFileName").tooltip("open");
             }
         };
+        this.keys = {
+            ENTER: 13,
+            A: 65,
+            B: 66,
+            C: 67,
+            D: 68,
+            E: 69,
+            F: 70,
+            G: 71,
+            H: 72,
+            I: 73,
+            J: 74,
+            K: 75,
+            L: 76,
+            M: 77,
+            N: 78,
+            O: 79
+        };
         this.$overlay = $('#overlay');
         this.$editorWindow = $('#editorWindow');
         this.$preview = $('#preview');
@@ -356,16 +345,44 @@ var GuiController = (function () {
         this.isMenuActive = false;
         this.isMenuAvailable = true;
         this.isEditorDragging = false;
-        this.editor = undefined;
+        this.canToggleEditor = true;
         this.currentGuid = "";
         this.files = [];
+        this.widgets = [];
+        this.ready = true;
         this.registerEditorHandlers(options);
         this.registerKeyHandlers();
         this.registerSynchronizeHandlers();
         this.registerEvents();
         this.initFilesView();
+
+        if (preview) {
+            this.registerPreviewHandlers();
+        }
     }
-    GuiController.prototype.initFilesView = function () {
+    BaseGuiController.prototype.registerPreviewHandlers = function () {
+        var iframe = this.$preview[0];
+        $(iframe.contentWindow).keydown(this.editorKeyDown).keyup(this.editorKeyUp);
+    };
+
+    BaseGuiController.prototype.insertWhitespace = function () {
+        var lineNumber = this.editor.getCursor().line;
+        var lineText = this.editor.getLineHandle(lineNumber).text;
+
+        this.editor.setLine(lineNumber, "\n" + lineText);
+        this.editor.setCursor(lineNumber);
+    };
+    BaseGuiController.prototype.updateMenuState = function () {
+        this.isMenuActive = true;
+        this.toggleOverlay();
+        this.isMenuAvailable = false;
+    };
+
+    BaseGuiController.prototype.canExecuteAction = function () {
+        return (!this.isMenuActive && this.canToggleEditor);
+    };
+
+    BaseGuiController.prototype.initFilesView = function () {
         $('#openFileWindow .filter_query').keyup(this.applyFilter);
         this.createFileList();
         var scrollbar = $("#file_list");
@@ -378,15 +395,12 @@ var GuiController = (function () {
         });
     };
 
-    GuiController.prototype.registerKeyHandlers = function () {
+    BaseGuiController.prototype.registerKeyHandlers = function () {
         $(window).keydown(this.editorKeyDown);
         $(window).keyup(this.editorKeyUp);
-
-        var iframe = this.$preview[0];
-        $(iframe.contentWindow).keydown(this.editorKeyDown).keyup(this.editorKeyUp);
     };
 
-    GuiController.prototype.registerSynchronizeHandlers = function () {
+    BaseGuiController.prototype.registerSynchronizeHandlers = function () {
         var _this = this;
         this.synchronizer = new Synchronizer(this.previewSelector);
         this.synchronizer.start(function () {
@@ -394,7 +408,7 @@ var GuiController = (function () {
         });
     };
 
-    GuiController.prototype.makeMarker = function () {
+    BaseGuiController.prototype.makeMarker = function () {
         var errorMarker = document.createElement("div");
         $(errorMarker).click(function (event) {
         });
@@ -402,7 +416,7 @@ var GuiController = (function () {
         return errorMarker;
     };
 
-    GuiController.prototype.toggleOverlay = function () {
+    BaseGuiController.prototype.toggleOverlay = function () {
         if (this.isMenuActive) {
             this.$overlay.css({
                 'background-color': 'black',
@@ -423,6 +437,6 @@ var GuiController = (function () {
             $('#overlay').hide();
         }
     };
-    return GuiController;
+    return BaseGuiController;
 })();
-//# sourceMappingURL=GuiController.js.map
+//# sourceMappingURL=BaseGuiController.js.map

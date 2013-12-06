@@ -2,9 +2,6 @@
     ViewBag.Title = "Index";
     Layout = "~/Views/Shared/_Layout.cshtml";   
 }
-<script src="~/Scripts/GuiController.js"></script>
-<script src="~/Scripts/Synchronizer.js"></script>
-
 
 <script type="text/javascript">
     $(function () {
@@ -16,10 +13,13 @@
             smartIndent: false,
             tabSize: 2,
             theme: "default",
-            gutters: ["Errors", "CodeMirror-linenumbers"]
+            gutters: ["Errors", "CodeMirror-linenumbers"],
+            extraKeys: {
+                "Shift-Tab": "indentLess"
+            }
         });        
 
-        var guiController = new GuiController();
+        var guiController = new BaseGuiController();
         guiController.registerEditor(editor);
 
        

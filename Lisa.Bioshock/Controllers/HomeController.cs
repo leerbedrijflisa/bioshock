@@ -23,5 +23,11 @@ namespace Lisa.Bioshock.Controllers
             return Content("<h1>Authorized!</h1>");
         }
 
+        public ActionResult Fullscreen()
+        {
+
+            return View();
+        }
+
     }
 }
