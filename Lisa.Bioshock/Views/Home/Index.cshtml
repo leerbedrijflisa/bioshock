@@ -13,7 +13,10 @@
             smartIndent: false,
             tabSize: 2,
             theme: "default",
-            gutters: ["Errors", "CodeMirror-linenumbers"]
+            gutters: ["Errors", "CodeMirror-linenumbers"],
+            extraKeys: {
+                "Shift-Tab": "indentLess"
+            }
         });        
 
         var guiController = new BaseGuiController();
