@@ -1,7 +1,10 @@
-﻿using System;
+﻿using Lisa.Bioshock.Data;
+using Lisa.Bioshock.Data.Tables;
+using System;
 using System.Collections.Generic;
 using System.IdentityModel.Services;
 using System.Linq;
+using System.Security.Claims;
 using System.Web;
 using System.Web.Mvc;
 
@@ -17,6 +20,37 @@ namespace Lisa.Bioshock.Controllers
         [Authorize]
         public ActionResult Login()
         {
+            var db = new BioshockContext();            
+
+            var identity = (ClaimsIdentity)User.Identity;
+            var customerName = identity
+                .Claims
+                .FirstOrDefault(cl => cl.Type == "http://lisa/customer/location");
+
+            var customerUserId = identity
+                .Claims
+                .FirstOrDefault(cl => cl.Type == "http://lisa/customer/user/id");
+
+            var customers = db.Customers;
+            var currentCustomer = customers.FirstOrDefault(cust => cust.Name == customerName.Value);
+
+            if (currentCustomer.Users.Count(u => u.CustomerUserID == customerUserId) < 0)
+            {
+                var user = new User()
+                {
+                    CustomerUserID = customerUserId
+                };
+
+                var customer = new Customer()
+                {
+                    Name = customerName.Value
+                };
+
+                customer.Users.Add(user);
+                db.Customers.Add(customer);
+                db.SaveChanges();
+            }
+
             return RedirectToAction("Index");
         }
                 
