@@ -34,20 +34,28 @@ namespace Lisa.Bioshock.Controllers
             var customers = db.Customers;
             var currentCustomer = customers.FirstOrDefault(cust => cust.Name == customerName.Value);
 
-            if (currentCustomer.Users.Count(u => u.CustomerUserID == customerUserId) < 0)
+            if (currentCustomer == null)
             {
-                var user = new User()
-                {
-                    CustomerUserID = customerUserId
-                };
-
-                var customer = new Customer()
+                var cust = new Customer()
                 {
                     Name = customerName.Value
                 };
 
-                customer.Users.Add(user);
-                db.Customers.Add(customer);
+                db.Customers.Add(cust);
+                db.SaveChanges();
+            }
+
+            currentCustomer = customers.FirstOrDefault(cust => cust.Name == customerName.Value);
+
+            var value = customerUserId.Value;
+            if (currentCustomer.Users.Count(u => u.CustomerUserID == value) == 0)
+            {
+                var user = new User()
+                {
+                    CustomerUserID = customerUserId.Value
+                };
+
+                currentCustomer.Users.Add(user);
                 db.SaveChanges();
             }
 
