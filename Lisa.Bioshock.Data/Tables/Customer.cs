@@ -55,5 +55,10 @@ namespace Lisa.Bioshock.Data.Tables
             get;
             set;
         }
+
+        public Customer()
+        {
+            RegisteredApplications = new List<string>();
+        }
     }
 }

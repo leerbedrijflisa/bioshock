@@ -8,7 +8,7 @@
             set;
         }
 
-        public object CustomerUserID
+        public string CustomerUserID
         {
             get;
             set;
