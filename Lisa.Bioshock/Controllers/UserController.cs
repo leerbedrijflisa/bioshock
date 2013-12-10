@@ -20,43 +20,45 @@ namespace Lisa.Bioshock.Controllers
         [Authorize]
         public ActionResult Login()
         {
-            var db = new BioshockContext();            
-
-            var identity = (ClaimsIdentity)User.Identity;
-            var customerName = identity
-                .Claims
-                .FirstOrDefault(cl => cl.Type == "http://lisa/customer/location");
-
-            var customerUserId = identity
-                .Claims
-                .FirstOrDefault(cl => cl.Type == "http://lisa/customer/user/id");
-
-            var customers = db.Customers;
-            var currentCustomer = customers.FirstOrDefault(cust => cust.Name == customerName.Value);
-
-            if (currentCustomer == null)
+            using (var db = new BioshockContext())
             {
-                var cust = new Customer()
+
+                var identity = (ClaimsIdentity)User.Identity;
+                var customerName = identity
+                    .Claims
+                    .FirstOrDefault(cl => cl.Type == LisaClaimTypes.CustomerLocation);
+
+                var customerUserId = identity
+                    .Claims
+                    .FirstOrDefault(cl => cl.Type == LisaClaimTypes.CustomerUserID);
+
+                var customers = db.Customers;
+                var currentCustomer = customers.FirstOrDefault(cust => cust.Name == customerName.Value);
+
+                if (currentCustomer == null)
                 {
-                    Name = customerName.Value
-                };
+                    var cust = new Customer()
+                    {
+                        Name = customerName.Value
+                    };
 
-                db.Customers.Add(cust);
-                db.SaveChanges();
-            }
+                    db.Customers.Add(cust);
+                    db.SaveChanges();
+                }
 
-            currentCustomer = customers.FirstOrDefault(cust => cust.Name == customerName.Value);
+                currentCustomer = customers.FirstOrDefault(cust => cust.Name == customerName.Value);
 
-            var value = customerUserId.Value;
-            if (currentCustomer.Users.Count(u => u.CustomerUserID == value) == 0)
-            {
-                var user = new User()
+                var value = customerUserId.Value;
+                if (currentCustomer.Users.Count(u => u.CustomerUserID == value) == 0)
                 {
-                    CustomerUserID = customerUserId.Value
-                };
+                    var user = new User()
+                    {
+                        CustomerUserID = customerUserId.Value
+                    };
 
-                currentCustomer.Users.Add(user);
-                db.SaveChanges();
+                    currentCustomer.Users.Add(user);
+                    db.SaveChanges();
+                }
             }
 
             return RedirectToAction("Index");
