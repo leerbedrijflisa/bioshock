@@ -26,28 +26,22 @@ namespace Lisa.Bioshock.Controllers
                 var identity = (ClaimsIdentity)User.Identity;
                 var customerName = identity
                     .Claims
-                    .FirstOrDefault(cl => cl.Type == LisaClaimTypes.CustomerLocation);
+                    .FirstOrDefault(cl => cl.Type == LisaClaimTypes.CustomerName);
 
                 var customerUserId = identity
                     .Claims
                     .FirstOrDefault(cl => cl.Type == LisaClaimTypes.CustomerUserID);
 
                 var customers = db.Customers;
-                var currentCustomer = customers.FirstOrDefault(cust => cust.Name == customerName.Value);
+                var currentCustomer = customers
+                    .FirstOrDefault(cust => cust.Name == customerName.Value);
 
                 if (currentCustomer == null)
                 {
-                    var cust = new Customer()
-                    {
-                        Name = customerName.Value
-                    };
-
-                    db.Customers.Add(cust);
-                    db.SaveChanges();
+                    Response.StatusCode = 401;
+                    return View("Error");
                 }
-
-                currentCustomer = customers.FirstOrDefault(cust => cust.Name == customerName.Value);
-
+                
                 var value = customerUserId.Value;
                 if (currentCustomer.Users.Count(u => u.CustomerUserID == value) == 0)
                 {
