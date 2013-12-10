@@ -4,15 +4,15 @@ class BaseGuiController {
     constructor(editor: any, options = {}, preview = true) {
 
         this.registerEditorHandlers(options);
-        this.registerKeyHandlers();        
+        this.registerKeyHandlers();
         this.registerSynchronizeHandlers();
         this.registerEvents();
-        this.initFilesView();   
+        this.initFilesView();
 
         if (preview) {
 
             this.registerPreviewHandlers();
-        }     
+        }
     }
 
     public registerEditor = (editor: any) => {
@@ -177,22 +177,37 @@ class BaseGuiController {
                 if (event.keyCode === this.keys.O) {
 
                     this.createFileList();
-                    this.isMenuActive = true;
-                    this.toggleOverlay();
+                    this.updateMenuState();
                     this.$openFileWindow.toggle();
 
                     $(".filter_query").focus();
-                    this.isMenuAvailable = false;
                 }
 
                 // New file dialog
                 if (event.keyCode === this.keys.N) {
 
-                    this.isMenuActive = true;
-                    this.toggleOverlay();
+                    this.updateMenuState();
                     this.$newFileWindow.toggle();
                     $("newFileName").focus();
-                    this.isMenuAvailable = false;
+                }
+
+                // Opens file switcher
+                if (event.keyCode === this.keys.C) {
+
+                    var filename = $("#filename").text();
+                    var id = "";
+                    if (filename.indexOf(".html") > -1)
+                        id = this.lastCSS;
+                    else if (filename.indexOf(".css") > -1)
+                        id = this.lastHTML;
+                    $.post("/test/GetFileContent", { guid: id }, (data) => {
+
+                        this.currentGuid = id;
+                        this.editor.setValue(data.content);
+                        $("#filename").text(data.name);
+                    });
+                    
+                    //this.GetFilesByContentType();
                 }
 
                 // Open fullscreen
@@ -203,6 +218,7 @@ class BaseGuiController {
                     window.open("/home/fullscreen", "_blank");
                 }
             }
+            
         } else {
 
             if (event.altKey) {
@@ -286,6 +302,38 @@ class BaseGuiController {
 
                 this.$menuWindow.toggle().focus();
             }
+        }
+    }
+
+    private GetFilesByContentType = () => {
+
+        var contentType = "";
+        var filename = $("#filename").text();
+        if (filename.indexOf(".html") > -1)
+            contentType = "text/css";
+        else if (filename.indexOf(".css") > -1)
+            contentType = "text/html";
+        $.get("/Test/GetFiles", { contentType: contentType }, (data) => {
+            var id = data[0].ID;
+            $.post("/test/GetFileContent", { guid: id }, (data) => {
+
+                this.currentGuid = id;
+                this.editor.setValue(data.content);
+            });
+            $("#filename").text(data[0].Name);
+        });
+    }
+
+    private SetLastFile = () => {
+
+        var filename = $("#filename").text();
+        if (filename.indexOf(".html") > -1) {
+            this.lastHTML = this.currentGuid;
+            console.log("lastHTML is now: " + this.currentGuid);
+        }
+        else if (filename.indexOf(".css") > -1) {
+            this.lastCSS = this.currentGuid;
+            console.log("lastCSS is now: " + this.currentGuid);
         }
     }
 
@@ -405,6 +453,7 @@ class BaseGuiController {
                     li.prepend('<li><a href="javascript:void(0);" data-id="' + file.ID + '"><img src="/Content/Images/filter_item_logo.png" alt=""><span>' + file.Name + '</span></a></li>');
                 }
             }
+
             li.find("a").click((event) => {
 
                 var id = $(event.currentTarget).attr("data-id");
@@ -417,16 +466,20 @@ class BaseGuiController {
                     this.toggleOverlay();
                     this.$openFileWindow.toggle();
                     this.isMenuAvailable = true;
+                    $("#filename").text($(event.currentTarget).text());
+                    this.SetLastFile();
                 });
-                $("#filename").text($(event.currentTarget).text());
+                
+                
             });
         }
     }
 
+
     public registerKeyHandlers() {
 
         $(window).keydown(this.editorKeyDown);
-        $(window).keyup(this.editorKeyUp);        
+        $(window).keyup(this.editorKeyUp);
     }
 
     public registerSynchronizeHandlers() {
@@ -559,6 +612,9 @@ class BaseGuiController {
     private canToggleEditor = true;
     private synchronizer: Synchronizer;
     private lastKeyDown: number;
+    //private isAltPressed = false;
+    private lastHTML = "";
+    private lastCSS = "";
     private currentGuid = "";
     private files = [];
     private widgets = [];

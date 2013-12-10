@@ -97,20 +97,31 @@ var BaseGuiController = (function () {
                 if (event.altKey) {
                     if (event.keyCode === _this.keys.O) {
                         _this.createFileList();
-                        _this.isMenuActive = true;
-                        _this.toggleOverlay();
+                        _this.updateMenuState();
                         _this.$openFileWindow.toggle();
 
                         $(".filter_query").focus();
-                        _this.isMenuAvailable = false;
                     }
 
                     if (event.keyCode === _this.keys.N) {
-                        _this.isMenuActive = true;
-                        _this.toggleOverlay();
+                        _this.updateMenuState();
                         _this.$newFileWindow.toggle();
                         $("newFileName").focus();
-                        _this.isMenuAvailable = false;
+                    }
+
+                    if (event.keyCode === _this.keys.C) {
+                        var filename = $("#filename").text();
+                        var id = "";
+                        if (filename.indexOf(".html") > -1)
+                            id = _this.lastCSS;
+else if (filename.indexOf(".css") > -1)
+                            id = _this.lastHTML;
+                        $.post("/test/GetFileContent", { guid: id }, function (data) {
+                            _this.currentGuid = id;
+                            _this.editor.setValue(data.content);
+                            $("#filename").text(data.name);
+                        });
+                        //this.GetFilesByContentType();
                     }
 
                     if (event.keyCode === _this.keys.F) {
@@ -186,6 +197,32 @@ var BaseGuiController = (function () {
 
                     _this.$menuWindow.toggle().focus();
                 }
+            }
+        };
+        this.GetFilesByContentType = function () {
+            var contentType = "";
+            var filename = $("#filename").text();
+            if (filename.indexOf(".html") > -1)
+                contentType = "text/css";
+else if (filename.indexOf(".css") > -1)
+                contentType = "text/html";
+            $.get("/Test/GetFiles", { contentType: contentType }, function (data) {
+                var id = data[0].ID;
+                $.post("/test/GetFileContent", { guid: id }, function (data) {
+                    _this.currentGuid = id;
+                    _this.editor.setValue(data.content);
+                });
+                $("#filename").text(data[0].Name);
+            });
+        };
+        this.SetLastFile = function () {
+            var filename = $("#filename").text();
+            if (filename.indexOf(".html") > -1) {
+                _this.lastHTML = _this.currentGuid;
+                console.log("lastHTML is now: " + _this.currentGuid);
+            } else if (filename.indexOf(".css") > -1) {
+                _this.lastCSS = _this.currentGuid;
+                console.log("lastCSS is now: " + _this.currentGuid);
             }
         };
         this.getErrors = function (data) {
@@ -270,6 +307,7 @@ var BaseGuiController = (function () {
                         li.prepend('<li><a href="javascript:void(0);" data-id="' + file.ID + '"><img src="/Content/Images/filter_item_logo.png" alt=""><span>' + file.Name + '</span></a></li>');
                     }
                 }
+
                 li.find("a").click(function (event) {
                     var id = $(event.currentTarget).attr("data-id");
 
@@ -280,8 +318,9 @@ var BaseGuiController = (function () {
                         _this.toggleOverlay();
                         _this.$openFileWindow.toggle();
                         _this.isMenuAvailable = true;
+                        $("#filename").text($(event.currentTarget).text());
+                        _this.SetLastFile();
                     });
-                    $("#filename").text($(event.currentTarget).text());
                 });
             }
         };
@@ -346,6 +385,9 @@ var BaseGuiController = (function () {
         this.isMenuAvailable = true;
         this.isEditorDragging = false;
         this.canToggleEditor = true;
+        //private isAltPressed = false;
+        this.lastHTML = "";
+        this.lastCSS = "";
         this.currentGuid = "";
         this.files = [];
         this.widgets = [];

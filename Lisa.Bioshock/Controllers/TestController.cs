@@ -50,7 +50,7 @@ namespace Lisa.Bioshock.Controllers
 
         [ValidateInput(false)]
         [HttpGet]
-        public JsonResult GetFiles()
+        public JsonResult GetFiles(string contentType = null)
         {
             LocalStorageProvider provider = new LocalStorageProvider("/Storage");
             FileSystem fileSystem = new FileSystem(provider);
@@ -63,8 +63,28 @@ namespace Lisa.Bioshock.Controllers
             //theme.Files.Add("custom.css", "text/css");
             //theme.Files.Add("default.css", "text/css");
             //theme.Files.Add("admin.css", "text/css");
-            
+
+            if (contentType != null)
+            {
+                return new JsonItemResult(GetFilesByContentType(contentType, fileSystem.Root));
+            }
+
             return new JsonItemResult(fileSystem.Root.Items);
+        }
+
+        private List<Storage.File> GetFilesByContentType(string contentType, Folder parentFolder)
+        {
+            List<Storage.File> files = new List<Storage.File>();
+
+            foreach (Folder folder in parentFolder.Folders)
+            {
+                files.AddRange(GetFilesByContentType(contentType, folder));
+            }
+
+            files.AddRange(parentFolder.Files.Where(f => f.ContentType == contentType));
+
+            return files;
+
         }
 
         [HttpPost]
@@ -76,6 +96,7 @@ namespace Lisa.Bioshock.Controllers
 
             var file = fileSystem.Root.Files.Where(f => f.ID == guid).FirstOrDefault();
             var content = string.Empty;
+            var filename = file.Name;
             using (var contents = new StreamReader(file.InputStream))
             {
                 content = contents.ReadToEnd();
@@ -83,7 +104,7 @@ namespace Lisa.Bioshock.Controllers
         
             return Json(new
             {
-
+                name = filename,
                 content = content
             }, JsonRequestBehavior.AllowGet);
         }

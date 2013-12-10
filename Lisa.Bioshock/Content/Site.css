@@ -345,3 +345,42 @@ textarea {
 #file_list .folder ul li {float:left;}
 #file_list .folder ul li a {display:block; width:150px; height:120px; font-size:14px;}
 #file_list .folder ul li {margin-right:25px;}
+
+#switcher{
+
+    width: 100%;
+    height: 300px;
+    top: 25%;
+    display: none;
+    background-color: black;
+    z-index: 999;
+    position:absolute;
+    vertical-align: middle;
+}
+
+.switcher{
+
+    text-align: left;
+}
+
+.switcher li{
+    
+    display: inline-block;
+    padding-left: 2.5px;
+    padding-top: 55px;
+    padding-right: 2.5px;
+}
+
+.switcher li img{
+
+    height: 150px;
+    
+    width: 240px;
+}
+
+.switcher li span{
+
+    color: white;
+    text-align: left;
+    display: block;
+}
