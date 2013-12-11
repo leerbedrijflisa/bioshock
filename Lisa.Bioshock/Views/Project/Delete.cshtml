@@ -1,0 +1,17 @@
+﻿@model Project
+@{
+    ViewBag.Title = "Delete project: "+ Model.Name;
+}
+
+<h2>Delete project: @Model.Name</h2>
+
+@using (Html.BeginForm())
+{
+    <p>
+        Weet je zeker dat je het project '@Model.Name' wilt verwijderen?
+    </p>
+    <p>
+        <input type="submit" value="Ja" />
+        <a class="btn" href="@Url.Action("Index")">Nee</a>
+    </p>
+}

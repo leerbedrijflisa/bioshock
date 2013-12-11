@@ -168,6 +168,8 @@
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
+    <Compile Include="Controllers\BaseController.cs" />
+    <Compile Include="Controllers\ProjectController.cs" />
     <Compile Include="LisaClaimTypes.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\TestController.cs" />
@@ -176,6 +178,7 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Models\ProjectForm.cs" />
     <Compile Include="Models\SynchronizeHub.cs" />
     <Compile Include="Modules\ClaimsTransformationModule.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -470,6 +473,11 @@
     <Content Include="Scripts\knockout-2.2.0.debug.js" />
     <Content Include="Scripts\knockout-2.2.0.js" />
     <Content Include="Scripts\modernizr-2.6.2.js" />
+    <Content Include="Views\Project\Index.cshtml" />
+    <Content Include="Views\Project\Create.cshtml" />
+    <Content Include="Views\Project\Details.cshtml" />
+    <Content Include="Views\Project\Delete.cshtml" />
+    <Content Include="Views\Project\_TreeView.cshtml" />
     <TypeScriptCompile Include="Scripts\bioshock\Synchronizer.ts" />
     <Content Include="Scripts\bioshock\Synchronizer.js" />
     <Content Include="Scripts\typings\jqueryui\jqueryui.d.ts" />

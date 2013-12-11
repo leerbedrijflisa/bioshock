@@ -4,6 +4,16 @@ namespace Lisa.Bioshock.Data
 {
     public class BioshockContext : DbContext
     {
+        public BioshockContext()
+            : base()
+        {
+        }
+
+        public BioshockContext(string connectionString)
+            : base(connectionString)
+        {
+        }
+
         public DbSet<User> Users
         {
             get;
@@ -16,14 +26,10 @@ namespace Lisa.Bioshock.Data
             set;
         }
 
-        public BioshockContext()
-            : base()
+        public DbSet<Project> Projects
         {
-        }
-
-        public BioshockContext(string connectionString)
-            : base(connectionString)
-        {
+            get;
+            set;
         }
     }
 }

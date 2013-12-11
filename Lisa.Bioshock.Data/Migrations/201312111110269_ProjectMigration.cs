@@ -11,7 +11,7 @@ namespace Lisa.Bioshock.Data.Migrations
                 "dbo.Projects",
                 c => new
                     {
-                        ID = c.Int(nullable: false),
+                        ID = c.Int(nullable: false, identity: true),
                         Name = c.String(),
                         RootID = c.Guid(nullable: false, identity: true),
                         OwnerID = c.Int(nullable: false),

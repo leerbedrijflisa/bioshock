@@ -12,7 +12,7 @@ using System.Web.UI;
 
 namespace Lisa.Bioshock.Controllers
 {
-    public class TestController : Controller
+    public class TestController : BaseController
     {
         LocalStorageProvider provider;
         FileSystem fileSystem;

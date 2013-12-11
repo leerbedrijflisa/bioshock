@@ -1,0 +1,17 @@
+﻿<ul>
+    @foreach (Lisa.Storage.StorageItem item in Model)
+    {
+        <li>@item.Name
+
+            @if (item is Lisa.Storage.Folder)
+            {
+                var items = ((Lisa.Storage.Folder)item).Items;
+                
+                if (items.Count() > 0)
+                {
+                    @Html.Partial("_TreeView", items)
+                }
+            }
+        </li>
+    }
+</ul>

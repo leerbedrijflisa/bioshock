@@ -1,0 +1,21 @@
+﻿@model ProjectForm
+@{
+    ViewBag.Title = "Maak nieuw project";
+}
+
+<h2>Maak nieuw project</h2>
+
+@using (Html.BeginForm())
+{
+    @Html.ValidationSummary(true)
+
+    <p>
+        @Html.LabelFor(m => m.Name)
+        @Html.EditorFor(m => m.Name)
+    </p>
+    
+    <p>
+        <label>&nbsp;</label>
+        <input type="submit" value="Aanmaken" />
+    </p>
+}

@@ -5,6 +5,7 @@ namespace Lisa.Bioshock.Data.Tables
     {
         public User()
         {
+            Projects = new List<Project>();
         }
 
         public int ID

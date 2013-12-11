@@ -16,6 +16,7 @@ namespace Lisa.Bioshock.Data.Tables
             Created = DateTime.UtcNow;
         }
 
+        [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int ID
         {
             get;

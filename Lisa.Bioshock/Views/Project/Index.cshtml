@@ -1,0 +1,18 @@
+﻿@model IEnumerable<Project>
+@{
+    ViewBag.Title = "Project overview";
+}
+
+<h2>Project overview</h2>
+
+<p><a href="@Url.Action("Create")">Create new project</a></p>
+
+<ul>
+@foreach (var project in Model)
+{
+    <li>
+        <a href="@Url.Action("Details", new { ID = project.ID })">@project.Name</a> - 
+        <a href="@Url.Action("Delete", new { ID = project.ID })">Delete</a>
+    </li>
+}
+</ul>
