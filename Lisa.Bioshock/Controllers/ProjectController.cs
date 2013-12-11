@@ -77,10 +77,6 @@ namespace Lisa.Bioshock.Controllers
             return View(project);
         }
 
-        private void Loop(Folder parent)
-        {
-        }
-
         public ActionResult Delete(int id = 0)
         {
             Project project = Db.Projects.Find(id);
