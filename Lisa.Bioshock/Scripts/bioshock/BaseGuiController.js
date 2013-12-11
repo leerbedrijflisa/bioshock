@@ -89,7 +89,7 @@ var BaseGuiController = (function () {
         this.editorKeyDown = function (event) {
             _this.lastKeyDown = event.keyCode;
 
-            if (_this.canExecuteAction()) {
+            if (!_this.isMenuActive) {
                 if (event.ctrlKey && event.keyCode === _this.keys.ENTER) {
                     _this.insertWhitespace();
                 }
@@ -98,12 +98,14 @@ var BaseGuiController = (function () {
                     if (event.keyCode === _this.keys.O) {
                         _this.createFileList();
                         _this.updateMenuState();
+                        _this.openWindow = "open";
                         _this.$openFileWindow.toggle();
 
                         $(".filter_query").focus();
                     }
 
                     if (event.keyCode === _this.keys.N) {
+                        _this.openWindow = "new";
                         _this.updateMenuState();
                         _this.$newFileWindow.toggle();
                         $("newFileName").focus();
@@ -132,7 +134,7 @@ else if (filename.indexOf(".css") > -1)
                 }
             } else {
                 if (event.altKey) {
-                    if (event.keyCode === _this.keys.O && _this.isMenuActive) {
+                    if (event.keyCode === _this.keys.O && (_this.openWindow == "open")) {
                         _this.isMenuActive = false;
                         _this.$openFileWindow.toggle();
 
@@ -141,14 +143,16 @@ else if (filename.indexOf(".css") > -1)
                         $('.nicescroll-rails').hide();
                         _this.toggleOverlay();
                         _this.isMenuAvailable = true;
+                        _this.openWindow = "none";
                     }
 
-                    if (event.keyCode === _this.keys.N && _this.canToggleEditor) {
+                    if (event.keyCode === _this.keys.N && (_this.openWindow == "new")) {
                         _this.isMenuActive = false;
                         _this.toggleOverlay();
                         _this.$newFileWindow.toggle();
                         _this.isMenuAvailable = true;
                         $("#newFileName").val("");
+                        _this.openWindow = "none";
                     }
                 }
             }
@@ -386,6 +390,7 @@ else if (filename.indexOf(".css") > -1)
         this.isEditorDragging = false;
         this.canToggleEditor = true;
         //private isAltPressed = false;
+        this.openWindow = "";
         this.lastHTML = "";
         this.lastCSS = "";
         this.currentGuid = "";

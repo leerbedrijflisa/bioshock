@@ -163,7 +163,7 @@ class BaseGuiController {
     private editorKeyDown = (event) => {
         this.lastKeyDown = event.keyCode;
 
-        if (this.canExecuteAction()) {
+        if (!this.isMenuActive) {
 
             // Insert line above current
             if (event.ctrlKey && event.keyCode === this.keys.ENTER) {
@@ -178,6 +178,7 @@ class BaseGuiController {
 
                     this.createFileList();
                     this.updateMenuState();
+                    this.openWindow = "open";
                     this.$openFileWindow.toggle();
 
                     $(".filter_query").focus();
@@ -186,6 +187,7 @@ class BaseGuiController {
                 // New file dialog
                 if (event.keyCode === this.keys.N) {
 
+                    this.openWindow = "new";
                     this.updateMenuState();
                     this.$newFileWindow.toggle();
                     $("newFileName").focus();
@@ -224,7 +226,7 @@ class BaseGuiController {
             if (event.altKey) {
 
                 // Close file dialog
-                if (event.keyCode === this.keys.O && this.isMenuActive) {
+                if (event.keyCode === this.keys.O && (this.openWindow == "open")) {
 
                     this.isMenuActive = false;
                     this.$openFileWindow.toggle();
@@ -234,16 +236,18 @@ class BaseGuiController {
                     $('.nicescroll-rails').hide();
                     this.toggleOverlay();
                     this.isMenuAvailable = true;
+                    this.openWindow = "none";
                 }
 
                 // Close new file dialog if allowed
-                if (event.keyCode === this.keys.N && this.canToggleEditor) {
+                if (event.keyCode === this.keys.N && (this.openWindow == "new")) {
 
                     this.isMenuActive = false;
                     this.toggleOverlay();
                     this.$newFileWindow.toggle();
                     this.isMenuAvailable = true;
                     $("#newFileName").val("");
+                    this.openWindow = "none";
                 }
             }
         }
@@ -613,6 +617,7 @@ class BaseGuiController {
     private synchronizer: Synchronizer;
     private lastKeyDown: number;
     //private isAltPressed = false;
+    private openWindow = "";
     private lastHTML = "";
     private lastCSS = "";
     private currentGuid = "";
