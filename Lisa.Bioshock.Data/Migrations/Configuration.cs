@@ -1,5 +1,6 @@
 namespace Lisa.Bioshock.Data.Migrations
 {
+    using Lisa.Bioshock.Data.Tables;
     using System;
     using System.Data.Entity;
     using System.Data.Entity.Migrations;
@@ -14,18 +15,13 @@ namespace Lisa.Bioshock.Data.Migrations
 
         protected override void Seed(Lisa.Bioshock.Data.BioshockContext context)
         {
-            //  This method will be called after migrating to the latest version.
+            context.Customers.AddOrUpdate(
+                cust => cust.Name,
+                new Customer
+                {
+                    Name = "Da Vinci College - Dordrecht"
+                });
 
-            //  You can use the DbSet<T>.AddOrUpdate() helper extension method 
-            //  to avoid creating duplicate seed data. E.g.
-            //
-            //    context.People.AddOrUpdate(
-            //      p => p.FullName,
-            //      new Person { FullName = "Andrew Peters" },
-            //      new Person { FullName = "Brice Lambson" },
-            //      new Person { FullName = "Rowan Miller" }
-            //    );
-            //
         }
     }
 }
