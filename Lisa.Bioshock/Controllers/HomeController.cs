@@ -11,7 +11,7 @@ namespace Lisa.Bioshock.Controllers
         //
         // GET: /Home/
 
-        public ActionResult Index(int ID)
+        public ActionResult Index(int? ID)
         {
             var project = Db.Projects.Find(ID);
             return View(project);
