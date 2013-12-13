@@ -11,6 +11,8 @@ var FullScreenGuiController = (function (_super) {
     function FullScreenGuiController(editor, options) {
         if (typeof options === "undefined") { options = {}; }
         _super.call(this, editor, options, false);
+
+        localStorage.setItem("fullscreen", "true");
     }
     return FullScreenGuiController;
 })(BaseGuiController);

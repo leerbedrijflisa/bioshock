@@ -43,7 +43,7 @@ namespace Lisa.Bioshock.Controllers
                 Db.SaveChanges();
 
                 LocalStorageProvider sp 
-                    = new LocalStorageProvider(@"D:\Storage\" + project.RootID + @"\");
+                    = new LocalStorageProvider(@"C:\Storage\" + project.RootID + @"\");
                 FileSystem fs = new FileSystem(sp);
 
                 fs.Root.Folders.Add("css");
@@ -70,7 +70,7 @@ namespace Lisa.Bioshock.Controllers
             }
 
             LocalStorageProvider sp 
-                = new LocalStorageProvider(@"D:\Storage\" + project.RootID + @"\");
+                = new LocalStorageProvider(@"C:\Storage\" + project.RootID + @"\");
             FileSystem fs = new FileSystem(sp);
             ViewBag.FileSystem = fs;
 

@@ -4,5 +4,7 @@ class FullScreenGuiController extends BaseGuiController {
 
     constructor(editor: any, options = {}) {
         super(editor, options, false);
+
+        localStorage.setItem("fullscreen", "true");
     }
 }

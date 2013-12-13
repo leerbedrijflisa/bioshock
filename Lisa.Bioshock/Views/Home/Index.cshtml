@@ -1,4 +1,6 @@
-﻿@{
+﻿@model Project
+
+@{
     ViewBag.Title = "Index";
     Layout = "~/Views/Shared/_Layout.cshtml";   
 }
@@ -43,5 +45,7 @@
 @Html.Partial("_EditorMenuWindow")
 @Html.Partial("_NewFileWindow")
 @Html.Partial("_OpenFileWindow")
+
+<input value="@Model.ID" id="ProjectID" hidden/>
 
 

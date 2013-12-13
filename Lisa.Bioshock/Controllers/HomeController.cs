@@ -11,10 +11,10 @@ namespace Lisa.Bioshock.Controllers
         //
         // GET: /Home/
 
-        public ActionResult Index()
+        public ActionResult Index(int ID)
         {
-
-            return View();
+            var project = Db.Projects.Find(ID);
+            return View(project);
         }
 
         [Authorize]

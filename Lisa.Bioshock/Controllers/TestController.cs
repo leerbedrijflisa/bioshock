@@ -50,19 +50,12 @@ namespace Lisa.Bioshock.Controllers
 
         [ValidateInput(false)]
         [HttpGet]
-        public JsonResult GetFiles(string contentType = null)
+        public JsonResult GetFiles(int projectID, string contentType = null)
         {
-            LocalStorageProvider provider = new LocalStorageProvider("/Storage");
-            FileSystem fileSystem = new FileSystem(provider);
+            var project = Db.Projects.Find(projectID);
 
-            //fileSystem.Root.Files.Add("index.html", "text/html");
-            //fileSystem.Root.Files.Add("user.xml", "text/xml");
-            //Folder css = fileSystem.Root.Folders.Add("css");
-            //css.Files.Add("stylesheet.css", "text/css");
-            //var theme = css.Folders.Add("theme");
-            //theme.Files.Add("custom.css", "text/css");
-            //theme.Files.Add("default.css", "text/css");
-            //theme.Files.Add("admin.css", "text/css");
+            LocalStorageProvider provider = new LocalStorageProvider("/Storage/" + project.RootID);
+            FileSystem fileSystem = new FileSystem(provider);
 
             if (contentType != null)
             {
@@ -89,9 +82,11 @@ namespace Lisa.Bioshock.Controllers
 
         [HttpPost]
         [OutputCache(NoStore = true, Location = OutputCacheLocation.None)]
-        public JsonResult GetFileContent(string guid)
+        public JsonResult GetFileContent(int projectID, string guid)
         {
-            LocalStorageProvider provider = new LocalStorageProvider("/Storage");
+            var project = Db.Projects.Find(projectID);
+
+            LocalStorageProvider provider = new LocalStorageProvider("/Storage/" + project.RootID);
             FileSystem fileSystem = new FileSystem(provider);
 
             var file = fileSystem.Root.Files.Where(f => f.ID == guid).FirstOrDefault();
@@ -109,9 +104,11 @@ namespace Lisa.Bioshock.Controllers
             }, JsonRequestBehavior.AllowGet);
         }
 
-        public ActionResult CreateFile(string filename)
+        public ActionResult CreateFile(int projectID, string filename)
         {
-            LocalStorageProvider provider = new LocalStorageProvider("/Storage");
+            var project = Db.Projects.Find(projectID);
+
+            LocalStorageProvider provider = new LocalStorageProvider("/Storage/" + project.RootID);
             FileSystem fileSystem = new FileSystem(provider);
 
             if (!FileExists(fileSystem, filename))
@@ -148,9 +145,11 @@ namespace Lisa.Bioshock.Controllers
 
         [ValidateInput(false)]
         [HttpPost]
-        public ActionResult WriteFile(string guid, string source)
+        public ActionResult WriteFile(int projectID, string guid, string source)
         {
-            LocalStorageProvider provider = new LocalStorageProvider("/Storage");
+            var project = Db.Projects.Find(projectID);
+
+            LocalStorageProvider provider = new LocalStorageProvider("/Storage/" + project.RootID);
             FileSystem fileSystem = new FileSystem(provider);
 
             var file = fileSystem.Root.Files.Where(f => f.ID == guid).FirstOrDefault();

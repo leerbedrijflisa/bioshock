@@ -129,7 +129,11 @@ else if (filename.indexOf(".css") > -1)
                     if (event.keyCode === _this.keys.F) {
                         _this.canToggleEditor = false;
                         _this.$editorWindow.toggle();
-                        window.open("/home/fullscreen", "_blank");
+                        var fullscreen = window.open("/home/fullscreen", "_blank");
+                        fullscreen.onunload = function () {
+                            _this.canToggleEditor = true;
+                            _this.$editorWindow.show();
+                        };
                     }
                 }
             } else {
@@ -259,7 +263,8 @@ else if (filename.indexOf(".css") > -1)
             var fileList = $('#file_list');
             _this.files = [];
             fileList.empty();
-            $.get("/test/getFiles", {}, function (data) {
+
+            $.get("/test/getFiles", { projectID: _this.projectID }, function (data) {
                 fileList.append('<div class="folder"><span class="folder_name">/root/</span><ul></ul><div class="clear"></div></div>');
                 for (var i = data.length - 1; i >= 0; i--) {
                     var item = data[i];
@@ -315,7 +320,7 @@ else if (filename.indexOf(".css") > -1)
                 li.find("a").click(function (event) {
                     var id = $(event.currentTarget).attr("data-id");
 
-                    $.post("/test/GetFileContent", { guid: id }, function (data) {
+                    $.post("/test/GetFileContent", { projectID: _this.projectID, guid: id }, function (data) {
                         _this.currentGuid = id;
                         _this.editor.setValue(data.content);
                         _this.isMenuActive = false;
@@ -340,7 +345,7 @@ else if (filename.indexOf(".css") > -1)
         this.createFile = function () {
             var fileName = $("#newFileName").val();
             if (fileName.endsWith(".css") || fileName.endsWith(".html")) {
-                $.get("/test/CreateFile", { filename: fileName }, function (data) {
+                $.get("/test/CreateFile", { projectID: _this.projectID, filename: fileName }, function (data) {
                     if (data.Result) {
                         _this.currentGuid = data.ID;
                         _this.createFileList();
@@ -389,7 +394,6 @@ else if (filename.indexOf(".css") > -1)
         this.isMenuAvailable = true;
         this.isEditorDragging = false;
         this.canToggleEditor = true;
-        //private isAltPressed = false;
         this.openWindow = "";
         this.lastHTML = "";
         this.lastCSS = "";
@@ -402,7 +406,7 @@ else if (filename.indexOf(".css") > -1)
         this.registerSynchronizeHandlers();
         this.registerEvents();
         this.initFilesView();
-
+        this.projectID = $("#ProjectID").val();
         if (preview) {
             this.registerPreviewHandlers();
         }

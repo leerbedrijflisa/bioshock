@@ -8,7 +8,7 @@ class BaseGuiController {
         this.registerSynchronizeHandlers();
         this.registerEvents();
         this.initFilesView();
-
+        this.projectID = $("#ProjectID").val();
         if (preview) {
 
             this.registerPreviewHandlers();
@@ -217,7 +217,12 @@ class BaseGuiController {
 
                     this.canToggleEditor = false;
                     this.$editorWindow.toggle();
-                    window.open("/home/fullscreen", "_blank");
+                    var fullscreen = window.open("/home/fullscreen", "_blank");
+                    fullscreen.onunload = () => {
+
+                        this.canToggleEditor = true;
+                        this.$editorWindow.show();
+                    }
                 }
             }
             
@@ -391,7 +396,8 @@ class BaseGuiController {
         var fileList = $('#file_list');
         this.files = [];
         fileList.empty();
-        $.get("/test/getFiles", {}, (data) => {
+        
+        $.get("/test/getFiles", {projectID: this.projectID }, (data) => {
 
             fileList.append('<div class="folder"><span class="folder_name">/root/</span><ul></ul><div class="clear"></div></div>');
             for (var i = data.length - 1; i >= 0; i--) {
@@ -462,7 +468,7 @@ class BaseGuiController {
 
                 var id = $(event.currentTarget).attr("data-id");
 
-                $.post("/test/GetFileContent", { guid: id }, (data) => {
+                $.post("/test/GetFileContent", { projectID: this.projectID, guid: id }, (data) => {
 
                     this.currentGuid = id;
                     this.editor.setValue(data.content);
@@ -513,7 +519,7 @@ class BaseGuiController {
         if (fileName.endsWith(".css") || fileName.endsWith(".html")) {
 
 
-            $.get("/test/CreateFile", { filename: fileName }, (data) => {
+            $.get("/test/CreateFile", { projectID: this.projectID, filename: fileName }, (data) => {
 
                 if (data.Result) {
 
@@ -617,6 +623,7 @@ class BaseGuiController {
     private synchronizer: Synchronizer;
     private lastKeyDown: number;
     //private isAltPressed = false;
+    private projectID: number;
     private openWindow = "";
     private lastHTML = "";
     private lastCSS = "";
