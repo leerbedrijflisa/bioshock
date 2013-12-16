@@ -54,7 +54,7 @@ namespace Lisa.Bioshock.Controllers
                     writer.Write("<!DOCTYPE html>\n<html>\n<body>\n\t<h1>My website</h1>\n</body>\n</html>");
                 }
 
-                return RedirectToAction("Details", new { ID = project.ID });
+                return RedirectToAction("Index", "Home", new { ID = project.ID });
             }
 
             return View(form);
