@@ -494,6 +494,7 @@ class BaseGuiController {
                     this.isMenuAvailable = true;
                     $("#filename").text($(event.currentTarget).text());
                     this.SetLastFile();
+                    this.editor.focus();
                 });
                 
                 
@@ -547,6 +548,8 @@ class BaseGuiController {
                     this.isMenuAvailable = true;
                     this.editor.setValue("");
                     $("#filename").text(fileName);
+
+                    this.editor.focus();
                 }
 
             });

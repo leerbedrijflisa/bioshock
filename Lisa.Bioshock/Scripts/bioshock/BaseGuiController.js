@@ -333,6 +333,7 @@ else if (filename.indexOf(".css") > -1)
                         _this.isMenuAvailable = true;
                         $("#filename").text($(event.currentTarget).text());
                         _this.SetLastFile();
+                        _this.editor.focus();
                     });
                 });
             }
@@ -359,6 +360,8 @@ else if (filename.indexOf(".css") > -1)
                         _this.isMenuAvailable = true;
                         _this.editor.setValue("");
                         $("#filename").text(fileName);
+
+                        _this.editor.focus();
                     }
                 });
             } else {
