@@ -414,7 +414,7 @@ class BaseGuiController {
         
         $.get("/test/getFiles", {projectID: this.projectID }, (data) => {
 
-            fileList.append('<div class="folder"><span class="folder_name">/root/</span><ul></ul><div class="clear"></div></div>');
+            fileList.append('<div class="folder"><span class="folder_name">/</span><ul></ul><div class="clear"></div></div>');
             for (var i = data.length - 1; i >= 0; i--) {
 
                 var item = data[i];
@@ -438,8 +438,10 @@ class BaseGuiController {
     }
 
     private generateFolderTree = (item, fileList) => {
-
-        fileList.append('<div class="folder"><span class="folder_name">' + item.FullPath + '</span><ul></ul><div class="clear"></div></div>');
+                
+        fileList.append('<div class="folder"><span class="folder_name">' +
+            item.FullPath.replace('/root', '') +
+            '</span><ul></ul><div class="clear"></div></div>');
 
         for (var i = item.Subs.length - 1; i >= 0; i--) {
 

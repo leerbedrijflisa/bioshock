@@ -268,7 +268,7 @@ else if (filename.indexOf(".css") > -1)
             fileList.empty();
 
             $.get("/test/getFiles", { projectID: _this.projectID }, function (data) {
-                fileList.append('<div class="folder"><span class="folder_name">/root/</span><ul></ul><div class="clear"></div></div>');
+                fileList.append('<div class="folder"><span class="folder_name">/</span><ul></ul><div class="clear"></div></div>');
                 for (var i = data.length - 1; i >= 0; i--) {
                     var item = data[i];
 
@@ -287,7 +287,7 @@ else if (filename.indexOf(".css") > -1)
             });
         };
         this.generateFolderTree = function (item, fileList) {
-            fileList.append('<div class="folder"><span class="folder_name">' + item.FullPath + '</span><ul></ul><div class="clear"></div></div>');
+            fileList.append('<div class="folder"><span class="folder_name">' + item.FullPath.replace('/root', '') + '</span><ul></ul><div class="clear"></div></div>');
 
             for (var i = item.Subs.length - 1; i >= 0; i--) {
                 var sub = item.Subs[i];
