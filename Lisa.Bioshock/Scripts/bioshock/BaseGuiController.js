@@ -100,8 +100,7 @@ var BaseGuiController = (function () {
                         _this.updateMenuState();
                         _this.openWindow = "open";
                         _this.$openFileWindow.toggle();
-
-                        $(".filter_query").focus();
+                        $('.filter_query').val('').focus();
                     }
 
                     if (event.keyCode === _this.keys.N) {
@@ -109,6 +108,7 @@ var BaseGuiController = (function () {
                         _this.updateMenuState();
                         _this.$newFileWindow.toggle();
 
+                        // TEMP FIX FOR IE!
                         setTimeout(function () {
                             $("#newFileName").focus();
                         }, 100);
@@ -144,8 +144,8 @@ else if (filename.indexOf(".css") > -1)
                     if (event.keyCode === _this.keys.O && (_this.openWindow == "open")) {
                         _this.isMenuActive = false;
                         _this.$openFileWindow.toggle();
+                        $('.filter_query').val('');
 
-                        $('#wrap .filter_query').val("");
                         _this.applyFilter();
                         $('.nicescroll-rails').hide();
                         _this.toggleOverlay();
@@ -329,6 +329,7 @@ else if (filename.indexOf(".css") > -1)
                         _this.isMenuActive = false;
                         _this.toggleOverlay();
                         _this.$openFileWindow.toggle();
+                        $('.filter_query').val('');
                         _this.isMenuAvailable = true;
                         $("#filename").text($(event.currentTarget).text());
                         _this.SetLastFile();
@@ -437,6 +438,19 @@ else if (filename.indexOf(".css") > -1)
     };
 
     BaseGuiController.prototype.initFilesView = function () {
+        $('#filter').submit(function () {
+            var $ul = $('#block .highlights ul');
+            var $children = $ul.children("li");
+
+            if ($children.length > 0) {
+                var $a = $children.first().find("a");
+                $a.click();
+            }
+
+            $('.filter_query').focus();
+            return false;
+        });
+
         $('#openFileWindow .filter_query').keyup(this.applyFilter);
         this.createFileList();
         var scrollbar = $("#file_list");

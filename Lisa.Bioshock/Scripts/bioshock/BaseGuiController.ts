@@ -180,8 +180,7 @@ class BaseGuiController {
                     this.updateMenuState();
                     this.openWindow = "open";
                     this.$openFileWindow.toggle();
-
-                    $(".filter_query").focus();
+                    $('.filter_query').val('').focus();
                 }
 
                 // New file dialog
@@ -239,8 +238,8 @@ class BaseGuiController {
 
                     this.isMenuActive = false;
                     this.$openFileWindow.toggle();
+                    $('.filter_query').val('');
 
-                    $('#wrap .filter_query').val("");
                     this.applyFilter();
                     $('.nicescroll-rails').hide();
                     this.toggleOverlay();
@@ -377,6 +376,18 @@ class BaseGuiController {
     }
 
     public initFilesView() {
+        $('#filter').submit(function () {
+            var $ul = $('#block .highlights ul');
+            var $children = $ul.children("li");
+
+            if ($children.length > 0) {
+                var $a = $children.first().find("a");
+                $a.click();
+            }
+
+            $('.filter_query').focus();
+            return false;
+        });
 
         $('#openFileWindow .filter_query').keyup(this.applyFilter);
         this.createFileList();
@@ -479,6 +490,7 @@ class BaseGuiController {
                     this.isMenuActive = false;
                     this.toggleOverlay();
                     this.$openFileWindow.toggle();
+                    $('.filter_query').val('');
                     this.isMenuAvailable = true;
                     $("#filename").text($(event.currentTarget).text());
                     this.SetLastFile();
