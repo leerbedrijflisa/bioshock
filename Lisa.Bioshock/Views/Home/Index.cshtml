@@ -46,6 +46,9 @@
 @Html.Partial("_NewFileWindow")
 @Html.Partial("_OpenFileWindow")
 
-<input value="@Model.ID" id="ProjectID" hidden/>
+@if (Model != null) 
+{
+    <input value="@Model.ID" id="ProjectID" hidden/>
+}
 
 

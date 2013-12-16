@@ -108,7 +108,10 @@ var BaseGuiController = (function () {
                         _this.openWindow = "new";
                         _this.updateMenuState();
                         _this.$newFileWindow.toggle();
-                        $("newFileName").focus();
+
+                        setTimeout(function () {
+                            $("#newFileName").focus();
+                        }, 100);
                     }
 
                     if (event.keyCode === _this.keys.C) {

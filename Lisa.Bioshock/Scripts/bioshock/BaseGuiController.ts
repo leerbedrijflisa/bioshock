@@ -190,7 +190,11 @@ class BaseGuiController {
                     this.openWindow = "new";
                     this.updateMenuState();
                     this.$newFileWindow.toggle();
-                    $("newFileName").focus();
+
+                    // TEMP FIX FOR IE!
+                    setTimeout(function () {
+                        $("#newFileName").focus();
+                    }, 100);
                 }
 
                 // Opens file switcher
