@@ -89,7 +89,7 @@ namespace Lisa.Bioshock.Controllers
             LocalStorageProvider provider = new LocalStorageProvider("/Storage/" + project.RootID);
             FileSystem fileSystem = new FileSystem(provider);
 
-            var file = fileSystem.Root.Files.Where(f => f.ID == guid).FirstOrDefault();
+            var file = fileSystem.Root.FindItemByID(guid) as Lisa.Storage.File;
             if (file == null)
             {
                 return HttpNotFound();
@@ -143,19 +143,10 @@ namespace Lisa.Bioshock.Controllers
             return Json(new { Result = false}, JsonRequestBehavior.AllowGet);
         }
 
-        public bool FileExists(FileSystem filesystem, string filename)
+        private bool FileExists(FileSystem filesystem, string filename)
         {
-            if (filesystem != null)
-            {
-                foreach (Storage.File file in filesystem.Root.Files)
-                {
-                    if (file.Name == filename)
-                    {
-                        return true;
-                    }
-                }
-            }
-            return false;
+            var file = fileSystem.Root.FindItemByPath("/root/" + filename) as Lisa.Storage.File;
+            return file != null;
         }
 
         [ValidateInput(false)]
@@ -167,7 +158,7 @@ namespace Lisa.Bioshock.Controllers
             LocalStorageProvider provider = new LocalStorageProvider("/Storage/" + project.RootID);
             FileSystem fileSystem = new FileSystem(provider);
 
-            var file = fileSystem.Root.Files.Where(f => f.ID == guid).FirstOrDefault();
+            var file = fileSystem.Root.FindItemByID(guid) as Lisa.Storage.File;
             var content = string.Empty;
             using (var contents = new StreamWriter(file.OutputStream))
             {
