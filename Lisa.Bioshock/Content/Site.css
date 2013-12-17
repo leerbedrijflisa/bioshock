@@ -19,7 +19,8 @@ header, footer, nav, section {
     white-space: nowrap;
     text-overflow: ellipsis;
     overflow: hidden;
-    text-align: right;  
+    text-align: right; 
+    display: none; 
 }
 
 .errorinfo{

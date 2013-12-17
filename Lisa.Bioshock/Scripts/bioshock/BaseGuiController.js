@@ -9,6 +9,10 @@ var BaseGuiController = (function () {
             _this.editor.on('change', function (codeMirror) {
                 $.post("/Test/WriteFile", { guid: _this.currentGuid, source: _this.editor.getValue() });
                 _this.synchronizer.update(codeMirror.getValue());
+
+                if (_this.$errors.is(':visible')) {
+                    _this.$errors.hide();
+                }
             });
 
             _this.editor.on('gutterClick', function (codeMirror) {
@@ -256,7 +260,13 @@ else if (filename.indexOf(".css") > -1)
                     $(msg).addClass("error-line-number" + lineNumber);
                 }
             }
-            $(_this.errorCount).text(_this.widgets.length);
+
+            if (_this.widgets.length == 0) {
+                $(_this.errorCount).text('Geen');
+            } else {
+                $(_this.errorCount).text(_this.widgets.length);
+            }
+            _this.$errors.show();
         };
         this.applyFilter = function () {
             var filter = $('#openFileWindow .filter_query').val();
@@ -394,6 +404,7 @@ else if (filename.indexOf(".css") > -1)
         this.$menuWindow = $('#editorMenuWindow');
         this.$openFileWindow = $('#openFileWindow');
         this.$newFileWindow = $('#newFileWindow');
+        this.$errors = $('#errors');
         this.previewSelector = '#preview';
         this.errorCount = '#errorcount';
         this.addButton = '#addButton';

@@ -22,6 +22,10 @@ class BaseGuiController {
 
             $.post("/Test/WriteFile", { guid: this.currentGuid, source: this.editor.getValue() });
             this.synchronizer.update(codeMirror.getValue());
+
+            if (this.$errors.is(':visible')) {
+                this.$errors.hide();
+            }
         });
 
         this.editor.on('gutterClick', (codeMirror) => {
@@ -372,7 +376,13 @@ class BaseGuiController {
                 $(msg).addClass("error-line-number" + lineNumber);
             }
         }
-        $(this.errorCount).text(this.widgets.length);
+
+        if (this.widgets.length == 0) {
+            $(this.errorCount).text('Geen');
+        } else {
+            $(this.errorCount).text(this.widgets.length);
+        }
+        this.$errors.show();
     }
 
     public initFilesView() {
@@ -631,6 +641,7 @@ class BaseGuiController {
     private $menuWindow = $('#editorMenuWindow');
     private $openFileWindow = $('#openFileWindow');
     private $newFileWindow = $('#newFileWindow');
+    private $errors = $('#errors');
 
     private previewSelector = '#preview';
     private errorCount = '#errorcount';
