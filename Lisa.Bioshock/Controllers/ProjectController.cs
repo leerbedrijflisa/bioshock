@@ -46,13 +46,17 @@ namespace Lisa.Bioshock.Controllers
                     = new LocalStorageProvider(@"C:\Storage\" + project.RootID + @"\");
                 FileSystem fs = new FileSystem(sp);
 
-                fs.Root.Folders.Add("css");
-                var file = fs.Root.Files.Add("index.html", "text/html");
-
-                using (var writer = new System.IO.StreamWriter(file.OutputStream))
+                var css = fs.Root.Folders.Add("css");
+                var index = fs.Root.Files.Add("index.html", "text/html");
+                var style = css.Files.Add("style.css", "text/css");
+                
+                using (var writer = new System.IO.StreamWriter(index.OutputStream))
                 {
                     writer.Write("<!DOCTYPE html>\n<html>\n<body>\n\t<h1>My website</h1>\n</body>\n</html>");
                 }
+
+                project.LastOpenedFile = Guid.Parse(index.ID);
+                Db.SaveChanges();
 
                 return RedirectToAction("Index", "Home", new { ID = project.ID });
             }

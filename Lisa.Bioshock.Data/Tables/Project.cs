@@ -36,6 +36,12 @@ namespace Lisa.Bioshock.Data.Tables
             set;
         }
 
+        public Guid LastOpenedFile
+        {
+            get;
+            set;
+        }
+
         public virtual User Owner
         {
             get;

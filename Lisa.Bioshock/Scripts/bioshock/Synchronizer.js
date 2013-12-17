@@ -6,6 +6,7 @@ var Synchronizer = (function () {
     */
     function Synchronizer(preview) {
         var _this = this;
+        this.isConnected = false;
         this.onRead = function (message) {
             //var title = message.match(/<title>(.+)<\//im);
             var title = message.match(/<title>(.+?)(<\/|$)/);
@@ -25,11 +26,14 @@ var Synchronizer = (function () {
     * @param {function} done (optional) - The callback function to be called when the start of the connection finishes. This parameter can be undefined.
     */
     Synchronizer.prototype.start = function (done) {
-        if (done) {
-            $.connection.hub.start().done(done);
-        } else {
-            $.connection.hub.start();
-        }
+        var _this = this;
+        $.connection.hub.start().done(function () {
+            _this.isConnected = true;
+
+            if (done) {
+                done();
+            }
+        });
     };
 
     /**
@@ -38,7 +42,9 @@ var Synchronizer = (function () {
     * @param {*} message - The message to send as an update
     */
     Synchronizer.prototype.update = function (message) {
-        this.hub.server.send(message);
+        if (this.isConnected) {
+            this.hub.server.send(message);
+        }
     };
 
     /**

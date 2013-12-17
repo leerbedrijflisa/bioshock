@@ -3,12 +3,13 @@ class BaseGuiController {
 
     constructor(editor: any, options = {}, preview = true) {
 
-        this.registerEditorHandlers(options);
-        this.registerKeyHandlers();
         this.registerSynchronizeHandlers();
+        this.registerEditorHandlers(options);
+        this.registerKeyHandlers();        
         this.registerEvents();
-        this.initFilesView();
         this.projectID = $("#ProjectID").val();
+        this.initFilesView();
+        
         if (preview) {
 
             this.registerPreviewHandlers();
@@ -20,7 +21,7 @@ class BaseGuiController {
         this.editor = editor;
         this.editor.on('change', (codeMirror) => {
 
-            $.post("/Test/WriteFile", { guid: this.currentGuid, source: this.editor.getValue() });
+            $.post("/Test/WriteFile", { projectID: this.projectID, guid: this.currentGuid, source: this.editor.getValue() });
             this.synchronizer.update(codeMirror.getValue());
 
             if (this.$errors.is(':visible')) {
@@ -329,7 +330,7 @@ class BaseGuiController {
             contentType = "text/css";
         else if (filename.indexOf(".css") > -1)
             contentType = "text/html";
-        $.get("/Test/GetFiles", { contentType: contentType }, (data) => {
+        $.get("/Test/GetFiles", { projectID: this.projectID, contentType: contentType }, (data) => {
             var id = data[0].ID;
             $.post("/test/GetFileContent", { guid: id }, (data) => {
 
@@ -504,7 +505,7 @@ class BaseGuiController {
                     this.$openFileWindow.toggle();
                     $('.filter_query').val('');
                     this.isMenuAvailable = true;
-                    $("#filename").text($(event.currentTarget).text());
+                    $("#filename").text(data.name);
                     this.SetLastFile();
                     this.editor.focus();
                 });
@@ -512,6 +513,16 @@ class BaseGuiController {
                 
             });
         }
+    }
+
+    public openStartUpFile = () => {
+        $.post("/Test/OpenStartUpFile", { projectID: this.projectID }, (data) => {
+            this.currentGuid = data.id;            
+            $("#filename").text(data.name);
+            this.SetLastFile();            
+            this.editor.setValue(data.content);
+            this.editor.focus();
+        });
     }
 
 

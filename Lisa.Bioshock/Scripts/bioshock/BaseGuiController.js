@@ -7,7 +7,7 @@ var BaseGuiController = (function () {
         this.registerEditor = function (editor) {
             _this.editor = editor;
             _this.editor.on('change', function (codeMirror) {
-                $.post("/Test/WriteFile", { guid: _this.currentGuid, source: _this.editor.getValue() });
+                $.post("/Test/WriteFile", { projectID: _this.projectID, guid: _this.currentGuid, source: _this.editor.getValue() });
                 _this.synchronizer.update(codeMirror.getValue());
 
                 if (_this.$errors.is(':visible')) {
@@ -221,7 +221,7 @@ else if (filename.indexOf(".css") > -1)
                 contentType = "text/css";
 else if (filename.indexOf(".css") > -1)
                 contentType = "text/html";
-            $.get("/Test/GetFiles", { contentType: contentType }, function (data) {
+            $.get("/Test/GetFiles", { projectID: _this.projectID, contentType: contentType }, function (data) {
                 var id = data[0].ID;
                 $.post("/test/GetFileContent", { guid: id }, function (data) {
                     _this.currentGuid = id;
@@ -341,12 +341,21 @@ else if (filename.indexOf(".css") > -1)
                         _this.$openFileWindow.toggle();
                         $('.filter_query').val('');
                         _this.isMenuAvailable = true;
-                        $("#filename").text($(event.currentTarget).text());
+                        $("#filename").text(data.name);
                         _this.SetLastFile();
                         _this.editor.focus();
                     });
                 });
             }
+        };
+        this.openStartUpFile = function () {
+            $.post("/Test/OpenStartUpFile", { projectID: _this.projectID }, function (data) {
+                _this.currentGuid = data.id;
+                $("#filename").text(data.name);
+                _this.SetLastFile();
+                _this.editor.setValue(data.content);
+                _this.editor.focus();
+            });
         };
         this.registerEvents = function () {
             $(_this.addButton).bind("click", _this.createFile);
@@ -419,12 +428,13 @@ else if (filename.indexOf(".css") > -1)
         this.files = [];
         this.widgets = [];
         this.ready = true;
+        this.registerSynchronizeHandlers();
         this.registerEditorHandlers(options);
         this.registerKeyHandlers();
-        this.registerSynchronizeHandlers();
         this.registerEvents();
-        this.initFilesView();
         this.projectID = $("#ProjectID").val();
+        this.initFilesView();
+
         if (preview) {
             this.registerPreviewHandlers();
         }

@@ -82,7 +82,7 @@ namespace Lisa.Bioshock.Controllers
 
         [HttpPost]
         [OutputCache(NoStore = true, Location = OutputCacheLocation.None)]
-        public JsonResult GetFileContent(int projectID, string guid)
+        public ActionResult GetFileContent(int projectID, string guid)
         {
             var project = Db.Projects.Find(projectID);
 
@@ -90,6 +90,11 @@ namespace Lisa.Bioshock.Controllers
             FileSystem fileSystem = new FileSystem(provider);
 
             var file = fileSystem.Root.Files.Where(f => f.ID == guid).FirstOrDefault();
+            if (file == null)
+            {
+                return HttpNotFound();
+            }
+
             var content = string.Empty;
             var filename = file.Name;
             using (var contents = new StreamReader(file.InputStream))
@@ -99,9 +104,19 @@ namespace Lisa.Bioshock.Controllers
         
             return Json(new
             {
+                id = file.ID,
                 name = filename,
                 content = content
             }, JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpPost]
+        [OutputCache(NoStore = true, Location = OutputCacheLocation.None)]
+        public ActionResult OpenStartUpFile(int projectID)
+        {
+            var project = Db.Projects.Find(projectID);
+
+            return GetFileContent(projectID, project.LastOpenedFile.ToString());
         }
 
         public ActionResult CreateFile(int projectID, string filename)

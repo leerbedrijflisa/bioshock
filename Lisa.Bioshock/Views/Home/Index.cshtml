@@ -5,6 +5,11 @@
     Layout = "~/Views/Shared/_Layout.cshtml";   
 }
 
+@if (Model != null) 
+{
+    <input type="hidden" value="@Model.ID" id="ProjectID" />
+}
+
 <script type="text/javascript">
     $(function () {
 
@@ -23,7 +28,7 @@
 
         var guiController = new BaseGuiController();
         guiController.registerEditor(editor);
-
+        guiController.openStartUpFile();
        
 
         $(".highlights").niceScroll({ autohidemode: false, touchbehavior: false, horizrailenabled: false, cursorcolor: "#fff", cursoropacitymax: 1, cursorwidth: 16, cursorborder: false, cursorborderradius: false, background: "#121012", autohidemode: false, railpadding: { top: 2, right: 2, bottom: 2 } }).cursor.css({ "background": "#434343" });
@@ -45,10 +50,3 @@
 @Html.Partial("_EditorMenuWindow")
 @Html.Partial("_NewFileWindow")
 @Html.Partial("_OpenFileWindow")
-
-@if (Model != null) 
-{
-    <input type="hidden" value="@Model.ID" id="ProjectID" />
-}
-
-

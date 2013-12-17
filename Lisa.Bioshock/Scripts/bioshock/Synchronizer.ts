@@ -28,6 +28,7 @@ class Synchronizer {
     }
 
     private previewId: string;
+    private isConnected = false;
     private onRead = (message: string) => {
 
         
@@ -51,13 +52,14 @@ class Synchronizer {
      */
     public start(done?: Function) {
 
-        if (done) {
+        $.connection.hub.start().done(() => {
 
-            $.connection.hub.start().done(done);
-        } else {
+            this.isConnected = true;
 
-            $.connection.hub.start();
-        }
+            if (done) {
+                done();
+            }
+        });
     }
 
     /**
@@ -67,7 +69,9 @@ class Synchronizer {
      */ 
     public update(message: any) {
 
-        this.hub.server.send(message);
+        if (this.isConnected) {
+            this.hub.server.send(message);
+        }
     }
 
     /**
