@@ -102,7 +102,7 @@ class GuiController {
 
             if (event.altKey && event.keyCode == 79) {
 
-                this.createFileList();
+                //this.createFileList();
                 this.isMenuActive = true;
                 this.toggleOverlay();
                 this.$openFileWindow.toggle();
@@ -128,7 +128,7 @@ class GuiController {
                     this.$openFileWindow.toggle();
 
                     $('#wrap .filter_query').val("");
-                    this.applyFilter();
+                    //this.applyFilter();
                     $('.nicescroll-rails').hide();
                     this.toggleOverlay();
                     this.isMenuAvailable = true;
@@ -241,7 +241,7 @@ class GuiController {
     private initFilesView() {
         
         $('#openFileWindow .filter_query').keyup(this.applyFilter);
-        this.createFileList();
+        //this.createFileList();
         var scrollbar: any = $("#file_list");
         scrollbar.niceScroll({ autohidemode: false, touchbehavior: false, cursorcolor: "#fff", cursoropacitymax: 1, cursorwidth: 16, cursorborder: false, cursorborderradius: false, background: "#121012", autohidemode: false, railpadding: { top: 2, right: 2, bottom: 2 } }).cursor.css({ "background": "#FF4200" });
         $('.nicescroll-rails').show({
@@ -254,11 +254,13 @@ class GuiController {
 
     private applyFilter = () => {
 
-        var filter = $('#openFileWindow .filter_query').val();
-        this.showFilterResults(filter);
+        //var filter = $('#openFileWindow .filter_query').val();
+        //this.showFilterResults(filter);
     }
 
     private createFileList = () => {
+        console.log("GuiController::createFileList()");
+
         var fileList = $('#file_list');
         this.files = [];
         fileList.empty();
@@ -468,7 +470,7 @@ class GuiController {
                 if (data.Result) {
 
                     this.currentGuid = data.ID;
-                    this.createFileList();
+                    //this.createFileList();
                     this.isMenuActive = false;
                     this.toggleOverlay();
                     this.$newFileWindow.toggle();

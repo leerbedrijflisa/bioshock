@@ -13,7 +13,7 @@ var OpenFileWindow = (function (_super) {
         _super.apply(this, arguments);
         var _this = this;
         this.createFileList = function () {
-            var $fileList = $('#file-list');
+            var $fileList = $('#file_list');
             $fileList.empty();
 
             _this.files = [];
@@ -24,26 +24,33 @@ var OpenFileWindow = (function (_super) {
                 }
             });
         };
-        this.generateFolderTree = function (item, $fileList) {
+        this.generateFolderTree = function (item, $fileList, $ul) {
             var type = item.Type.toLowerCase();
             var path = item.FullPath.replace('/root', '');
-            var $folder = $('<div />').addClass('folder').appendTo($fileList);
-            $('<span />').addClass('folder-name').text(path).appendTo($folder);
 
-            var $files = $('<ul />').appendTo($folder);
-            $('<div />').addClass('clear').appendTo($files);
+            if (path == '') {
+                path = '/';
+            }
 
-            if (type == "file") {
-                var $li = $('<li />').appendTo($files);
+            if (type == "folder") {
+                var $folder = $('<div />').addClass('folder').appendTo($fileList);
+                $('<span />').addClass('folder_name').text(path).appendTo($folder);
+
+                var $files = $('<ul />').appendTo($folder);
+                $('<div />').addClass('clear').appendTo($folder);
+
+                for (var i = 0; i < item.Subs.length; i++) {
+                    _this.generateFolderTree(item.Subs[i], $fileList, $files);
+                }
+            } else {
+                var $lastUl = $ul || $('<ul />').appendTo(".folder");
+
+                var $li = $('<li />').appendTo($lastUl);
                 var $a = $('<a />').appendTo($li);
                 var $img = $('<img />').attr('src', '/Content/Images/item.png').appendTo($a);
-                var $fileName = $('<span />').text(item.Name).appendTo($a);
+                var $filename = $('<span />').text(item.Name).appendTo($a);
 
                 _this.files.push(item);
-            } else if (type == "folder") {
-                for (var i = 0; i < item.Subs.length; i++) {
-                    _this.generateFolderTree(item.Subs[i], $fileList);
-                }
             }
         };
         this.files = [];
@@ -53,7 +60,13 @@ var OpenFileWindow = (function (_super) {
     };
 
     OpenFileWindow.prototype.initialize = function () {
+        var _this = this;
         var filter = this.$element.find('.filter');
+
+        this.open(function () {
+            _this.createFileList();
+        });
+
         filter.submit(function () {
         });
     };

@@ -1,11 +1,14 @@
 /// <reference path="../../typings/jquery/jquery.d.ts" />
 class AjaxHelper {
 
+    constructor(public projectID: any) {
+    }
+
     public getFiles(success: Function, error?: Function) {
         $.ajax({
             url: '/test/getFiles',
             data: {
-                projectID: Workspace.instance.projectID
+                projectID: this.projectID
             },
             success: function (data) {
                 success(data);

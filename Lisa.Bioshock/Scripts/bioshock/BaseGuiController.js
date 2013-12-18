@@ -150,7 +150,7 @@ else if (filename.indexOf(".css") > -1)
                         _this.$openFileWindow.toggle();
                         $('.filter_query').val('');
 
-                        _this.applyFilter();
+                        //this.applyFilter();
                         $('.nicescroll-rails').hide();
                         _this.toggleOverlay();
                         _this.isMenuAvailable = true;
@@ -433,7 +433,6 @@ else if (filename.indexOf(".css") > -1)
         this.registerKeyHandlers();
         this.registerEvents();
         this.projectID = $("#ProjectID").val();
-        this.initFilesView();
 
         if (preview) {
             this.registerPreviewHandlers();

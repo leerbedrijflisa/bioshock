@@ -9,7 +9,14 @@ namespace Lisa.Bioshock.ActionResults
 {
     public class JsonItemResult : JsonResult
     {
+        private JsonItemResult()
+        {
+            this.ContentType = "application/json";
+            this.JsonRequestBehavior = System.Web.Mvc.JsonRequestBehavior.AllowGet;
+        }
+
         public JsonItemResult(IEnumerable<StorageItem> items)
+            : this()
         {
             var result = new List<dynamic>();
 
@@ -17,9 +24,14 @@ namespace Lisa.Bioshock.ActionResults
             {
                 GenerateJson(result, item);
             }
+            this.Data = result;
+        }
 
-            this.ContentType = "application/json";
-            this.JsonRequestBehavior = System.Web.Mvc.JsonRequestBehavior.AllowGet;
+        public JsonItemResult(Folder root)
+            : this()
+        {
+            var result = new List<dynamic>();
+            GenerateJson(result, root);
             this.Data = result;
         }
 

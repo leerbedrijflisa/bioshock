@@ -78,7 +78,7 @@ var GuiController = (function () {
                 }
 
                 if (event.altKey && event.keyCode == 79) {
-                    _this.createFileList();
+                    //this.createFileList();
                     _this.isMenuActive = true;
                     _this.toggleOverlay();
                     _this.$openFileWindow.toggle();
@@ -100,7 +100,8 @@ var GuiController = (function () {
                         _this.$openFileWindow.toggle();
 
                         $('#wrap .filter_query').val("");
-                        _this.applyFilter();
+
+                        //this.applyFilter();
                         $('.nicescroll-rails').hide();
                         _this.toggleOverlay();
                         _this.isMenuAvailable = true;
@@ -183,10 +184,12 @@ var GuiController = (function () {
             $(_this.errorCount).text(_this.widgets.length);
         };
         this.applyFilter = function () {
-            var filter = $('#openFileWindow .filter_query').val();
-            _this.showFilterResults(filter);
+            //var filter = $('#openFileWindow .filter_query').val();
+            //this.showFilterResults(filter);
         };
         this.createFileList = function () {
+            console.log("GuiController::createFileList()");
+
             var fileList = $('#file_list');
             _this.files = [];
             fileList.empty();
@@ -329,7 +332,8 @@ var GuiController = (function () {
                 $.get("/test/CreateFile", { filename: fileName }, function (data) {
                     if (data.Result) {
                         _this.currentGuid = data.ID;
-                        _this.createFileList();
+
+                        //this.createFileList();
                         _this.isMenuActive = false;
                         _this.toggleOverlay();
                         _this.$newFileWindow.toggle();
@@ -367,7 +371,8 @@ var GuiController = (function () {
     }
     GuiController.prototype.initFilesView = function () {
         $('#openFileWindow .filter_query').keyup(this.applyFilter);
-        this.createFileList();
+
+        //this.createFileList();
         var scrollbar = $("#file_list");
         scrollbar.niceScroll({ autohidemode: false, touchbehavior: false, cursorcolor: "#fff", cursoropacitymax: 1, cursorwidth: 16, cursorborder: false, cursorborderradius: false, background: "#121012", autohidemode: false, railpadding: { top: 2, right: 2, bottom: 2 } }).cursor.css({ "background": "#FF4200" });
         $('.nicescroll-rails').show({

@@ -1,12 +1,13 @@
 /// <reference path="../../typings/jquery/jquery.d.ts" />
 var AjaxHelper = (function () {
-    function AjaxHelper() {
+    function AjaxHelper(projectID) {
+        this.projectID = projectID;
     }
     AjaxHelper.prototype.getFiles = function (success, error) {
         $.ajax({
             url: '/test/getFiles',
             data: {
-                projectID: Workspace.instance.projectID
+                projectID: this.projectID
             },
             success: function (data) {
                 success(data);

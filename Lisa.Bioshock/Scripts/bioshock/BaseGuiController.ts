@@ -8,7 +8,7 @@ class BaseGuiController {
         this.registerKeyHandlers();        
         this.registerEvents();
         this.projectID = $("#ProjectID").val();
-        this.initFilesView();
+        //this.initFilesView();
         
         if (preview) {
 
@@ -245,7 +245,7 @@ class BaseGuiController {
                     this.$openFileWindow.toggle();
                     $('.filter_query').val('');
 
-                    this.applyFilter();
+                    //this.applyFilter();
                     $('.nicescroll-rails').hide();
                     this.toggleOverlay();
                     this.isMenuAvailable = true;

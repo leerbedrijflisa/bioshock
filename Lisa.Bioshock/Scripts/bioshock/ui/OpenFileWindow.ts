@@ -9,14 +9,19 @@ class OpenFileWindow extends UIWindow {
 
     public initialize() {
         var filter = this.$element.find('.filter');
+
+        this.open(() => {
+            this.createFileList();
+        });
+
         filter.submit(() => {
 
         });
     }
 
-    private createFileList = () => {
+    public createFileList = () => {
 
-        var $fileList = $('#file-list');
+        var $fileList = $('#file_list');
         $fileList.empty();
 
         this.files = [];
@@ -28,26 +33,33 @@ class OpenFileWindow extends UIWindow {
         });       
     }
 
-    private generateFolderTree = (item, $fileList) => {
+    private generateFolderTree = (item, $fileList, $ul?) => {
         var type = item.Type.toLowerCase();
         var path = item.FullPath.replace('/root', '');
-        var $folder = $('<div />').addClass('folder').appendTo($fileList);
-        $('<span />').addClass('folder-name').text(path).appendTo($folder);
 
-        var $files = $('<ul />').appendTo($folder);
-        $('<div />').addClass('clear').appendTo($files);
+        if (path == '') {
+            path = '/';
+        }
 
-        if (type == "file") {
-            var $li = $('<li />').appendTo($files);
+        if (type == "folder") {
+            var $folder = $('<div />').addClass('folder').appendTo($fileList);
+            $('<span />').addClass('folder_name').text(path).appendTo($folder);
+
+            var $files = $('<ul />').appendTo($folder);
+            $('<div />').addClass('clear').appendTo($folder);
+
+            for (var i = 0; i < item.Subs.length; i++) {
+                this.generateFolderTree(item.Subs[i], $fileList, $files);
+            }
+        } else {
+            var $lastUl = $ul || $('<ul />').appendTo(".folder");
+
+            var $li = $('<li />').appendTo($lastUl);
             var $a = $('<a />').appendTo($li);
             var $img = $('<img />').attr('src', '/Content/Images/item.png').appendTo($a);
-            var $fileName = $('<span />').text(item.Name).appendTo($a);
+            var $filename = $('<span />').text(item.Name).appendTo($a);
 
             this.files.push(item);
-        } else if (type == "folder") {
-            for (var i = 0; i < item.Subs.length; i++) {
-                this.generateFolderTree(item.Subs[i], $fileList);
-            }
         }
     }
 

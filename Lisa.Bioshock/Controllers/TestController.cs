@@ -62,7 +62,7 @@ namespace Lisa.Bioshock.Controllers
                 return new JsonItemResult(GetFilesByContentType(contentType, fileSystem.Root));
             }
 
-            return new JsonItemResult(fileSystem.Root.Items);
+            return new JsonItemResult(fileSystem.Root);
         }
 
         private List<Storage.File> GetFilesByContentType(string contentType, Folder parentFolder)
