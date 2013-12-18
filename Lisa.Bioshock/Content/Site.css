@@ -150,6 +150,8 @@ textarea {
     height: 100%;
     width: 100%;
     display: none;
+    background-color: black;
+    opacity: 0.6;
 } 
 
 #editorMenuWindow {

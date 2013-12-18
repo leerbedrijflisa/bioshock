@@ -168,6 +168,7 @@
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
+    <Compile Include="BundleOrderer.cs" />
     <Compile Include="Controllers\BaseController.cs" />
     <Compile Include="Controllers\ProjectController.cs" />
     <Compile Include="LisaClaimTypes.cs" />
@@ -443,6 +444,10 @@
     <Content Include="Scripts\bioshock\FullScreenGuiController.js" />
     <Content Include="Scripts\bioshock\FullScreenGuiController.ts" />
     <Content Include="Scripts\bioshock\GuiController.js.map" />
+    <TypeScriptCompile Include="Scripts\bioshock\ui\UIWindow.ts" />
+    <TypeScriptCompile Include="Scripts\bioshock\ui\OpenFileWindow.ts" />
+    <TypeScriptCompile Include="Scripts\bioshock\utils\AjaxHelper.ts" />
+    <TypeScriptCompile Include="Scripts\bioshock\Workspace.ts" />
     <Content Include="Scripts\jquery-1.9.1.js" />
     <Content Include="Scripts\jquery-ui-1.10.3.js" />
     <Content Include="Scripts\jquery.nicescroll.min.js" />
