@@ -145,7 +145,7 @@ namespace Lisa.Bioshock.Controllers
 
         private bool FileExists(FileSystem filesystem, string filename)
         {
-            var file = fileSystem.Root.FindItemByPath("/root/" + filename) as Lisa.Storage.File;
+            var file = filesystem.Root.FindItemByPath("/root/" + filename) as Lisa.Storage.File;
             return file != null;
         }
 
@@ -168,6 +168,28 @@ namespace Lisa.Bioshock.Controllers
             }
 
             return Json(null);
+        }
+
+        public string FileContents(int id, string filename)
+        {
+            if (filename == null)
+            {
+                return string.Empty;
+            }
+
+            var project = Db.Projects.Find(id);
+            LocalStorageProvider provider = new LocalStorageProvider("/Storage/" + project.RootID);
+            FileSystem fileSystem = new FileSystem(provider);
+
+            var file = fileSystem.Root.FindItemByPath("/root/"+ filename, false) as Lisa.Storage.File;
+
+            var content = string.Empty;
+            using (var contents = new StreamReader(file.InputStream))
+            {
+                content = contents.ReadToEnd();
+            }
+
+            return content;
         }
     }
 }

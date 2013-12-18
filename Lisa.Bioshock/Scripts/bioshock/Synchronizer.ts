@@ -39,7 +39,12 @@ class Synchronizer {
             document.title = title[1];
         }
 
-        $(this.previewId).contents().find('html').html(message);
+        var preview = $(this.previewId);
+        var contents = preview.contents();
+        var html = contents.find('html');
+        html[0].innerHTML = message;
+
+        //$(this.previewId).contents().find('html').html(message);
 
     }
 

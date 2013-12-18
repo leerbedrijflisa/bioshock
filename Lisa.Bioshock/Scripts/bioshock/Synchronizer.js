@@ -14,7 +14,11 @@ var Synchronizer = (function () {
                 document.title = title[1];
             }
 
-            $(_this.previewId).contents().find('html').html(message);
+            var preview = $(_this.previewId);
+            var contents = preview.contents();
+            var html = contents.find('html');
+            html[0].innerHTML = message;
+            //$(this.previewId).contents().find('html').html(message);
         };
         this.hub = $.connection.synchronizeHub;
         this.previewId = preview;

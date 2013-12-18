@@ -12,6 +12,22 @@ namespace Lisa.Bioshock
         public static void RegisterRoutes(RouteCollection routes)
         {
             routes.IgnoreRoute("{resource}.axd/{*pathInfo}");
+            
+            routes.MapRoute(
+                "GetFile",
+                "Project/{id}/File/{*filename}",
+                new
+                {
+                    controller = "Test",
+                    action = "FileContents",
+                    filename = UrlParameter.Optional
+                },
+                new
+                {
+                    id = @"\d+"
+                }
+            );
+                
 
             routes.MapRoute(
                 name: "Default",
