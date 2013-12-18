@@ -3,6 +3,7 @@
 @{
     ViewBag.Title = "Index";
     Layout = "~/Views/Shared/_Layout.cshtml";   
+    
 }
 
 @if (Model != null) 
@@ -45,7 +46,7 @@
     }
 </script>
 
-<iframe id="preview" frameborder="0" ></iframe>
+<iframe id="preview" frameborder="0" src="/file/1/index.html" ></iframe>
 @Html.Partial("_EditorWindow")
 @Html.Partial("_EditorMenuWindow")
 @Html.Partial("_NewFileWindow")

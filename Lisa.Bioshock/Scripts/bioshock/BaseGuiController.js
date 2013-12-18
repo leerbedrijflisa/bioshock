@@ -136,7 +136,7 @@ else if (filename.indexOf(".css") > -1)
                     if (event.keyCode === _this.keys.F) {
                         _this.canToggleEditor = false;
                         _this.$editorWindow.toggle();
-                        var fullscreen = window.open("/home/fullscreen", "_blank");
+                        var fullscreen = window.open("/home/fullscreen/" + _this.projectID, "_blank");
                         fullscreen.onunload = function () {
                             _this.canToggleEditor = true;
                             _this.$editorWindow.show();

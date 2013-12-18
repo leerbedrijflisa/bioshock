@@ -17,7 +17,7 @@ namespace Lisa.Bioshock.Controllers
     {
         //
         // GET: /Project/
-
+        [Authorize]
         public ActionResult Index()
         {
             return View(CurrentUser.Projects.Where(p => !p.IsDeleted));

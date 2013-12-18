@@ -1,4 +1,6 @@
-﻿@{
+﻿@model Project
+
+@{
     ViewBag.Title = "Fullscreen";
 }
 
@@ -8,8 +10,39 @@
         top: 0; left: 0; right: 0; bottom: 0;
         height: auto;
         z-index: 9;
+        padding-bottom: 30px;
     }
+
+    .footer {
+        height: 29px;
+        width: 100%;
+        position: absolute;
+        background-color: #f7f7f7;
+        border-top: 1px solid #dddddd;
+        left: 0;
+            font-family: 'Segoe UI';
+        bottom:0;
+    }
+
+        .footer p {
+
+            font-size: 16px;
+            margin-top: 4px;
+            margin-left: 5px;
+        }
+
+        .footer #filename {
+
+            padding: 0 !important;
+            width: auto !important;
+
+        }
 </style>
+
+@if (Model != null) 
+{
+    <input type="hidden" value="@Model.ID" id="ProjectID" />
+}
 
 <script type="text/javascript">
     $(function () {
@@ -34,3 +67,5 @@
 @Html.Partial("_EditorMenuWindow")
 @Html.Partial("_NewFileWindow")
 @Html.Partial("_OpenFileWindow")
+
+<div class="footer"><p>Filename: <span id="filename"></span> Line:</p></div>

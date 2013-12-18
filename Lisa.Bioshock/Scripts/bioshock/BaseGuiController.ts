@@ -225,7 +225,7 @@ class BaseGuiController {
 
                     this.canToggleEditor = false;
                     this.$editorWindow.toggle();
-                    var fullscreen = window.open("/home/fullscreen", "_blank");
+                    var fullscreen = window.open("/home/fullscreen/" + this.projectID, "_blank");
                     fullscreen.onunload = () => {
 
                         this.canToggleEditor = true;
