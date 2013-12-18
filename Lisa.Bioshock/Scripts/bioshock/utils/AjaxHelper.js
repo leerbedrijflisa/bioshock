@@ -4,24 +4,23 @@ var AjaxHelper = (function () {
         this.projectID = projectID;
     }
     AjaxHelper.prototype.getFiles = function (data, success, error) {
-        if (data === undefined) {
-            data = {};
-        }
-        data['projectID'] = this.projectID;
-
         this.makeRequest('/test/getFiles', data, false, success, error);
     };
 
     AjaxHelper.prototype.getFileContent = function (data, success, error) {
-        if (data === undefined) {
-            data = {};
-        }
-        data['projectID'] = this.projectID;
-
         this.makeRequest('/test/GetFileContent', data, true, success, error);
     };
 
+    AjaxHelper.prototype.createFile = function (data, success, error) {
+        this.makeRequest('/test/CreateFile', data, false, success, error);
+    };
+
     AjaxHelper.prototype.makeRequest = function (url, data, isPost, success, error) {
+        if (data === undefined) {
+            data = {};
+        }
+        data["projectID"] = this.projectID;
+
         $.ajax({
             'url': url,
             'data': data,

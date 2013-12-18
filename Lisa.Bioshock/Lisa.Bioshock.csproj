@@ -448,6 +448,7 @@
     <TypeScriptCompile Include="Scripts\bioshock\ui\OpenFileWindow.ts" />
     <TypeScriptCompile Include="Scripts\bioshock\utils\AjaxHelper.ts" />
     <TypeScriptCompile Include="Scripts\bioshock\Workspace.ts" />
+    <TypeScriptCompile Include="Scripts\bioshock\ui\NewFileWindow.ts" />
     <Content Include="Scripts\jquery-1.9.1.js" />
     <Content Include="Scripts\jquery-ui-1.10.3.js" />
     <Content Include="Scripts\jquery.nicescroll.min.js" />

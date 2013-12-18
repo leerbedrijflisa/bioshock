@@ -358,13 +358,13 @@ else if (filename.indexOf(".css") > -1)
             });
         };
         this.registerEvents = function () {
-            $(_this.addButton).bind("click", _this.createFile);
-            $("#newFileName").bind("keydown", function (event) {
-                if (event.keyCode == 13) {
-                    _this.createFile();
-                    return false;
-                }
-            });
+            //$(this.addButton).bind("click", this.createFile);
+            //$("#newFileName").bind("keydown", (event) => {
+            //    if (event.keyCode == 13) {
+            //        this.createFile();
+            //        return false;
+            //    }
+            //});
         };
         this.createFile = function () {
             var fileName = $("#newFileName").val();

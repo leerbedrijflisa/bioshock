@@ -5,24 +5,26 @@ class AjaxHelper {
     }
 
     public getFiles(data: Object, success: Function, error?: Function) {
-        if (data === undefined) {
-            data = {};
-        }
-        data['projectID'] = this.projectID;
 
         this.makeRequest('/test/getFiles', data, false, success, error);
     }
 
     public getFileContent(data: Object, success: Function, error?: Function) {
-        if (data === undefined) {
-            data = {};
-        }
-        data['projectID'] = this.projectID;
 
         this.makeRequest('/test/GetFileContent', data, true, success, error);
     }
 
+    public createFile(data: Object, success: Function, error?: Function) {
+
+        this.makeRequest('/test/CreateFile', data, false, success, error);
+    }
+
     private makeRequest(url: string, data: Object, isPost: boolean, success: Function, error?: Function) {
+        if (data === undefined) {
+            data = {};
+        }
+        data["projectID"] = this.projectID;
+
         $.ajax({
             'url': url,
             'data': data,

@@ -543,14 +543,14 @@ class BaseGuiController {
 
     public registerEvents = () => {
 
-        $(this.addButton).bind("click", this.createFile);
-        $("#newFileName").bind("keydown", (event) => {
+        //$(this.addButton).bind("click", this.createFile);
+        //$("#newFileName").bind("keydown", (event) => {
 
-            if (event.keyCode == 13) {
-                this.createFile();
-                return false;
-            }
-        });
+        //    if (event.keyCode == 13) {
+        //        this.createFile();
+        //        return false;
+        //    }
+        //});
     }
 
     private createFile = () => {
