@@ -125,7 +125,7 @@ var BaseGuiController = (function () {
                             id = _this.lastCSS;
 else if (filename.indexOf(".css") > -1)
                             id = _this.lastHTML;
-                        $.post("/test/GetFileContent", { guid: id }, function (data) {
+                        $.post("/test/GetFileContent", { projectID: _this.projectID, guid: id }, function (data) {
                             _this.currentGuid = id;
                             _this.editor.setValue(data.content);
                             $("#filename").text(data.name);
