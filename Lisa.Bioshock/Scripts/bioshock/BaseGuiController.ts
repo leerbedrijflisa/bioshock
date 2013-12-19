@@ -1,4 +1,5 @@
 /// <reference path="../typings/jquery/jquery.d.ts" />
+/// <reference path="../typings/jqueryui/jqueryui.d.ts"/>
 class BaseGuiController {
 
     constructor(editor: any, options = {}, preview = true) {
@@ -403,7 +404,7 @@ class BaseGuiController {
         $('#openFileWindow .filter_query').keyup(this.applyFilter);
         this.createFileList();
         var scrollbar: any = $("#file_list");
-        scrollbar.niceScroll({ autohidemode: false, touchbehavior: false, cursorcolor: "#fff", cursoropacitymax: 1, cursorwidth: 16, cursorborder: false, cursorborderradius: false, background: "#121012", autohidemode: false, railpadding: { top: 2, right: 2, bottom: 2 } }).cursor.css({ "background": "#FF4200" });
+        scrollbar.niceScroll({ touchbehavior: false, cursorcolor: "#fff", cursoropacitymax: 1, cursorwidth: 16, cursorborder: false, cursorborderradius: false, background: "#121012", autohidemode: false, railpadding: { top: 2, right: 2, bottom: 2 } }).cursor.css({ "background": "#FF4200" });
         $('.nicescroll-rails').show({
             complete: function () {
                 var scroll: any = $("#file_list");

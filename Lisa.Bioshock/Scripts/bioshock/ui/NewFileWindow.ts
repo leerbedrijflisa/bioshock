@@ -1,4 +1,4 @@
-/// <reference name="UIWindow.ts" />
+/// <reference path="UIWindow.ts" />
 class NewFileWindow extends UIWindow {
     public constructor(selector: any) {
         super(selector);
@@ -23,6 +23,8 @@ class NewFileWindow extends UIWindow {
             this.createFile();
             return false;
         });
+
+        return super.initialize();
     }
 
     private cleanup = () => {

@@ -24,6 +24,8 @@ class OpenFileWindow extends UIWindow {
         $filterQuery.keyup((event) => {
             this.filter(event);
         });
+
+        return super.initialize();
     }    
     
     private filter = (event) => {
@@ -77,7 +79,7 @@ class OpenFileWindow extends UIWindow {
     private updateEditor = (event) => {
         var id = $(event.currentTarget).attr('data-id');
 
-        Workspace.instance.ajax.getFileContent({ guid: id }, (data) => {
+        Workspace.instance.ajax.getFileContents(id, (data) => {
             /* TODO: Implement editor content update */
             console.log(data);
         });
@@ -98,6 +100,7 @@ class OpenFileWindow extends UIWindow {
     }
 
     private generateFolderTree = (item, $fileList, $ul?) => {
+        console.log(item);
         var type = item.Type.toLowerCase();
         var path = item.FullPath.replace('/root', '');
 

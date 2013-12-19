@@ -1,29 +1,30 @@
 /// <reference path="../../typings/jquery/jquery.d.ts" />
 class AjaxHelper {
 
-    constructor(public projectID: any) {
+    constructor(projectID: string) {
+        this.projectID = projectID;
     }
 
     public getFiles(data: Object, success: Function, error?: Function) {
 
-        this.makeRequest('/test/getFiles', data, false, success, error);
+        this.makeRequest('/ajax/getfiles', data, true, success, error);
     }
 
-    public getFileContent(data: Object, success: Function, error?: Function) {
-
-        this.makeRequest('/test/GetFileContent', data, true, success, error);
+    public getFileContents(fileID: string, success: Function, error?: Function) {
+        this.makeRequest('/ajax/getfilecontents', { fileID: fileID }, true, success, error);
     }
 
     public createFile(data: Object, success: Function, error?: Function) {
 
-        this.makeRequest('/test/CreateFile', data, false, success, error);
+        this.makeRequest('/ajax/createfile', data, false, success, error);
     }
 
+    // TODO: Maybe always a POST request (is much safer and can handle more data)
     private makeRequest(url: string, data: Object, isPost: boolean, success: Function, error?: Function) {
         if (data === undefined) {
             data = {};
         }
-        data["projectID"] = this.projectID;
+        data['projectID'] = this.projectID;
 
         $.ajax({
             'url': url,
@@ -39,4 +40,6 @@ class AjaxHelper {
             'type': (isPost ? 'POST' : 'GET')
         });
     }
+
+    public projectID: string;
 };

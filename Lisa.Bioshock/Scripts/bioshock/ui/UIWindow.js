@@ -8,6 +8,7 @@ var UIWindow = (function () {
         this.initialize();
     }
     UIWindow.prototype.initialize = function () {
+        return this;
     };
 
     UIWindow.prototype.open = function (onOpen) {

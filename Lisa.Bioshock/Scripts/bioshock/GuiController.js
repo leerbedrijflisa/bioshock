@@ -122,6 +122,13 @@ var GuiController = (function () {
                     _this.editor.refresh();
                 }
 
+                //if (event.keyCode == 20 && this.lastKeyDown == 20) {
+                //    var msg = document.createElement("div");
+                //    msg.appendChild(document.createTextNode("Hallo"));
+                //    msg.className = "lint-error";
+                //    this.editor.addLineWidget(3, msg, { coverGutter: false, noHScroll: true });
+                //    this.editor.setGutterMarker(3, "Errors", this.makeMarker());
+                //}
                 if (event.keyCode == 144 && _this.lastKeyDown == 144) {
                     if (_this.ready) {
                         _this.ready = false;
@@ -374,7 +381,7 @@ var GuiController = (function () {
 
         //this.createFileList();
         var scrollbar = $("#file_list");
-        scrollbar.niceScroll({ autohidemode: false, touchbehavior: false, cursorcolor: "#fff", cursoropacitymax: 1, cursorwidth: 16, cursorborder: false, cursorborderradius: false, background: "#121012", autohidemode: false, railpadding: { top: 2, right: 2, bottom: 2 } }).cursor.css({ "background": "#FF4200" });
+        scrollbar.niceScroll({ touchbehavior: false, cursorcolor: "#fff", cursoropacitymax: 1, cursorwidth: 16, cursorborder: false, cursorborderradius: false, background: "#121012", autohidemode: false, railpadding: { top: 2, right: 2, bottom: 2 } }).cursor.css({ "background": "#FF4200" });
         $('.nicescroll-rails').show({
             complete: function () {
                 var scroll = $("#file_list");

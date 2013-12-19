@@ -1,3 +1,6 @@
+/// <reference path="../typings/jquery/jquery.d.ts" />
+/// <reference path="../typings/signalr/signalr.d.ts" />
+
 var Synchronizer = (function () {
     /**
     * Creates a new Synchronizer.

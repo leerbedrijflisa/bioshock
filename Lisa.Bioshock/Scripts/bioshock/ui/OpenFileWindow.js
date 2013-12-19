@@ -9,9 +9,9 @@ var __extends = this.__extends || function (d, b) {
 /// <reference path="UIWindow.ts" />
 var OpenFileWindow = (function (_super) {
     __extends(OpenFileWindow, _super);
-    function OpenFileWindow() {
-        _super.apply(this, arguments);
+    function OpenFileWindow(selector) {
         var _this = this;
+        _super.call(this, selector);
         this.filter = function (event) {
             var filter = $(event.target).val();
             var $highlights = _this.$element.find('#block .highlights');
@@ -59,12 +59,13 @@ var OpenFileWindow = (function (_super) {
         this.updateEditor = function (event) {
             var id = $(event.currentTarget).attr('data-id');
 
-            Workspace.instance.ajax.getFileContent({ guid: id }, function (data) {
+            Workspace.instance.ajax.getFileContents(id, function (data) {
                 /* TODO: Implement editor content update */
                 console.log(data);
             });
         };
         this.generateFolderTree = function (item, $fileList, $ul) {
+            console.log(item);
             var type = item.Type.toLowerCase();
             var path = item.FullPath.replace('/root', '');
 
@@ -101,10 +102,6 @@ var OpenFileWindow = (function (_super) {
         };
         this.files = [];
     }
-    OpenFileWindow.prototype.constructor = function (selector) {
-        _super.prototype(selector);
-    };
-
     OpenFileWindow.prototype.initialize = function () {
         var _this = this;
         var $filter = this.$element.find('#filter');
@@ -123,6 +120,8 @@ var OpenFileWindow = (function (_super) {
         $filterQuery.keyup(function (event) {
             _this.filter(event);
         });
+
+        return _super.prototype.initialize.call(this);
     };
 
     OpenFileWindow.prototype.createFileList = function () {

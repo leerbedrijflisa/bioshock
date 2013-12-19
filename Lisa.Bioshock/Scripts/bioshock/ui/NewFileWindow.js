@@ -4,12 +4,12 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-/// <reference name="UIWindow.ts" />
+/// <reference path="UIWindow.ts" />
 var NewFileWindow = (function (_super) {
     __extends(NewFileWindow, _super);
-    function NewFileWindow() {
-        _super.apply(this, arguments);
+    function NewFileWindow(selector) {
         var _this = this;
+        _super.call(this, selector);
         this.cleanup = function () {
             _this.$element.find('#newFileName').val('');
         };
@@ -37,10 +37,6 @@ var NewFileWindow = (function (_super) {
             }
         };
     }
-    NewFileWindow.prototype.constructor = function (selector) {
-        _super.prototype(selector);
-    };
-
     NewFileWindow.prototype.initialize = function () {
         var _this = this;
         var $form = this.$element.find('#createFile');
@@ -61,6 +57,8 @@ var NewFileWindow = (function (_super) {
             _this.createFile();
             return false;
         });
+
+        return _super.prototype.initialize.call(this);
     };
     return NewFileWindow;
 })(UIWindow);

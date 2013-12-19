@@ -4,22 +4,23 @@ var AjaxHelper = (function () {
         this.projectID = projectID;
     }
     AjaxHelper.prototype.getFiles = function (data, success, error) {
-        this.makeRequest('/test/getFiles', data, false, success, error);
+        this.makeRequest('/ajax/getfiles', data, true, success, error);
     };
 
-    AjaxHelper.prototype.getFileContent = function (data, success, error) {
-        this.makeRequest('/test/GetFileContent', data, true, success, error);
+    AjaxHelper.prototype.getFileContents = function (fileID, success, error) {
+        this.makeRequest('/ajax/getfilecontents', { fileID: fileID }, true, success, error);
     };
 
     AjaxHelper.prototype.createFile = function (data, success, error) {
-        this.makeRequest('/test/CreateFile', data, false, success, error);
+        this.makeRequest('/ajax/createfile', data, false, success, error);
     };
 
+    // TODO: Maybe always a POST request (is much safer and can handle more data)
     AjaxHelper.prototype.makeRequest = function (url, data, isPost, success, error) {
         if (data === undefined) {
             data = {};
         }
-        data["projectID"] = this.projectID;
+        data['projectID'] = this.projectID;
 
         $.ajax({
             'url': url,

@@ -6,6 +6,10 @@ using System.Linq;
 using System.Security.Claims;
 using System.Web;
 using System.Web.Mvc;
+using Lisa.Storage;
+using Lisa.Storage.Data;
+using Lisa.Storage.Data.Web;
+using System.Configuration;
 
 namespace Lisa.Bioshock.Controllers
 {
@@ -73,6 +77,23 @@ namespace Lisa.Bioshock.Controllers
             //    CurrentUser = Db.Users.FirstOrDefault(u => u.CustomerUserID == customerUserId.Value);
             //    ViewBag.CurrentUser = CurrentUser;
             //}
+        }
+
+        protected FileSystem CreateFileSystem(string rootID)
+        {
+            //TODO: set up and use the CloudStorageProvider
+
+            //var cs = ConfigurationManager.ConnectionStrings["AzureCloud"].ConnectionString;
+            //CloudStorageProvider provider = new CloudStorageProvider(cs, rootID);
+            LocalStorageProvider provider = new LocalStorageProvider("/Storage/" + rootID);
+            FileSystem fileSystem = new FileSystem(provider);
+
+            return fileSystem;
+        }
+
+        protected FileSystem CreateFileSystem(Guid rootID)
+        {
+            return this.CreateFileSystem(rootID.ToString());
         }
 
         protected override void Dispose(bool disposing)

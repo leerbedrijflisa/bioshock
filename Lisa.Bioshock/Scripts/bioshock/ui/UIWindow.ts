@@ -4,10 +4,11 @@ class UIWindow {
     constructor(selector: any) {        
         this.$element = $(selector);
         this.initialize();
-    }  
+    }
 
     public initialize() {        
-    } 
+        return this;
+    }
 
     public open(onOpen?: Function) {
         if (onOpen) {
@@ -37,8 +38,10 @@ class UIWindow {
         return this;
     }
 
+
+    public $element: JQuery;
+
     private openEvents = [];
     private closeEvents = [];
     private $overlay = $('#overlay');
-    public $element: JQuery;
 };

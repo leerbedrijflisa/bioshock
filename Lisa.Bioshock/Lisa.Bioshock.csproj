@@ -163,14 +163,16 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ActionResults\JsonItemResult.cs" />
+    <Compile Include="ActionResults\JsonStorageItemResult.cs" />
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="BundleOrderer.cs" />
+    <Compile Include="Controllers\AjaxController.cs" />
     <Compile Include="Controllers\BaseController.cs" />
     <Compile Include="Controllers\ProjectController.cs" />
+    <Compile Include="Extensions\FileExtensions.cs" />
     <Compile Include="LisaClaimTypes.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\TestController.cs" />
@@ -179,6 +181,7 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Attributes\AjaxAuthorizeAttribute.cs" />
     <Compile Include="Models\ProjectForm.cs" />
     <Compile Include="Models\SynchronizeHub.cs" />
     <Compile Include="Modules\ClaimsTransformationModule.cs" />
@@ -439,32 +442,27 @@
     <Content Include="Global.asax" />
     <Content Include="Content\Site.css" />
     <Content Include="Content\CodeMirror\mode\livescript\livescript.ls" />
-    <Content Include="Scripts\bioshock\BaseGuiController.js" />
     <Content Include="Scripts\bioshock\BaseGuiController.ts" />
-    <Content Include="Scripts\bioshock\FullScreenGuiController.js" />
     <Content Include="Scripts\bioshock\FullScreenGuiController.ts" />
-    <Content Include="Scripts\bioshock\GuiController.js.map" />
     <TypeScriptCompile Include="Scripts\bioshock\ui\UIWindow.ts" />
     <TypeScriptCompile Include="Scripts\bioshock\ui\OpenFileWindow.ts" />
     <TypeScriptCompile Include="Scripts\bioshock\utils\AjaxHelper.ts" />
     <TypeScriptCompile Include="Scripts\bioshock\Workspace.ts" />
     <TypeScriptCompile Include="Scripts\bioshock\ui\NewFileWindow.ts" />
+    <TypeScriptCompile Include="Scripts\bioshock\ui\EditorWindow.ts" />
     <Content Include="Scripts\jquery-1.9.1.js" />
     <Content Include="Scripts\jquery-ui-1.10.3.js" />
     <Content Include="Scripts\jquery.nicescroll.min.js" />
     <Content Include="Scripts\Prototypes.js" />
-    <Content Include="Scripts\bioshock\Synchronizer.js.map" />
+    <Content Include="Scripts\typings\codemirror\codemirror.d.ts" />
     <Content Include="Views\User\Index.cshtml" />
     <Content Include="Views\Shared\_EditorWindow.cshtml" />
     <Content Include="Views\Shared\_EditorMenuWindow.cshtml" />
     <Content Include="Views\Shared\_NewFileWindow.cshtml" />
     <Content Include="Views\Shared\_OpenFileWindow.cshtml" />
     <Content Include="Views\Home\Fullscreen.cshtml" />
-    <Content Include="Scripts\bioshock\GuiController.js" />
     <None Include="Properties\PublishProfiles\bioshock - FTP.pubxml" />
     <None Include="Properties\PublishProfiles\bioshock - Web Deploy.pubxml" />
-    <Content Include="Scripts\bioshock\BaseGuiController.js.map" />
-    <Content Include="Scripts\bioshock\FullScreenGuiController.js.map" />
     <None Include="Scripts\jquery.validate-vsdoc.js" />
     <Content Include="Scripts\jquery-ui-1.10.3.custom.js" />
     <Content Include="Scripts\jquery-ui-1.10.3.custom.min.js" />
@@ -485,7 +483,6 @@
     <Content Include="Views\Project\Delete.cshtml" />
     <Content Include="Views\Project\_TreeView.cshtml" />
     <TypeScriptCompile Include="Scripts\bioshock\Synchronizer.ts" />
-    <Content Include="Scripts\bioshock\Synchronizer.js" />
     <Content Include="Scripts\typings\jqueryui\jqueryui.d.ts" />
     <Content Include="Scripts\typings\jquery\jquery.d.ts" />
     <Content Include="Scripts\typings\signalr\signalr.d.ts" />
@@ -540,7 +537,18 @@
     </VisualStudio>
   </ProjectExtensions>
   <ItemGroup>
-    <TypeScriptCompile Include="$(ProjectDir)\**\*.ts" />
+    <TypeScriptCompile Include="C:\Users\Patrick\Documents\Visual Studio 2012\Projects\Lisa\Lisa.Bioshock - refactor\Lisa.Bioshock\\Scripts\bioshock\BaseGuiController.ts" />
+    <TypeScriptCompile Include="C:\Users\Patrick\Documents\Visual Studio 2012\Projects\Lisa\Lisa.Bioshock - refactor\Lisa.Bioshock\\Scripts\bioshock\FullScreenGuiController.ts" />
+    <TypeScriptCompile Include="C:\Users\Patrick\Documents\Visual Studio 2012\Projects\Lisa\Lisa.Bioshock - refactor\Lisa.Bioshock\\Scripts\bioshock\GuiController.ts" />
+    <TypeScriptCompile Include="C:\Users\Patrick\Documents\Visual Studio 2012\Projects\Lisa\Lisa.Bioshock - refactor\Lisa.Bioshock\\Scripts\bioshock\Synchronizer.ts" />
+    <TypeScriptCompile Include="C:\Users\Patrick\Documents\Visual Studio 2012\Projects\Lisa\Lisa.Bioshock - refactor\Lisa.Bioshock\\Scripts\bioshock\ui\NewFileWindow.ts" />
+    <TypeScriptCompile Include="C:\Users\Patrick\Documents\Visual Studio 2012\Projects\Lisa\Lisa.Bioshock - refactor\Lisa.Bioshock\\Scripts\bioshock\ui\OpenFileWindow.ts" />
+    <TypeScriptCompile Include="C:\Users\Patrick\Documents\Visual Studio 2012\Projects\Lisa\Lisa.Bioshock - refactor\Lisa.Bioshock\\Scripts\bioshock\ui\UIWindow.ts" />
+    <TypeScriptCompile Include="C:\Users\Patrick\Documents\Visual Studio 2012\Projects\Lisa\Lisa.Bioshock - refactor\Lisa.Bioshock\\Scripts\bioshock\utils\AjaxHelper.ts" />
+    <TypeScriptCompile Include="C:\Users\Patrick\Documents\Visual Studio 2012\Projects\Lisa\Lisa.Bioshock - refactor\Lisa.Bioshock\\Scripts\bioshock\Workspace.ts" />
+    <TypeScriptCompile Include="C:\Users\Patrick\Documents\Visual Studio 2012\Projects\Lisa\Lisa.Bioshock - refactor\Lisa.Bioshock\\Scripts\typings\jqueryui\jqueryui.d.ts" />
+    <TypeScriptCompile Include="C:\Users\Patrick\Documents\Visual Studio 2012\Projects\Lisa\Lisa.Bioshock - refactor\Lisa.Bioshock\\Scripts\typings\jquery\jquery.d.ts" />
+    <TypeScriptCompile Include="C:\Users\Patrick\Documents\Visual Studio 2012\Projects\Lisa\Lisa.Bioshock - refactor\Lisa.Bioshock\\Scripts\typings\signalr\signalr.d.ts" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Lisa.Bioshock.Data\Lisa.Bioshock.Data.csproj">
@@ -572,21 +580,20 @@
       <Name>Lisa.Storage.FileSystem</Name>
     </ProjectReference>
   </ItemGroup>
-  <Target Name="TypeScript" AfterTargets="BeforeBuild">
-    <Exec Command="&quot;$(PROGRAMFILES)\Microsoft SDKs\TypeScript\tsc&quot; --sourcemap  --target ES5  @(TypeScriptCompile ->'&quot;%(fullpath)&quot;' , ' ')" Condition="'@(TypeScriptCompile)'!=''" />
-  </Target>
-  <!--
   <PropertyGroup Condition="'$(Configuration)' == 'Debug'">
     <TypeScriptTarget>ES5</TypeScriptTarget>
     <TypeScriptIncludeComments>true</TypeScriptIncludeComments>
     <TypeScriptSourceMap>true</TypeScriptSourceMap>
+    <TypeScriptModuleKind>AMD</TypeScriptModuleKind>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)' == 'Release'">
     <TypeScriptTarget>ES5</TypeScriptTarget>
     <TypeScriptIncludeComments>false</TypeScriptIncludeComments>
     <TypeScriptSourceMap>false</TypeScriptSourceMap>
+    <TypeScriptModuleKind>AMD</TypeScriptModuleKind>
   </PropertyGroup>
-  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\TypeScript\Microsoft.TypeScript.targets" />-->
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\TypeScript\Microsoft.TypeScript.targets" />
+  <Import Project="$(VSToolsPath)\TypeScript\Microsoft.TypeScript.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

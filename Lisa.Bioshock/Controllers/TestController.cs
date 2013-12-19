@@ -17,36 +17,6 @@ namespace Lisa.Bioshock.Controllers
         LocalStorageProvider provider;
         FileSystem fileSystem;
         Lisa.Storage.File file;
-        //
-        // GET: /Test/
-        public string Index()
-        {
-            LocalStorageProvider provider = new LocalStorageProvider("/Storage");
-            FileSystem fileSystem = new FileSystem(provider);
-
-            fileSystem.Root.Files.Add("index.html", "text/html");
-            Folder css = fileSystem.Root.Folders.Add("css");
-            css.Files.Add("stylesheet.css", "text/css");
-            
-            return Loop(fileSystem.Root);
-        }
-
-        private string Loop(Folder parent)
-        {
-            string s = "<ul>";
-            foreach (Folder folder in parent.Folders)
-            {
-                s += "<li>" + folder.Name + Loop(folder) + "</li>";
-            }
-            foreach (Lisa.Storage.File file in parent.Files)
-            {
-                s += "<li>" + file.Name + "</li>";
-            }
-
-            s += "</ul>";
-
-            return s;
-        }
 
         [ValidateInput(false)]
         [HttpGet]
@@ -59,10 +29,10 @@ namespace Lisa.Bioshock.Controllers
 
             if (contentType != null)
             {
-                return new JsonItemResult(GetFilesByContentType(contentType, fileSystem.Root));
+                return new JsonStorageItemResult(GetFilesByContentType(contentType, fileSystem.Root));
             }
 
-            return new JsonItemResult(fileSystem.Root);
+            return new JsonStorageItemResult(fileSystem.Root);
         }
 
         private List<Storage.File> GetFilesByContentType(string contentType, Folder parentFolder)

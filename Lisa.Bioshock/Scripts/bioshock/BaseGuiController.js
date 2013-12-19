@@ -1,4 +1,5 @@
 /// <reference path="../typings/jquery/jquery.d.ts" />
+/// <reference path="../typings/jqueryui/jqueryui.d.ts"/>
 var BaseGuiController = (function () {
     function BaseGuiController(editor, options, preview) {
         if (typeof options === "undefined") { options = {}; }
@@ -94,11 +95,13 @@ var BaseGuiController = (function () {
             _this.lastKeyDown = event.keyCode;
 
             if (!_this.isMenuActive) {
+                // Insert line above current
                 if (event.ctrlKey && event.keyCode === _this.keys.ENTER) {
                     _this.insertWhitespace();
                 }
 
                 if (event.altKey) {
+                    // File browser
                     if (event.keyCode === _this.keys.O) {
                         _this.createFileList();
                         _this.updateMenuState();
@@ -107,6 +110,7 @@ var BaseGuiController = (function () {
                         $('.filter_query').val('').focus();
                     }
 
+                    // New file dialog
                     if (event.keyCode === _this.keys.N) {
                         _this.openWindow = "new";
                         _this.updateMenuState();
@@ -118,12 +122,13 @@ var BaseGuiController = (function () {
                         }, 100);
                     }
 
+                    // Opens file switcher
                     if (event.keyCode === _this.keys.C) {
                         var filename = $("#filename").text();
                         var id = "";
                         if (filename.indexOf(".html") > -1)
                             id = _this.lastCSS;
-else if (filename.indexOf(".css") > -1)
+                        else if (filename.indexOf(".css") > -1)
                             id = _this.lastHTML;
                         $.post("/test/GetFileContent", { guid: id }, function (data) {
                             _this.currentGuid = id;
@@ -133,6 +138,7 @@ else if (filename.indexOf(".css") > -1)
                         //this.GetFilesByContentType();
                     }
 
+                    // Open fullscreen
                     if (event.keyCode === _this.keys.F) {
                         _this.canToggleEditor = false;
                         _this.$editorWindow.toggle();
@@ -145,6 +151,7 @@ else if (filename.indexOf(".css") > -1)
                 }
             } else {
                 if (event.altKey) {
+                    // Close file dialog
                     if (event.keyCode === _this.keys.O && (_this.openWindow == "open")) {
                         _this.isMenuActive = false;
                         _this.$openFileWindow.toggle();
@@ -157,6 +164,7 @@ else if (filename.indexOf(".css") > -1)
                         _this.openWindow = "none";
                     }
 
+                    // Close new file dialog if allowed
                     if (event.keyCode === _this.keys.N && (_this.openWindow == "new")) {
                         _this.isMenuActive = false;
                         _this.toggleOverlay();
@@ -219,7 +227,7 @@ else if (filename.indexOf(".css") > -1)
             var filename = $("#filename").text();
             if (filename.indexOf(".html") > -1)
                 contentType = "text/css";
-else if (filename.indexOf(".css") > -1)
+            else if (filename.indexOf(".css") > -1)
                 contentType = "text/html";
             $.get("/Test/GetFiles", { projectID: _this.projectID, contentType: contentType }, function (data) {
                 var id = data[0].ID;
@@ -434,6 +442,7 @@ else if (filename.indexOf(".css") > -1)
         this.registerEvents();
         this.projectID = $("#ProjectID").val();
 
+        //this.initFilesView();
         if (preview) {
             this.registerPreviewHandlers();
         }
@@ -477,7 +486,7 @@ else if (filename.indexOf(".css") > -1)
         $('#openFileWindow .filter_query').keyup(this.applyFilter);
         this.createFileList();
         var scrollbar = $("#file_list");
-        scrollbar.niceScroll({ autohidemode: false, touchbehavior: false, cursorcolor: "#fff", cursoropacitymax: 1, cursorwidth: 16, cursorborder: false, cursorborderradius: false, background: "#121012", autohidemode: false, railpadding: { top: 2, right: 2, bottom: 2 } }).cursor.css({ "background": "#FF4200" });
+        scrollbar.niceScroll({ touchbehavior: false, cursorcolor: "#fff", cursoropacitymax: 1, cursorwidth: 16, cursorborder: false, cursorborderradius: false, background: "#121012", autohidemode: false, railpadding: { top: 2, right: 2, bottom: 2 } }).cursor.css({ "background": "#FF4200" });
         $('.nicescroll-rails').show({
             complete: function () {
                 var scroll = $("#file_list");
