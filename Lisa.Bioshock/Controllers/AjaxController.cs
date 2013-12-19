@@ -65,7 +65,7 @@ namespace Lisa.Bioshock.Controllers
             });
         }
 
-        [ActionName("create")]
+
         [AjaxAuthorize]
         [HttpPost]
         // TODO: Support the creating of files inside folders
@@ -109,7 +109,6 @@ namespace Lisa.Bioshock.Controllers
         }
 
 
-        [ActionName("files-write")]
         public ActionResult WriteFile(int projectID, string fileID, string contents)
         {
             var project = Db.Projects.Find(projectID);
