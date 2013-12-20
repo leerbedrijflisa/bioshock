@@ -28,7 +28,7 @@ class OpenFileWindow extends UIWindow {
         return super.initialize();
     }    
     
-    private filter = (event) => {
+    private filter(event) {
         var filter = $(event.target).val();
         var $highlights = this.$element.find('#block .highlights');
         $highlights.children('ul').remove();
@@ -39,20 +39,19 @@ class OpenFileWindow extends UIWindow {
             for (var i = 0; i < this.files.length; i++) {
 
                 var file = this.files[i];
-                if (file.Name.search(filter) > -1 || file.FullPath.search(filter) > -1) {
+                if (file.name.search(filter) > -1 || file.fullPath.search(filter) > -1) {
 
                     var $li = $('<li />').appendTo($ul);
                     var $a = $('<a />').attr({
                         'href': 'javascript:void(0);',
-                        'data-id': file.ID
-                    }).appendTo($li);
+                    }).data("file-id", file.id).appendTo($li);
 
                     var $img = $('<img />').attr({
                         'src': '/Content/Images/filter_item_logo.png',
                         'alt': file.ID
                     }).appendTo($a);
 
-                    var $span = $('<span />').text(file.Name).appendTo($a);
+                    var $span = $('<span />').text(file.name).appendTo($a);
 
                     $a.click((event) => {
                         this.updateEditor(event);
@@ -62,7 +61,7 @@ class OpenFileWindow extends UIWindow {
         }
     }
 
-    private filterSubmit = () => {
+    private filterSubmit() {
         var $highlights = this.$element.find('.highlights');
         var $ul = $highlights.find('ul');
         var $children = $ul.children('li');
@@ -76,47 +75,46 @@ class OpenFileWindow extends UIWindow {
         return false;
     }
 
-    private updateEditor = (event) => {
-        var id = $(event.currentTarget).attr('data-id');
+    private updateEditor(event) {
+        var id = $(event.currentTarget).data('file-id');
 
         Workspace.instance.ajax.getFileContents(id, (data) => {
-            /* TODO: Implement editor content update */
-            console.log(data);
+            Workspace.instance.editorWindow.openFile(data);
         });
+
+        this.close();
     }
 
     private createFileList() {
-
-        var $fileList = $('#file_list');
-        $fileList.empty();
+        var $fileList = $('#file_list').empty();
 
         this.files = [];
 
-        Workspace.instance.ajax.getFiles(undefined, (data) => {
-            for (var i = 0; i < data.length; i++) {
-                this.generateFolderTree(data[i], $fileList);
+        Workspace.instance.ajax.getFiles((data) => {
+            for (var i in data) {
+                if (data.hasOwnProperty(i)) {
+                    this.generateFolderTree(data[i], $fileList);
+                }
             }
         });
     }
 
-    private generateFolderTree = (item, $fileList, $ul?) => {
-        console.log(item);
-        var type = item.Type.toLowerCase();
-        var path = item.FullPath.replace('/root', '');
+    private generateFolderTree(item: IStorageItem, $fileList, $ul?) {
+        var path = item.fullPath.replace('/root', '');
 
         if (path == '') {
             path = '/';
         }
 
-        if (type == "folder") {
+        if (item.type == StorageItemType.FOLDER) {
             var $folder = $('<div />').addClass('folder').appendTo($fileList);
             $('<span />').addClass('folder_name').text(path).appendTo($folder);
 
             var $files = $('<ul />').appendTo($folder);
             $('<div />').addClass('clear').appendTo($folder);
 
-            for (var i = 0; i < item.Subs.length; i++) {
-                this.generateFolderTree(item.Subs[i], $fileList, $files);
+            for (var i = 0; i < item.folderProps.items.length; i++) {
+                this.generateFolderTree(item.folderProps.items[i], $fileList, $files);
             }
         } else {
             var $lastUl = $ul || $('<ul />').appendTo(".folder");
@@ -124,13 +122,13 @@ class OpenFileWindow extends UIWindow {
             var $li = $('<li />').appendTo($lastUl);
             var $a = $('<a />').appendTo($li);
             var $img = $('<img />').attr('src', '/Content/Images/item.png').appendTo($a);
-            var $filename = $('<span />').text(item.Name).appendTo($a);
+            var $filename = $('<span />').text(item.name).appendTo($a);
 
             this.files.push(item);
         }
     }  
 
-    private cleanup = () => {
+    private cleanup() {
         this.$element.find('.filter_query').val('');
 
         var $highlights = this.$element.find('#block .highlights');

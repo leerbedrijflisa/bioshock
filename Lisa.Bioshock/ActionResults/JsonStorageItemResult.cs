@@ -4,11 +4,15 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using Lisa.Bioshock.Models;
 
 namespace Lisa.Bioshock.ActionResults
 {
     public class JsonStorageItemResult : JsonResult
     {
+        public const int TypeFolder = 1;
+        public const int TypeFile = 2;
+
         private JsonStorageItemResult()
         {
             this.ContentType = "application/json";
@@ -18,48 +22,15 @@ namespace Lisa.Bioshock.ActionResults
         public JsonStorageItemResult(IEnumerable<StorageItem> items)
             : this()
         {
-            var result = new List<dynamic>();
-
-            foreach (var item in items)
-            {
-                GenerateJson(result, item);
-            }
-            this.Data = result;
+            var builder = new JsonStorageItemBuilder();
+            this.Data = builder.BuildJson(items);
         }
 
         public JsonStorageItemResult(Folder root)
             : this()
         {
-            var result = new List<dynamic>();
-            GenerateJson(result, root);
-            this.Data = result;
-        }
-
-        private void GenerateJson(List<dynamic> json, StorageItem item)
-        {
-            dynamic node = new
-            {
-                ID = item.ID,
-                Name = item.Name,
-                Path = item.Path,
-                FullPath = item.FullPath,
-                Type = (item is Folder ? "Folder" : "File"),
-                Subs = new List<dynamic>()
-            };
-
-            if (item is Folder)
-            {
-                var subs = new List<dynamic>();
-
-                foreach (var child in ((Folder)item).Items)
-                {
-                    GenerateJson(subs, child);
-                }
-
-                node.Subs.AddRange(subs);
-            }
-
-            json.Add(node);
+            var builder = new JsonStorageItemBuilder();
+            this.Data = builder.BuildJson(root);
         }
     }
 }

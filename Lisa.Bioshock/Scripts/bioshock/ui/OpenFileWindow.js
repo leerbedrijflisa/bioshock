@@ -10,96 +10,7 @@ var __extends = this.__extends || function (d, b) {
 var OpenFileWindow = (function (_super) {
     __extends(OpenFileWindow, _super);
     function OpenFileWindow(selector) {
-        var _this = this;
         _super.call(this, selector);
-        this.filter = function (event) {
-            var filter = $(event.target).val();
-            var $highlights = _this.$element.find('#block .highlights');
-            $highlights.children('ul').remove();
-
-            if (filter.length > 0) {
-                var $ul = $('<ul />').appendTo($highlights);
-
-                for (var i = 0; i < _this.files.length; i++) {
-                    var file = _this.files[i];
-                    if (file.Name.search(filter) > -1 || file.FullPath.search(filter) > -1) {
-                        var $li = $('<li />').appendTo($ul);
-                        var $a = $('<a />').attr({
-                            'href': 'javascript:void(0);',
-                            'data-id': file.ID
-                        }).appendTo($li);
-
-                        var $img = $('<img />').attr({
-                            'src': '/Content/Images/filter_item_logo.png',
-                            'alt': file.ID
-                        }).appendTo($a);
-
-                        var $span = $('<span />').text(file.Name).appendTo($a);
-
-                        $a.click(function (event) {
-                            _this.updateEditor(event);
-                        });
-                    }
-                }
-            }
-        };
-        this.filterSubmit = function () {
-            var $highlights = _this.$element.find('.highlights');
-            var $ul = $highlights.find('ul');
-            var $children = $ul.children('li');
-
-            if ($children.length > 0) {
-                var $a = $children.first().find('a');
-                $a.click();
-            }
-
-            _this.$element.find('.filter_query').focus();
-            return false;
-        };
-        this.updateEditor = function (event) {
-            var id = $(event.currentTarget).attr('data-id');
-
-            Workspace.instance.ajax.getFileContents(id, function (data) {
-                /* TODO: Implement editor content update */
-                console.log(data);
-            });
-        };
-        this.generateFolderTree = function (item, $fileList, $ul) {
-            console.log(item);
-            var type = item.Type.toLowerCase();
-            var path = item.FullPath.replace('/root', '');
-
-            if (path == '') {
-                path = '/';
-            }
-
-            if (type == "folder") {
-                var $folder = $('<div />').addClass('folder').appendTo($fileList);
-                $('<span />').addClass('folder_name').text(path).appendTo($folder);
-
-                var $files = $('<ul />').appendTo($folder);
-                $('<div />').addClass('clear').appendTo($folder);
-
-                for (var i = 0; i < item.Subs.length; i++) {
-                    _this.generateFolderTree(item.Subs[i], $fileList, $files);
-                }
-            } else {
-                var $lastUl = $ul || $('<ul />').appendTo(".folder");
-
-                var $li = $('<li />').appendTo($lastUl);
-                var $a = $('<a />').appendTo($li);
-                var $img = $('<img />').attr('src', '/Content/Images/item.png').appendTo($a);
-                var $filename = $('<span />').text(item.Name).appendTo($a);
-
-                _this.files.push(item);
-            }
-        };
-        this.cleanup = function () {
-            _this.$element.find('.filter_query').val('');
-
-            var $highlights = _this.$element.find('#block .highlights');
-            $highlights.children('ul').remove();
-        };
         this.files = [];
     }
     OpenFileWindow.prototype.initialize = function () {
@@ -124,18 +35,111 @@ var OpenFileWindow = (function (_super) {
         return _super.prototype.initialize.call(this);
     };
 
+    OpenFileWindow.prototype.filter = function (event) {
+        var _this = this;
+        var filter = $(event.target).val();
+        var $highlights = this.$element.find('#block .highlights');
+        $highlights.children('ul').remove();
+
+        if (filter.length > 0) {
+            var $ul = $('<ul />').appendTo($highlights);
+
+            for (var i = 0; i < this.files.length; i++) {
+                var file = this.files[i];
+                if (file.name.search(filter) > -1 || file.fullPath.search(filter) > -1) {
+                    var $li = $('<li />').appendTo($ul);
+                    var $a = $('<a />').attr({
+                        'href': 'javascript:void(0);'
+                    }).data("file-id", file.id).appendTo($li);
+
+                    var $img = $('<img />').attr({
+                        'src': '/Content/Images/filter_item_logo.png',
+                        'alt': file.ID
+                    }).appendTo($a);
+
+                    var $span = $('<span />').text(file.name).appendTo($a);
+
+                    $a.click(function (event) {
+                        _this.updateEditor(event);
+                    });
+                }
+            }
+        }
+    };
+
+    OpenFileWindow.prototype.filterSubmit = function () {
+        var $highlights = this.$element.find('.highlights');
+        var $ul = $highlights.find('ul');
+        var $children = $ul.children('li');
+
+        if ($children.length > 0) {
+            var $a = $children.first().find('a');
+            $a.click();
+        }
+
+        this.$element.find('.filter_query').focus();
+        return false;
+    };
+
+    OpenFileWindow.prototype.updateEditor = function (event) {
+        var id = $(event.currentTarget).data('file-id');
+
+        Workspace.instance.ajax.getFileContents(id, function (data) {
+            Workspace.instance.editorWindow.openFile(data);
+        });
+
+        this.close();
+    };
+
     OpenFileWindow.prototype.createFileList = function () {
         var _this = this;
-        var $fileList = $('#file_list');
-        $fileList.empty();
+        var $fileList = $('#file_list').empty();
 
         this.files = [];
 
-        Workspace.instance.ajax.getFiles(undefined, function (data) {
-            for (var i = 0; i < data.length; i++) {
-                _this.generateFolderTree(data[i], $fileList);
+        Workspace.instance.ajax.getFiles(function (data) {
+            for (var i in data) {
+                if (data.hasOwnProperty(i)) {
+                    _this.generateFolderTree(data[i], $fileList);
+                }
             }
         });
+    };
+
+    OpenFileWindow.prototype.generateFolderTree = function (item, $fileList, $ul) {
+        var path = item.fullPath.replace('/root', '');
+
+        if (path == '') {
+            path = '/';
+        }
+
+        if (item.type == 1 /* FOLDER */) {
+            var $folder = $('<div />').addClass('folder').appendTo($fileList);
+            $('<span />').addClass('folder_name').text(path).appendTo($folder);
+
+            var $files = $('<ul />').appendTo($folder);
+            $('<div />').addClass('clear').appendTo($folder);
+
+            for (var i = 0; i < item.folderProps.items.length; i++) {
+                this.generateFolderTree(item.folderProps.items[i], $fileList, $files);
+            }
+        } else {
+            var $lastUl = $ul || $('<ul />').appendTo(".folder");
+
+            var $li = $('<li />').appendTo($lastUl);
+            var $a = $('<a />').appendTo($li);
+            var $img = $('<img />').attr('src', '/Content/Images/item.png').appendTo($a);
+            var $filename = $('<span />').text(item.name).appendTo($a);
+
+            this.files.push(item);
+        }
+    };
+
+    OpenFileWindow.prototype.cleanup = function () {
+        this.$element.find('.filter_query').val('');
+
+        var $highlights = this.$element.find('#block .highlights');
+        $highlights.children('ul').remove();
     };
     return OpenFileWindow;
 })(UIWindow);

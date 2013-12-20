@@ -182,6 +182,7 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Attributes\AjaxAuthorizeAttribute.cs" />
+    <Compile Include="Models\JsonStorageItemBuilder.cs" />
     <Compile Include="Models\ProjectForm.cs" />
     <Compile Include="Models\SynchronizeHub.cs" />
     <Compile Include="Modules\ClaimsTransformationModule.cs" />
@@ -450,6 +451,8 @@
     <TypeScriptCompile Include="Scripts\bioshock\Workspace.ts" />
     <TypeScriptCompile Include="Scripts\bioshock\ui\NewFileWindow.ts" />
     <TypeScriptCompile Include="Scripts\bioshock\ui\EditorWindow.ts" />
+    <TypeScriptCompile Include="Scripts\bioshock\filesystem\StorageItem.ts" />
+    <TypeScriptCompile Include="Scripts\bioshock\utils\Keys.ts" />
     <Content Include="Scripts\jquery-1.9.1.js" />
     <Content Include="Scripts\jquery-ui-1.10.3.js" />
     <Content Include="Scripts\jquery.nicescroll.min.js" />

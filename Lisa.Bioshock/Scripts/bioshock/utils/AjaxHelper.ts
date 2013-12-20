@@ -5,9 +5,9 @@ class AjaxHelper {
         this.projectID = projectID;
     }
 
-    public getFiles(data: Object, success: Function, error?: Function) {
+    public getFiles(success: Function, error?: Function) {
 
-        this.makeRequest('/ajax/getfiles', data, true, success, error);
+        this.makeRequest('/ajax/getfiles', null, true, success, error);
     }
 
     public getFileContents(fileID: string, success: Function, error?: Function) {
@@ -21,7 +21,7 @@ class AjaxHelper {
 
     // TODO: Maybe always a POST request (is much safer and can handle more data)
     private makeRequest(url: string, data: Object, isPost: boolean, success: Function, error?: Function) {
-        if (data === undefined) {
+        if (data === undefined || data === null) {
             data = {};
         }
         data['projectID'] = this.projectID;

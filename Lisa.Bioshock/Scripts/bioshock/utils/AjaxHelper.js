@@ -3,8 +3,8 @@ var AjaxHelper = (function () {
     function AjaxHelper(projectID) {
         this.projectID = projectID;
     }
-    AjaxHelper.prototype.getFiles = function (data, success, error) {
-        this.makeRequest('/ajax/getfiles', data, true, success, error);
+    AjaxHelper.prototype.getFiles = function (success, error) {
+        this.makeRequest('/ajax/getfiles', null, true, success, error);
     };
 
     AjaxHelper.prototype.getFileContents = function (fileID, success, error) {
@@ -17,7 +17,7 @@ var AjaxHelper = (function () {
 
     // TODO: Maybe always a POST request (is much safer and can handle more data)
     AjaxHelper.prototype.makeRequest = function (url, data, isPost, success, error) {
-        if (data === undefined) {
+        if (data === undefined || data === null) {
             data = {};
         }
         data['projectID'] = this.projectID;

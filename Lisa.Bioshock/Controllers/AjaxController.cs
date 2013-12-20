@@ -34,7 +34,9 @@ namespace Lisa.Bioshock.Controllers
                 return new JsonStorageItemResult(files);
             }
 
-            return new JsonStorageItemResult(fileSystem.Root);
+            var list = new List<StorageItem>();
+            list.Add(fileSystem.Root);
+            return new JsonStorageItemResult(list);
         }
 
 
@@ -109,6 +111,8 @@ namespace Lisa.Bioshock.Controllers
         }
 
 
+        [AjaxAuthorize]
+        [HttpPost]
         public ActionResult WriteFile(int projectID, string fileID, string contents)
         {
             var project = Db.Projects.Find(projectID);
