@@ -63,7 +63,10 @@ namespace Lisa.Bioshock.Controllers
             {
                 id = file.ID,
                 name = file.Name,
-                contents = fileContents
+                fileProps = new
+                {
+                    fileContents
+                }
             });
         }
 

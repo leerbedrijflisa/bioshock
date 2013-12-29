@@ -540,20 +540,6 @@
     </VisualStudio>
   </ProjectExtensions>
   <ItemGroup>
-    <TypeScriptCompile Include="C:\Users\Patrick\Documents\Visual Studio 2012\Projects\Lisa\Lisa.Bioshock - refactor\Lisa.Bioshock\\Scripts\bioshock\BaseGuiController.ts" />
-    <TypeScriptCompile Include="C:\Users\Patrick\Documents\Visual Studio 2012\Projects\Lisa\Lisa.Bioshock - refactor\Lisa.Bioshock\\Scripts\bioshock\FullScreenGuiController.ts" />
-    <TypeScriptCompile Include="C:\Users\Patrick\Documents\Visual Studio 2012\Projects\Lisa\Lisa.Bioshock - refactor\Lisa.Bioshock\\Scripts\bioshock\GuiController.ts" />
-    <TypeScriptCompile Include="C:\Users\Patrick\Documents\Visual Studio 2012\Projects\Lisa\Lisa.Bioshock - refactor\Lisa.Bioshock\\Scripts\bioshock\Synchronizer.ts" />
-    <TypeScriptCompile Include="C:\Users\Patrick\Documents\Visual Studio 2012\Projects\Lisa\Lisa.Bioshock - refactor\Lisa.Bioshock\\Scripts\bioshock\ui\NewFileWindow.ts" />
-    <TypeScriptCompile Include="C:\Users\Patrick\Documents\Visual Studio 2012\Projects\Lisa\Lisa.Bioshock - refactor\Lisa.Bioshock\\Scripts\bioshock\ui\OpenFileWindow.ts" />
-    <TypeScriptCompile Include="C:\Users\Patrick\Documents\Visual Studio 2012\Projects\Lisa\Lisa.Bioshock - refactor\Lisa.Bioshock\\Scripts\bioshock\ui\UIWindow.ts" />
-    <TypeScriptCompile Include="C:\Users\Patrick\Documents\Visual Studio 2012\Projects\Lisa\Lisa.Bioshock - refactor\Lisa.Bioshock\\Scripts\bioshock\utils\AjaxHelper.ts" />
-    <TypeScriptCompile Include="C:\Users\Patrick\Documents\Visual Studio 2012\Projects\Lisa\Lisa.Bioshock - refactor\Lisa.Bioshock\\Scripts\bioshock\Workspace.ts" />
-    <TypeScriptCompile Include="C:\Users\Patrick\Documents\Visual Studio 2012\Projects\Lisa\Lisa.Bioshock - refactor\Lisa.Bioshock\\Scripts\typings\jqueryui\jqueryui.d.ts" />
-    <TypeScriptCompile Include="C:\Users\Patrick\Documents\Visual Studio 2012\Projects\Lisa\Lisa.Bioshock - refactor\Lisa.Bioshock\\Scripts\typings\jquery\jquery.d.ts" />
-    <TypeScriptCompile Include="C:\Users\Patrick\Documents\Visual Studio 2012\Projects\Lisa\Lisa.Bioshock - refactor\Lisa.Bioshock\\Scripts\typings\signalr\signalr.d.ts" />
-  </ItemGroup>
-  <ItemGroup>
     <ProjectReference Include="..\Lisa.Bioshock.Data\Lisa.Bioshock.Data.csproj">
       <Project>{ff861e1f-c7fb-4255-a8c1-70813546c3a3}</Project>
       <Name>Lisa.Bioshock.Data</Name>
