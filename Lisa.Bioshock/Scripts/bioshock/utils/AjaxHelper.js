@@ -1,4 +1,4 @@
-/// <reference path="../../typings/jquery/jquery.d.ts" />
+﻿/// <reference path="../../typings/jquery/jquery.d.ts" />
 var AjaxHelper = (function () {
     function AjaxHelper(projectID) {
         this.projectID = projectID;
@@ -12,7 +12,7 @@ var AjaxHelper = (function () {
     };
 
     AjaxHelper.prototype.createFile = function (data, success, error) {
-        this.makeRequest('/ajax/createfile', data, false, success, error);
+        this.makeRequest('/ajax/createfile', data, true, success, error);
     };
 
     // TODO: Maybe always a POST request (is much safer and can handle more data)

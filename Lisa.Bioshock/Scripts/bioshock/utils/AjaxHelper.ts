@@ -16,7 +16,7 @@ class AjaxHelper {
 
     public createFile(data: Object, success: Function, error?: Function) {
 
-        this.makeRequest('/ajax/createfile', data, false, success, error);
+        this.makeRequest('/ajax/createfile', data, true, success, error);
     }
 
     // TODO: Maybe always a POST request (is much safer and can handle more data)

@@ -1,4 +1,4 @@
-var __extends = this.__extends || function (d, b) {
+﻿var __extends = this.__extends || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
     __.prototype = b.prototype;
@@ -26,7 +26,7 @@ var NewFileWindow = (function (_super) {
 
             if (fileName.endsWith('.css') || fileName.endsWith('.html')) {
                 Workspace.instance.ajax.createFile({ filename: fileName }, function (data) {
-                    if (data.Result) {
+                    if (data.result) {
                         /* TODO: Update the editor */
                         $('#filename').text(fileName);
                         _this.close();
