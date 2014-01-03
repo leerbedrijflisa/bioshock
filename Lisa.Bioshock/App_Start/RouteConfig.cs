@@ -27,6 +27,16 @@ namespace Lisa.Bioshock
                     id = @"\d+"
                 }
             );
+
+            routes.MapRoute(
+                "Fullscreen",
+                "editor",
+                new
+                    {
+                        controller = "Editor",
+                        action = "Fullscreen"
+                    }
+                    );
                 
 
             routes.MapRoute(
