@@ -33,13 +33,14 @@ namespace Lisa.Bioshock.Controllers
             return Content("<h1>Authorized!</h1>");
         }
 
-        public ActionResult Fullscreen(int? ID)
+        public ActionResult Fullscreen(int? ID, string GUID)
         {
             if (ID == null)
             {
                 return RedirectToAction("Index", "Project");
             }
-
+            ViewBag.ProjectID = ID;
+            ViewBag.File = GUID;
             return View();
         }
 

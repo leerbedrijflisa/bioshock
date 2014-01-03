@@ -17,7 +17,10 @@ var Synchronizer = (function () {
             var preview = $(_this.previewId);
             var contents = preview.contents();
             var html = contents.find('html');
-            html[0].innerHTML = message;
+            if (message == "!refresh")
+                html[0].innerHTML = html[0].innerHTML;
+else
+                html[0].innerHTML = message;
             //$(this.previewId).contents().find('html').html(message);
         };
         this.hub = $.connection.synchronizeHub;

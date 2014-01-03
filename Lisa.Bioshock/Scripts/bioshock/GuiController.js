@@ -20,7 +20,12 @@ var GuiController = (function () {
             _this.editor = editor;
             _this.editor.on('change', function (codeMirror) {
                 $.post("/Test/WriteFile", { guid: _this.currentGuid, source: _this.editor.getValue() });
-                _this.synchronizer.update(codeMirror.getValue());
+                var filename = $("#filename").text();
+                if (filename.indexOf(".css") > -1) {
+                    _this.synchronizer.update("!refresh");
+                } else {
+                    _this.synchronizer.update(codeMirror.getValue());
+                }
             });
             _this.editor.on('gutterClick', function (codeMirror) {
             });

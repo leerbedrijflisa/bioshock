@@ -28,7 +28,13 @@ class GuiController {
         this.editor.on('change', (codeMirror) => {
 
             $.post("/Test/WriteFile", { guid: this.currentGuid, source: this.editor.getValue() });
-            this.synchronizer.update(codeMirror.getValue());
+            var filename = $("#filename").text();
+            if (filename.indexOf(".css") > -1) {
+                this.synchronizer.update("!refresh");
+            }
+            else {
+                this.synchronizer.update(codeMirror.getValue());
+            }
 
         });
         this.editor.on('gutterClick', (codeMirror) => {

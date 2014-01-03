@@ -22,7 +22,14 @@ class BaseGuiController {
         this.editor.on('change', (codeMirror) => {
 
             $.post("/Test/WriteFile", { projectID: this.projectID, guid: this.currentGuid, source: this.editor.getValue() });
-            this.synchronizer.update(codeMirror.getValue());
+            var filename = $("#filename").text();
+            if (filename.indexOf(".css") > -1) {
+                this.synchronizer.update("!refresh");
+            }
+            else {
+                this.synchronizer.update(codeMirror.getValue());
+            }
+            //this.synchronizer.update(codeMirror.getValue());
 
             if (this.$errors.is(':visible')) {
                 this.$errors.hide();
@@ -213,8 +220,9 @@ class BaseGuiController {
                     $.post("/test/GetFileContent", { projectID: this.projectID, guid: id }, (data) => {
 
                         this.currentGuid = id;
-                        this.editor.setValue(data.content);
                         $("#filename").text(data.name);
+                        this.editor.setValue(data.content);
+                        
                     });
                     
                     //this.GetFilesByContentType();
@@ -225,7 +233,7 @@ class BaseGuiController {
 
                     this.canToggleEditor = false;
                     this.$editorWindow.toggle();
-                    var fullscreen = window.open("/home/fullscreen/" + this.projectID, "_blank");
+                    var fullscreen = window.open("/editor/?project=" + this.projectID + "&file=" + this.currentGuid, "_blank");
                     fullscreen.onunload = () => {
 
                         this.canToggleEditor = true;
@@ -499,13 +507,14 @@ class BaseGuiController {
                 $.post("/test/GetFileContent", { projectID: this.projectID, guid: id }, (data) => {
 
                     this.currentGuid = id;
+                    $("#filename").text(data.name);
                     this.editor.setValue(data.content);
                     this.isMenuActive = false;
                     this.toggleOverlay();
                     this.$openFileWindow.toggle();
                     $('.filter_query').val('');
                     this.isMenuAvailable = true;
-                    $("#filename").text(data.name);
+                    
                     this.SetLastFile();
                     this.editor.focus();
                 });

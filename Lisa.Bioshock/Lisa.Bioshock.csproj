@@ -169,6 +169,7 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Controllers\BaseController.cs" />
+    <Compile Include="Controllers\EditorController.cs" />
     <Compile Include="Controllers\ProjectController.cs" />
     <Compile Include="LisaClaimTypes.cs" />
     <Compile Include="Controllers\HomeController.cs" />
@@ -453,7 +454,7 @@
     <Content Include="Views\Shared\_EditorMenuWindow.cshtml" />
     <Content Include="Views\Shared\_NewFileWindow.cshtml" />
     <Content Include="Views\Shared\_OpenFileWindow.cshtml" />
-    <Content Include="Views\Home\Fullscreen.cshtml" />
+    <Content Include="Views\Editor\Fullscreen.cshtml" />
     <Content Include="Scripts\bioshock\GuiController.js" />
     <None Include="Properties\PublishProfiles\bioshock - FTP.pubxml" />
     <None Include="Properties\PublishProfiles\bioshock - Web Deploy.pubxml" />

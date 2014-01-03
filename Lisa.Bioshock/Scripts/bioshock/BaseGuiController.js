@@ -8,7 +8,12 @@ var BaseGuiController = (function () {
             _this.editor = editor;
             _this.editor.on('change', function (codeMirror) {
                 $.post("/Test/WriteFile", { projectID: _this.projectID, guid: _this.currentGuid, source: _this.editor.getValue() });
-                _this.synchronizer.update(codeMirror.getValue());
+                var filename = $("#filename").text();
+                if (filename.indexOf(".css") > -1) {
+                    _this.synchronizer.update("!refresh");
+                } else {
+                    _this.synchronizer.update(codeMirror.getValue());
+                }
 
                 if (_this.$errors.is(':visible')) {
                     _this.$errors.hide();
@@ -127,8 +132,8 @@ else if (filename.indexOf(".css") > -1)
                             id = _this.lastHTML;
                         $.post("/test/GetFileContent", { projectID: _this.projectID, guid: id }, function (data) {
                             _this.currentGuid = id;
-                            _this.editor.setValue(data.content);
                             $("#filename").text(data.name);
+                            _this.editor.setValue(data.content);
                         });
                         //this.GetFilesByContentType();
                     }
@@ -136,7 +141,7 @@ else if (filename.indexOf(".css") > -1)
                     if (event.keyCode === _this.keys.F) {
                         _this.canToggleEditor = false;
                         _this.$editorWindow.toggle();
-                        var fullscreen = window.open("/home/fullscreen/" + _this.projectID, "_blank");
+                        var fullscreen = window.open("/editor/?project=" + _this.projectID + "&file=" + _this.currentGuid, "_blank");
                         fullscreen.onunload = function () {
                             _this.canToggleEditor = true;
                             _this.$editorWindow.show();
@@ -335,13 +340,14 @@ else if (filename.indexOf(".css") > -1)
 
                     $.post("/test/GetFileContent", { projectID: _this.projectID, guid: id }, function (data) {
                         _this.currentGuid = id;
+                        $("#filename").text(data.name);
                         _this.editor.setValue(data.content);
                         _this.isMenuActive = false;
                         _this.toggleOverlay();
                         _this.$openFileWindow.toggle();
                         $('.filter_query').val('');
                         _this.isMenuAvailable = true;
-                        $("#filename").text(data.name);
+
                         _this.SetLastFile();
                         _this.editor.focus();
                     });
