@@ -59,15 +59,7 @@ namespace Lisa.Bioshock.Controllers
 
             var fileContents = file.ReadContents();
 
-            return Json(new
-            {
-                id = file.ID,
-                name = file.Name,
-                fileProps = new
-                {
-                    fileContents
-                }
-            });
+            return new JsonStorageItemResult(file);
         }
 
 
