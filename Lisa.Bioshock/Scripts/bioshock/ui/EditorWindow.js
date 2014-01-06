@@ -50,6 +50,7 @@ var EditorWindow = (function (_super) {
         },
         set: function (value) {
             this.editor.getDoc().setValue(value);
+            this.editor.focus();
         },
         enumerable: true,
         configurable: true

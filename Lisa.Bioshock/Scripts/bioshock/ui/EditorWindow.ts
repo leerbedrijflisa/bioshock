@@ -43,6 +43,7 @@ class EditorWindow extends UIWindow {
 
     public set contents(value: string) {
         this.editor.getDoc().setValue(value);
+        this.editor.focus();
     }
 
     public get cursor() {
