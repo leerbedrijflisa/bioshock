@@ -5,17 +5,20 @@ var __extends = this.__extends || function (d, b) {
     d.prototype = new __();
 };
 /// <reference path="../../typings/codemirror/codemirror.d.ts" />
+/// <reference path="../../typings/jqueryui/jqueryui.d.ts" />
 var EditorWindow = (function (_super) {
     __extends(EditorWindow, _super);
     function EditorWindow(selector) {
         _super.call(this, selector);
         this._title = "Geen bestand geopend.";
+        this.triggerOverlay = false;
     }
     EditorWindow.prototype.open = function (onOpen) {
         _super.prototype.open.call(this, onOpen);
 
-        this.editor.focus();
+        this.editor.swapDoc(new CodeMirror.Doc(''));
         this.editor.getDoc().setCursor(this.cursor);
+        this.editor.focus();
 
         return this;
     };
@@ -87,7 +90,7 @@ var EditorWindow = (function (_super) {
         this.title = file.name;
         this.$element.data("file-id", file.id);
 
-        var doc = this.editor.getDoc().copy(false);
+        var doc = new CodeMirror.Doc('', file.fileProps.contentType);
         this.editor.swapDoc(doc);
         this.contents = file.fileProps.contents;
     };

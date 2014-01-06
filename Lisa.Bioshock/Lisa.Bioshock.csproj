@@ -445,6 +445,7 @@
     <Content Include="Content\CodeMirror\mode\livescript\livescript.ls" />
     <Content Include="Scripts\bioshock\BaseGuiController.ts" />
     <Content Include="Scripts\bioshock\FullScreenGuiController.ts" />
+    <TypeScriptCompile Include="Scripts\bioshock\ui\MenuWindow.ts" />
     <TypeScriptCompile Include="Scripts\bioshock\ui\UIWindow.ts" />
     <TypeScriptCompile Include="Scripts\bioshock\ui\OpenFileWindow.ts" />
     <TypeScriptCompile Include="Scripts\bioshock\utils\AjaxHelper.ts" />

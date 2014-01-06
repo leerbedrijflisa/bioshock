@@ -15,7 +15,10 @@ class UIWindow {
             this.openEvents.push(onOpen);
         } else {
             this.$element.fadeIn(250);
-            this.$overlay.fadeIn(250);
+
+            if (this.triggerOverlay) {
+                this.$overlay.fadeIn(250);
+            }
 
             for (var i = 0; i < this.openEvents.length; i++) {
                 this.openEvents[i]();
@@ -29,7 +32,10 @@ class UIWindow {
             this.closeEvents.push(onClose);
         } else {
             this.$element.fadeOut(250);
-            this.$overlay.fadeOut(250);
+
+            if (this.triggerOverlay) {
+                this.$overlay.fadeOut(250);
+            }
 
             for (var i = 0; i < this.closeEvents.length; i++) {
                 this.closeEvents[i]();
@@ -38,7 +44,7 @@ class UIWindow {
         return this;
     }
 
-
+    public triggerOverlay: boolean = true;
     public $element: JQuery;
 
     private openEvents = [];

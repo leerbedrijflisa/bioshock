@@ -112,6 +112,7 @@ textarea {
     height: 400px;
     border: 1px solid #c1c1c1;
     padding-bottom: 30px;
+    display: none;
 }
 
 #editorWindow h1{

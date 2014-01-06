@@ -1,14 +1,17 @@
 /// <reference path="../../typings/codemirror/codemirror.d.ts" />
+/// <reference path="../../typings/jqueryui/jqueryui.d.ts" />
 class EditorWindow extends UIWindow {
     constructor(selector: any) {
         super(selector);
+        this.triggerOverlay = false;
     }
 
     public open(onOpen?: Function) {
-        super.open(onOpen);
-
-        this.editor.focus();
+        super.open(onOpen);     
+        
+        this.editor.swapDoc(new CodeMirror.Doc(''));
         this.editor.getDoc().setCursor(this.cursor);
+        this.editor.focus(); 
 
         return this;
     }
@@ -29,7 +32,7 @@ class EditorWindow extends UIWindow {
             extraKeys: {
                 "Shift-Tab": "indentLess"
             }
-        });  
+        }); 
 
         return super.initialize();
     }
@@ -69,7 +72,7 @@ class EditorWindow extends UIWindow {
         this.title = file.name;
         this.$element.data("file-id", file.id);
 
-        var doc = this.editor.getDoc().copy(false);
+        var doc = new CodeMirror.Doc('', file.fileProps.contentType);
         this.editor.swapDoc(doc);
         this.contents = file.fileProps.contents;
     }

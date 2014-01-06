@@ -1,6 +1,7 @@
 /// <reference path="../../typings/jquery/jquery.d.ts" />
 var UIWindow = (function () {
     function UIWindow(selector) {
+        this.triggerOverlay = true;
         this.openEvents = [];
         this.closeEvents = [];
         this.$overlay = $('#overlay');
@@ -16,7 +17,10 @@ var UIWindow = (function () {
             this.openEvents.push(onOpen);
         } else {
             this.$element.fadeIn(250);
-            this.$overlay.fadeIn(250);
+
+            if (this.triggerOverlay) {
+                this.$overlay.fadeIn(250);
+            }
 
             for (var i = 0; i < this.openEvents.length; i++) {
                 this.openEvents[i]();
@@ -30,7 +34,10 @@ var UIWindow = (function () {
             this.closeEvents.push(onClose);
         } else {
             this.$element.fadeOut(250);
-            this.$overlay.fadeOut(250);
+
+            if (this.triggerOverlay) {
+                this.$overlay.fadeOut(250);
+            }
 
             for (var i = 0; i < this.closeEvents.length; i++) {
                 this.closeEvents[i]();
