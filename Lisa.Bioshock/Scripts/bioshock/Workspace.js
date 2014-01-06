@@ -55,6 +55,17 @@ var Workspace = (function () {
         enumerable: true,
         configurable: true
     });
+
+    Object.defineProperty(Workspace.prototype, "menuWindow", {
+        get: function () {
+            if (this._windows["menu"] === undefined) {
+                this._windows["menu"] = new MenuWindow('#editorMenuWindow');
+            }
+            return this._windows["menu"];
+        },
+        enumerable: true,
+        configurable: true
+    });
     return Workspace;
 })();
 //# sourceMappingURL=Workspace.js.map
