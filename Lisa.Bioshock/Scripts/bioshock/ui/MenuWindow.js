@@ -10,8 +10,13 @@ var MenuWindow = (function (_super) {
         _super.call(this, selector);
     }
     MenuWindow.prototype.initialize = function () {
+        var _this = this;
         this.open(function () {
         }).close(function () {
+        });
+
+        this.$element.find('#editorMenuWindow-close a').click(function () {
+            _this.close();
         });
 
         return _super.prototype.initialize.call(this);
