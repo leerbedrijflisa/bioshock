@@ -45,7 +45,7 @@ namespace Lisa.Bioshock
                     sessionToken.ClaimsPrincipal,
                     sessionToken.Context,
                     sessionToken.ValidFrom,
-                    utcNow.AddSeconds(20));
+                    utcNow.AddMinutes(15));
 
                 e.ReissueCookie = true;
             }
