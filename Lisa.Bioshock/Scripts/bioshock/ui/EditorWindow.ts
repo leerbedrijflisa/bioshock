@@ -34,6 +34,39 @@ class EditorWindow extends UIWindow {
             }
         }); 
 
+        this.$element.resizable({
+
+            minHeight: 52,
+            minWidth: 200,
+            containment: '#editor-resize-overlay',
+            resize: (event, ui) => {
+
+                this.$element
+                    .width(ui.size.width)
+                    .height(ui.size.height);
+
+                this.editor.refresh();
+            },
+
+            start: () => {
+
+                this.$editorResizeOverlay.show();
+            },
+
+            stop: () => {
+
+                this.$editorResizeOverlay.hide();
+                this.editor.refresh();
+            },
+            handles: 'all'
+        })
+        .draggable({
+
+            iframeFix: true,
+            containment: 'window',
+            handle: 'h1'
+        });
+
         return super.initialize();
     }
 
@@ -83,4 +116,5 @@ class EditorWindow extends UIWindow {
 
     private _title: string = "Geen bestand geopend.";
     private _lastCursorPos: CodeMirror.Position;
+    private $editorResizeOverlay = $('#editor-resize-overlay');
 } 

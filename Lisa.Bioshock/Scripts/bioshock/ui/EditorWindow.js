@@ -11,6 +11,7 @@ var EditorWindow = (function (_super) {
     function EditorWindow(selector) {
         _super.call(this, selector);
         this._title = "Geen bestand geopend.";
+        this.$editorResizeOverlay = $('#editor-resize-overlay');
         this.triggerOverlay = false;
     }
     EditorWindow.prototype.open = function (onOpen) {
@@ -24,6 +25,7 @@ var EditorWindow = (function (_super) {
     };
 
     EditorWindow.prototype.initialize = function () {
+        var _this = this;
         if (this.$element !== undefined) {
             this._title = this.$element.find("#filename").html();
         }
@@ -39,6 +41,29 @@ var EditorWindow = (function (_super) {
             extraKeys: {
                 "Shift-Tab": "indentLess"
             }
+        });
+
+        this.$element.resizable({
+            minHeight: 52,
+            minWidth: 200,
+            containment: '#editor-resize-overlay',
+            resize: function (event, ui) {
+                _this.$element.width(ui.size.width).height(ui.size.height);
+
+                _this.editor.refresh();
+            },
+            start: function () {
+                _this.$editorResizeOverlay.show();
+            },
+            stop: function () {
+                _this.$editorResizeOverlay.hide();
+                _this.editor.refresh();
+            },
+            handles: 'all'
+        }).draggable({
+            iframeFix: true,
+            containment: 'window',
+            handle: 'h1'
         });
 
         return _super.prototype.initialize.call(this);

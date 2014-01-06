@@ -156,6 +156,17 @@ textarea {
     z-index: 99;
 } 
 
+#editor-resize-overlay {
+
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+    display: none;
+    z-index: 1;
+}
+
 #editorMenuWindow {
 
     position: absolute;
