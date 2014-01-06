@@ -37,7 +37,7 @@ namespace Lisa.Bioshock.ActionResults
             : this()
         {
             var builder = new JsonStorageItemBuilder();
-            this.Data = builder.BuildJson(file);
+            this.Data = builder.BuildJson(file, true);
         }
     }
 }

@@ -9,6 +9,17 @@ namespace Lisa.Bioshock.Models
 {
     public class JsonStorageItemBuilder
     {
+        public sealed class FileProperties
+        {
+            public string contentType { get; set; }
+            public string contents { get; set; }
+        }
+
+        public sealed class FolderProperties
+        {
+            public IEnumerable<dynamic> items { get; set; }
+        }
+
         public const int TypeFolder = 1;
         public const int TypeFile = 2;
 
@@ -98,11 +109,11 @@ namespace Lisa.Bioshock.Models
                 path = item.Path,
                 fullPath = item.FullPath,
                 type = (item is Folder ? TypeFolder : TypeFile),
-                folderProps = new
+                folderProps = new FolderProperties
                 {
                     items = items
                 },
-                fileProps = new
+                fileProps = new FileProperties
                 {
                     contentType = (item is File ? ((File)item).ContentType : null),
                     contents = string.Empty

@@ -13,22 +13,22 @@
 <script type="text/javascript">
     $(function () {
 
-        var editor = CodeMirror.fromTextArea($("#editor")[0], {
-            value: "",
-            lineNumbers: true,
-            mode: "htmlmixed",
-            smartIndent: false,
-            tabSize: 2,
-            theme: "default",
-            gutters: ["Errors", "CodeMirror-linenumbers"],
-            extraKeys: {
-                "Shift-Tab": "indentLess"
-            }
-        });        
+        //var editor = CodeMirror.fromTextArea($("#editor")[0], {
+        //    value: "",
+        //    lineNumbers: true,
+        //    mode: "htmlmixed",
+        //    smartIndent: false,
+        //    tabSize: 2,
+        //    theme: "default",
+        //    gutters: ["Errors", "CodeMirror-linenumbers"],
+        //    extraKeys: {
+        //        "Shift-Tab": "indentLess"
+        //    }
+        //});        
 
-        var guiController = new BaseGuiController();
-        guiController.registerEditor(editor);
-        guiController.openStartUpFile();   
+        //var guiController = new BaseGuiController();
+        //guiController.registerEditor(editor);
+        //guiController.openStartUpFile();   
     });
 
     function closeMenu() {

@@ -57,8 +57,6 @@ namespace Lisa.Bioshock.Controllers
                 return HttpNotFound();
             }
 
-            var fileContents = file.ReadContents();
-
             return new JsonStorageItemResult(file);
         }
 
