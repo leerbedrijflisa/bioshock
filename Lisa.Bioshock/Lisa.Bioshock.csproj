@@ -438,7 +438,6 @@
     <Content Include="Content\themes\base\minified\jquery.ui.theme.min.css" />
     <Content Include="Content\themes\base\jquery-ui-1.10.3.css" />
     <Content Include="FederationMetadata\2007-06\FederationMetadata.Release.xml" />
-    <Content Include="FederationMetadata\2007-06\FederationMetadata.Debug.xml" />
     <Content Include="Global.asax" />
     <Content Include="Content\Site.css" />
     <Content Include="Content\CodeMirror\mode\livescript\livescript.ls" />
@@ -569,6 +568,9 @@
       <Name>Lisa.Storage.FileSystem</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup>
+    <BuildBasedFiles Include="FederationMetadata\2007-06\FederationMetadata.Debug.xml" />
+  </ItemGroup>
   <PropertyGroup Condition="'$(Configuration)' == 'Debug'">
     <TypeScriptTarget>ES5</TypeScriptTarget>
     <TypeScriptIncludeComments>true</TypeScriptIncludeComments>
@@ -589,30 +591,22 @@
   </Target>
   <Target Name="AfterBuild">
   </Target> -->
-
   <!-- Define files to be copied when compiling here -->
-  <ItemGroup>
-    <BuildBasedFiles Include="$(ProjectDir)**\FederationMetadata.$(Configuration).xml" />
-  </ItemGroup>
-
-  <Target Name="BeforeBuild" Condition="'@(BuildBasedFiles)' != ''" Outputs="%(BuildBasedFiles.Identity)">  
-	<!-- Generate new file name and destination folder -->
+  <Target Name="BeforeBuild" Condition="'@(BuildBasedFiles)' != ''" Outputs="%(BuildBasedFiles.Identity)">
+    <!-- Generate new file name and destination folder -->
     <PropertyGroup>
-	  <!-- Get the directory name -->
-	  <OriginalFileFolder>$([System.IO.Path]::GetDirectoryName(%(BuildBasedFiles.FullPath)))</OriginalFileFolder>
-	  <!-- Get the file name -->
+      <!-- Get the directory name -->
+      <OriginalFileFolder>$([System.IO.Path]::GetDirectoryName(%(BuildBasedFiles.FullPath)))</OriginalFileFolder>
+      <!-- Get the file name -->
       <OriginalFileName>%(BuildBasedFiles.FileName)%(BuildBasedFiles.Extension)</OriginalFileName>
-	  <!-- Generate the suffix to replace (Debug or Release) -->
+      <!-- Generate the suffix to replace (Debug or Release) -->
       <Suffix>.$(Configuration)</Suffix>
-	  <!-- Generate the destination file path -->
-	  <DestinationFile>$(OriginalFileFolder)\$(OriginalFileName.Replace('$(Suffix)', ''))</DestinationFile>
+      <!-- Generate the destination file path -->
+      <DestinationFile>$(OriginalFileFolder)\$(OriginalFileName.Replace('$(Suffix)', ''))</DestinationFile>
     </PropertyGroup>
-	
-	<!-- Log message to output window -->
-	<Message Text="Copy '$(OriginalFileName)' to '$(DestinationFile)'" Importance="high" />
-	
-	<!-- Copy source file(s) to the generated destination directory -->
+    <!-- Log message to output window -->
+    <Message Text="Copy '$(OriginalFileName)' to '$(DestinationFile)'" Importance="high" />
+    <!-- Copy source file(s) to the generated destination directory -->
     <Copy SourceFiles="%(BuildBasedFiles.FullPath)" DestinationFiles="$(DestinationFile)" />
   </Target>
-  
 </Project>
