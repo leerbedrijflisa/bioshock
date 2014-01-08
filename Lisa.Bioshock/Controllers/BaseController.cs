@@ -1,7 +1,10 @@
 ﻿using Lisa.Bioshock.Data;
 using Lisa.Bioshock.Data.Tables;
+using Lisa.Storage.Data;
+using Lisa.Storage.Data.Web;
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
 using System.Security.Claims;
 using System.Web;
@@ -77,6 +80,16 @@ namespace Lisa.Bioshock.Controllers
             //    CurrentUser = Db.Users.FirstOrDefault(u => u.CustomerUserID == customerUserId.Value);
             //    ViewBag.CurrentUser = CurrentUser;
             //}
+        }
+
+        protected IStorageProvider CreateStorageProvider(Project project)
+        {
+            return new CloudStorageProvider
+                (
+                    ConfigurationManager.AppSettings["CloudStorageConnectionString"],
+                    "bioshock",
+                    project.RootID.ToString()
+                );
         }
 
         protected override void Dispose(bool disposing)

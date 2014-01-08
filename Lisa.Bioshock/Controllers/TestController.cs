@@ -2,8 +2,10 @@
 using Lisa.Bioshock.Models;
 using Lisa.Storage;
 using Lisa.Storage.Data;
+using Lisa.Storage.Data.Web;
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.IO;
 using System.Linq;
 using System.Web;
@@ -14,14 +16,14 @@ namespace Lisa.Bioshock.Controllers
 {
     public class TestController : BaseController
     {
-        LocalStorageProvider provider;
-        FileSystem fileSystem;
+        //LocalStorageProvider provider;
+        //FileSystem fileSystem;
         Lisa.Storage.File file;
         //
         // GET: /Test/
         public string Index()
         {
-            LocalStorageProvider provider = new LocalStorageProvider("/Storage");
+            var provider = new CloudStorageProvider(ConfigurationManager.AppSettings["CloudStorageConnectionString"], "bioshock", "test");
             FileSystem fileSystem = new FileSystem(provider);
 
             fileSystem.Root.Files.Add("index.html", "text/html");
@@ -54,7 +56,7 @@ namespace Lisa.Bioshock.Controllers
         {
             var project = Db.Projects.Find(projectID);
 
-            LocalStorageProvider provider = new LocalStorageProvider("/Storage/" + project.RootID);
+            IStorageProvider provider = CreateStorageProvider(project);
             FileSystem fileSystem = new FileSystem(provider);
 
             if (contentType != null)
@@ -86,7 +88,7 @@ namespace Lisa.Bioshock.Controllers
         {
             var project = Db.Projects.Find(projectID);
 
-            LocalStorageProvider provider = new LocalStorageProvider("/Storage/" + project.RootID);
+            IStorageProvider provider = CreateStorageProvider(project);
             FileSystem fileSystem = new FileSystem(provider);
 
             var file = fileSystem.Root.FindItemByID(guid) as Lisa.Storage.File;
@@ -123,7 +125,7 @@ namespace Lisa.Bioshock.Controllers
         {
             var project = Db.Projects.Find(projectID);
 
-            LocalStorageProvider provider = new LocalStorageProvider("/Storage/" + project.RootID);
+            IStorageProvider provider = CreateStorageProvider(project);
             FileSystem fileSystem = new FileSystem(provider);
 
             if (!FileExists(fileSystem, filename))
@@ -155,7 +157,7 @@ namespace Lisa.Bioshock.Controllers
         {
             var project = Db.Projects.Find(projectID);
 
-            LocalStorageProvider provider = new LocalStorageProvider("/Storage/" + project.RootID);
+            IStorageProvider provider = CreateStorageProvider(project);
             FileSystem fileSystem = new FileSystem(provider);
 
             var file = fileSystem.Root.FindItemByID(guid) as Lisa.Storage.File;
@@ -163,7 +165,7 @@ namespace Lisa.Bioshock.Controllers
             using (var contents = new StreamWriter(file.OutputStream))
             {
                 contents.Write(source);
-                contents.BaseStream.SetLength(source.Length);
+                //contents.BaseStream.SetLength(source.Length);
                 contents.Flush();
             }
 
@@ -178,7 +180,7 @@ namespace Lisa.Bioshock.Controllers
             }
 
             var project = Db.Projects.Find(id);
-            LocalStorageProvider provider = new LocalStorageProvider("/Storage/" + project.RootID);
+            IStorageProvider provider = CreateStorageProvider(project);
             FileSystem fileSystem = new FileSystem(provider);
 
             var file = fileSystem.Root.FindItemByPath("/root/"+ filename, false) as Lisa.Storage.File;
