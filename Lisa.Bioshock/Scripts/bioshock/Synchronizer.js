@@ -6,22 +6,23 @@ var Synchronizer = (function () {
     */
     function Synchronizer(preview) {
         var _this = this;
-        this.isConnected = false;
         this.onRead = function (message) {
-            //var title = message.match(/<title>(.+)<\//im);
-            var title = message.match(/<title>(.+?)(<\/|$)/);
-            if (title) {
-                document.title = title[1];
+            if (message.content != null) {
+                var title = message.content.match(/<title>(.+?)(<\/|$)/);
+                if (title) {
+                    document.title = title[1];
+                }
             }
-
             var preview = $(_this.previewId);
             var contents = preview.contents();
             var html = contents.find('html');
-            if (message == "!refresh")
-                html[0].innerHTML = html[0].innerHTML;
-else
-                html[0].innerHTML = message;
-            //$(this.previewId).contents().find('html').html(message);
+            if (html[0] != null) {
+                if (message.message == "refresh")
+                    html[0].innerHTML = html[0].innerHTML;
+else if (message.message == "update") {
+                    html[0].innerHTML = message.content;
+                }
+            }
         };
         this.hub = $.connection.synchronizeHub;
         this.previewId = preview;
@@ -35,11 +36,13 @@ else
     Synchronizer.prototype.start = function (done) {
         var _this = this;
         $.connection.hub.start().done(function () {
-            _this.isConnected = true;
-
             if (done) {
                 done();
             }
+
+            _this.isConnected = true;
+        }).fail(function () {
+            alert('Connection failed!');
         });
     };
 
@@ -50,9 +53,23 @@ else
     */
     Synchronizer.prototype.update = function (message) {
         if (this.isConnected) {
-            this.hub.server.send(message);
+            this.hub.server.send(message, this.overridenConnectionID || $.connection.hub.id);
         }
     };
+
+    Object.defineProperty(Synchronizer.prototype, "connectionID", {
+        get: function () {
+            if (this.isConnected) {
+                return this.overridenConnectionID || $.connection.hub.id;
+            }
+            return "";
+        },
+        set: function (connectionID) {
+            this.overridenConnectionID = connectionID;
+        },
+        enumerable: true,
+        configurable: true
+    });
 
     /**
     * Sets the preview

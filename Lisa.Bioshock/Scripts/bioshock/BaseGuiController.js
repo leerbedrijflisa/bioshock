@@ -10,10 +10,19 @@ var BaseGuiController = (function () {
                 $.post("/Test/WriteFile", { projectID: _this.projectID, guid: _this.currentGuid, source: _this.editor.getValue() });
                 var filename = $("#filename").text();
                 if (filename.indexOf(".css") > -1) {
-                    _this.synchronizer.update("!refresh");
+                    _this.synchronizer.update({
+                        message: "refresh",
+                        fileID: _this.currentGuid,
+                        content: _this.editor.getValue()
+                    });
                 } else {
-                    _this.synchronizer.update(codeMirror.getValue());
+                    _this.synchronizer.update({
+                        message: "update",
+                        fileID: _this.currentGuid,
+                        content: _this.editor.getValue()
+                    });
                 }
+                _this.alreadyChanged = false;
 
                 if (_this.$errors.is(':visible')) {
                     _this.$errors.hide();
@@ -21,6 +30,10 @@ var BaseGuiController = (function () {
             });
 
             _this.editor.on('gutterClick', function (codeMirror) {
+            });
+
+            _this.editor.on('focus', function (codeMirror) {
+                //this.synchronizer.update(codeMirror.getValue());
             });
         };
         this.registerDragHandle = function (handle) {
@@ -142,6 +155,8 @@ else if (filename.indexOf(".css") > -1)
                         _this.canToggleEditor = false;
                         _this.$editorWindow.toggle();
                         var fullscreen = window.open("/editor/?project=" + _this.projectID + "&file=" + _this.currentGuid, "_blank");
+                        localStorage.setItem("signalR_PreviewID", _this.synchronizer.connectionID);
+
                         fullscreen.onunload = function () {
                             _this.canToggleEditor = true;
                             _this.$editorWindow.show();
@@ -357,6 +372,7 @@ else if (filename.indexOf(".css") > -1)
         this.openStartUpFile = function () {
             $.post("/Test/OpenStartUpFile", { projectID: _this.projectID }, function (data) {
                 _this.currentGuid = data.id;
+                console.log(_this.currentGuid);
                 $("#filename").text(data.name);
                 _this.SetLastFile();
                 _this.editor.setValue(data.content);
@@ -431,6 +447,7 @@ else if (filename.indexOf(".css") > -1)
         this.lastHTML = "";
         this.lastCSS = "";
         this.currentGuid = "";
+        this.alreadyChanged = false;
         this.files = [];
         this.widgets = [];
         this.ready = true;
@@ -493,6 +510,23 @@ else if (filename.indexOf(".css") > -1)
         });
     };
 
+    BaseGuiController.prototype.openFile = function (id) {
+        var _this = this;
+        $.post("/test/GetFileContent", { projectID: this.projectID, guid: id }, function (data) {
+            _this.currentGuid = id;
+            $("#filename").text(data.name);
+            _this.editor.setValue(data.content);
+
+            //this.isMenuActive = false;
+            //this.toggleOverlay();
+            //this.$openFileWindow.toggle();
+            //$('.filter_query').val('');
+            //this.isMenuAvailable = true;
+            _this.SetLastFile();
+            _this.editor.focus();
+        });
+    };
+
     BaseGuiController.prototype.registerKeyHandlers = function () {
         $(window).keydown(this.editorKeyDown);
         $(window).keyup(this.editorKeyUp);
@@ -502,7 +536,11 @@ else if (filename.indexOf(".css") > -1)
         var _this = this;
         this.synchronizer = new Synchronizer(this.previewSelector);
         this.synchronizer.start(function () {
-            _this.synchronizer.update(_this.editor.getValue());
+            _this.synchronizer.update({
+                message: "update",
+                fileID: _this.currentGuid,
+                content: _this.editor.getValue()
+            });
         });
     };
 

@@ -1,4 +1,4 @@
-﻿@model Project
+﻿@model Lisa.Storage.File
 
 @{
     ViewBag.Title = "Fullscreen";
@@ -39,9 +39,9 @@
         }
 </style>
 
-@if (Model != null) 
+@if (ViewBag.Project != null) 
 {
-    <input type="hidden" value="@Model.ID" id="ProjectID" />
+    <input type="hidden" value="@ViewBag.Project.ID" id="ProjectID" />
 }
 
 <script type="text/javascript">
@@ -61,6 +61,7 @@
         //editor.setOption("fullScreen", !editor.getOption("fullScreen"));
         var guiController = new FullScreenGuiController();
         guiController.registerEditor(editor);
+        guiController.openFile('@Model.ID');
     });
 </script>
 

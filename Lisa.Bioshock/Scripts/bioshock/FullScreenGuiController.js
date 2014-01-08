@@ -14,6 +14,18 @@ var FullScreenGuiController = (function (_super) {
 
         localStorage.setItem("fullscreen", "true");
     }
+    FullScreenGuiController.prototype.registerSynchronizeHandlers = function () {
+        var _this = this;
+        this.synchronizer = new Synchronizer(this.previewSelector);
+        this.synchronizer.connectionID = localStorage.getItem("signalR_PreviewID");
+        this.synchronizer.start(function () {
+            _this.synchronizer.update({
+                message: "update",
+                fileID: _this.currentGuid,
+                content: _this.editor.getValue()
+            });
+        });
+    };
     return FullScreenGuiController;
 })(BaseGuiController);
 //# sourceMappingURL=FullScreenGuiController.js.map

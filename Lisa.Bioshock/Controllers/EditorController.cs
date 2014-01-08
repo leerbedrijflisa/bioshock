@@ -22,8 +22,9 @@ namespace Lisa.Bioshock.Controllers
             LocalStorageProvider provider = new LocalStorageProvider("/Storage/" + project.RootID);
             FileSystem fileSystem = new FileSystem(provider);
 
-            fileSystem.Root.FindItemByID(FileID);
-            return View(project);
+            var file = fileSystem.Root.FindItemByID(FileID);
+            ViewBag.Project = project;
+            return View(file);
         }
 
     }

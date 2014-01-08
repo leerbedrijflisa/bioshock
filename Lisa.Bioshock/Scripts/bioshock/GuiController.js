@@ -27,6 +27,7 @@ var GuiController = (function () {
                     _this.synchronizer.update(codeMirror.getValue());
                 }
             });
+
             _this.editor.on('gutterClick', function (codeMirror) {
             });
         };

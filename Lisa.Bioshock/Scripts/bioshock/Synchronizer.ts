@@ -11,7 +11,7 @@ interface ISynchronizeClient {
     addMessage(message: any);
 }
 interface ISynchronizeServer {
-    send(message: any);
+    send(message: any, connID: string);
 }
 
 class Synchronizer {
@@ -28,30 +28,34 @@ class Synchronizer {
     }
 
     private previewId: string;
-    private isConnected = false;
-    private onRead = (message: string) => {
+    private isConnected;
+
+    private onRead = (message: any) => {
 
         
         //var title = message.match(/<title>(.+)<\//im);
-        var title = message.match(/<title>(.+?)(<\/|$)/);
-        if (title) {
+        if (message.content != null)
+        {
+            var title = message.content.match(/<title>(.+?)(<\/|$)/);
+            if (title) {
 
-            document.title = title[1];
+                document.title = title[1];
+            }
         }
-
         var preview = $(this.previewId);
         var contents = preview.contents();
         var html = contents.find('html');
-        if (message == "!refresh")
-            html[0].innerHTML = html[0].innerHTML;
-        else
-            html[0].innerHTML = message;
-
-        //$(this.previewId).contents().find('html').html(message);
-
+        if(html[0] != null){
+            if (message.message == "refresh")
+                html[0].innerHTML = html[0].innerHTML;
+            else if (message.message == "update") {
+                html[0].innerHTML = message.content;
+            }
+        }
     }
 
     private hub = $.connection.synchronizeHub;
+    private overridenConnectionID;
 
     /**
      * Start a connection with the hub
@@ -62,11 +66,14 @@ class Synchronizer {
 
         $.connection.hub.start().done(() => {
 
-            this.isConnected = true;
-
             if (done) {
                 done();
             }
+
+            this.isConnected = true;
+        }).fail(function () {
+
+            alert('Connection failed!');
         });
     }
 
@@ -78,13 +85,23 @@ class Synchronizer {
     public update(message: any) {
 
         if (this.isConnected) {
-            this.hub.server.send(message);
+            this.hub.server.send(message, this.overridenConnectionID || $.connection.hub.id);
         }
+    }
+
+    public get connectionID(): string {
+        if (this.isConnected) {
+            return this.overridenConnectionID || $.connection.hub.id;
+        }
+        return "";
+    }
+    public set connectionID(connectionID: string) {
+        this.overridenConnectionID = connectionID;
     }
 
     /**
      * Sets the preview
-     * 
+     *
      * @param {string} selector - The selector of the element that should be updated when a message arrives.
      */
     public setPreview(selector: string) {

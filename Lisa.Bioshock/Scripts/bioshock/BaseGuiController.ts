@@ -20,24 +20,38 @@ class BaseGuiController {
 
         this.editor = editor;
         this.editor.on('change', (codeMirror) => {
+           
+                $.post("/Test/WriteFile", { projectID: this.projectID, guid: this.currentGuid, source: this.editor.getValue() });
+                var filename = $("#filename").text();
+                if (filename.indexOf(".css") > -1) {
+                    this.synchronizer.update({
+                        message: "refresh",
+                        fileID: this.currentGuid,
+                        content: this.editor.getValue()
+                    });
+                }
+                else {
+                    this.synchronizer.update({
+                        message: "update",
+                        fileID: this.currentGuid,
+                        content: this.editor.getValue()
+                    });
+                }
+                this.alreadyChanged = false;
+                //this.synchronizer.update(codeMirror.getValue());
 
-            $.post("/Test/WriteFile", { projectID: this.projectID, guid: this.currentGuid, source: this.editor.getValue() });
-            var filename = $("#filename").text();
-            if (filename.indexOf(".css") > -1) {
-                this.synchronizer.update("!refresh");
-            }
-            else {
-                this.synchronizer.update(codeMirror.getValue());
-            }
-            //this.synchronizer.update(codeMirror.getValue());
-
-            if (this.$errors.is(':visible')) {
-                this.$errors.hide();
-            }
+                if (this.$errors.is(':visible')) {
+                    this.$errors.hide();
+                }
+            
         });
 
         this.editor.on('gutterClick', (codeMirror) => {
 
+        });
+
+        this.editor.on('focus', (codeMirror) => {
+            //this.synchronizer.update(codeMirror.getValue());
         });
     }
 
@@ -146,6 +160,7 @@ class BaseGuiController {
 
     public registerPreviewHandlers() {
 
+        
         var iframe: any = this.$preview[0];
         $(iframe.contentWindow)
             .keydown(this.editorKeyDown)
@@ -234,8 +249,10 @@ class BaseGuiController {
                     this.canToggleEditor = false;
                     this.$editorWindow.toggle();
                     var fullscreen = window.open("/editor/?project=" + this.projectID + "&file=" + this.currentGuid, "_blank");
+                    localStorage.setItem("signalR_PreviewID", this.synchronizer.connectionID);
+                    
                     fullscreen.onunload = () => {
-
+                        
                         this.canToggleEditor = true;
                         this.$editorWindow.show();
                     }
@@ -524,9 +541,27 @@ class BaseGuiController {
         }
     }
 
+    public openFile(id) {
+        $.post("/test/GetFileContent", { projectID: this.projectID, guid: id }, (data) => {
+
+            this.currentGuid = id;
+            $("#filename").text(data.name);
+            this.editor.setValue(data.content);
+            //this.isMenuActive = false;
+            //this.toggleOverlay();
+            //this.$openFileWindow.toggle();
+            //$('.filter_query').val('');
+            //this.isMenuAvailable = true;
+
+            this.SetLastFile();
+            this.editor.focus();
+        });
+    }
+
     public openStartUpFile = () => {
         $.post("/Test/OpenStartUpFile", { projectID: this.projectID }, (data) => {
-            this.currentGuid = data.id;            
+            this.currentGuid = data.id;    
+            console.log(this.currentGuid);        
             $("#filename").text(data.name);
             this.SetLastFile();            
             this.editor.setValue(data.content);
@@ -546,7 +581,11 @@ class BaseGuiController {
         this.synchronizer = new Synchronizer(this.previewSelector);
         this.synchronizer.start(() => {
 
-            this.synchronizer.update(this.editor.getValue());
+            this.synchronizer.update({
+                message: "update",
+                fileID: this.currentGuid,
+                content: this.editor.getValue()
+            });
         });
     }
 
@@ -663,7 +702,7 @@ class BaseGuiController {
     private $newFileWindow = $('#newFileWindow');
     private $errors = $('#errors');
 
-    private previewSelector = '#preview';
+    public previewSelector = '#preview';//demo hack
     private errorCount = '#errorcount';
     private addButton = '#addButton';
     private editorWidth;
@@ -672,14 +711,15 @@ class BaseGuiController {
     private isMenuAvailable = true;
     private isEditorDragging = false;
     private canToggleEditor = true;
-    private synchronizer: Synchronizer;
+    public synchronizer: Synchronizer;//demo hack
     private lastKeyDown: number;
     //private isAltPressed = false;
     private projectID: number;
     private openWindow = "";
     private lastHTML = "";
     private lastCSS = "";
-    private currentGuid = "";
+    public currentGuid = "";//demo hack
+    private alreadyChanged = false;
     private files = [];
     private widgets = [];
     private ready = true;
