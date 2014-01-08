@@ -17,7 +17,7 @@ namespace Lisa.Bioshock.Controllers
             return View();
         }
 
-        [Authorize]
+        //[Authorize]
         public ActionResult Login()
         {
             return RedirectToAction("Index");

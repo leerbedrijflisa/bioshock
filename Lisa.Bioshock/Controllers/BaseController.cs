@@ -29,40 +29,44 @@ namespace Lisa.Bioshock.Controllers
             
             Db = new BioshockContext();
 
-            if (User.Identity.IsAuthenticated)
-            {
-                var identity = (ClaimsIdentity)User.Identity;
-                var customerName = identity
-                    .Claims
-                    .FirstOrDefault(cl => cl.Type == LisaClaimTypes.CustomerName);
+            //if (User.Identity.IsAuthenticated)
+            //{
+            //    var identity = (ClaimsIdentity)User.Identity;
+            //    var customerName = identity
+            //        .Claims
+            //        .FirstOrDefault(cl => cl.Type == LisaClaimTypes.CustomerName);
 
-                var customerUserId = identity
-                    .Claims
-                    .FirstOrDefault(cl => cl.Type == LisaClaimTypes.CustomerUserID);
+            //    var customerUserId = identity
+            //        .Claims
+            //        .FirstOrDefault(cl => cl.Type == LisaClaimTypes.CustomerUserID);
 
-                var customers = Db.Customers;
-                var currentCustomer = customers
-                    .FirstOrDefault(cust => cust.Name == customerName.Value);
+            //    var customers = Db.Customers;
+            //    var currentCustomer = customers
+            //        .FirstOrDefault(cust => cust.Name == customerName.Value);
 
-                if (currentCustomer != null)
-                {
-                    var value = customerUserId.Value;
-                    var user = currentCustomer.Users.FirstOrDefault(u => u.CustomerUserID == value);
-                    if (user == null)
-                    {
-                        user = new User()
-                        {
-                            CustomerUserID = customerUserId.Value
-                        };
+            //    if (currentCustomer != null)
+            //    {
+            //        var value = customerUserId.Value;
+            //        var user = currentCustomer.Users.FirstOrDefault(u => u.CustomerUserID == value);
+            //        if (user == null)
+            //        {
+            //            user = new User()
+            //            {
+            //                CustomerUserID = customerUserId.Value
+            //            };
 
-                        currentCustomer.Users.Add(user);
-                        Db.SaveChanges();
-                    }
+            //            currentCustomer.Users.Add(user);
+            //            Db.SaveChanges();
+            //        }
 
-                    CurrentUser = user;
-                    ViewBag.CurrentUser = CurrentUser;
-                }                
-            }
+            //        CurrentUser = user;
+            //        ViewBag.CurrentUser = CurrentUser;
+            //    }                
+            //}
+
+            CurrentUser = Db.Users.Find(1);
+            ViewBag.CurrentUser = CurrentUser;
+
             //var identity = (ClaimsIdentity)User.Identity;
 
             //var customerUserId = identity.Claims
@@ -77,7 +81,10 @@ namespace Lisa.Bioshock.Controllers
 
         protected override void Dispose(bool disposing)
         {
-            Db.Dispose();
+            if (Db != null)
+            {
+                Db.Dispose();
+            }
             base.Dispose(disposing);
         }
 

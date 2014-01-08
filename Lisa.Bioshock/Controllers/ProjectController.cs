@@ -12,12 +12,12 @@ using System.Web.Mvc;
 
 namespace Lisa.Bioshock.Controllers
 {
-    [Authorize]
+    //[Authorize]
     public class ProjectController : BaseController
     {
         //
         // GET: /Project/
-        [Authorize]
+        //[Authorize]
         public ActionResult Index()
         {
             return View(CurrentUser.Projects.Where(p => !p.IsDeleted));
@@ -43,7 +43,7 @@ namespace Lisa.Bioshock.Controllers
                 Db.SaveChanges();
 
                 LocalStorageProvider sp 
-                    = new LocalStorageProvider(@"C:\Storage\" + project.RootID + @"\");
+                    = new LocalStorageProvider("/Storage/" + project.RootID + "/");
                 FileSystem fs = new FileSystem(sp);
 
                 var css = fs.Root.Folders.Add("css");
@@ -74,7 +74,7 @@ namespace Lisa.Bioshock.Controllers
             }
 
             LocalStorageProvider sp 
-                = new LocalStorageProvider(@"C:\Storage\" + project.RootID + @"\");
+                = new LocalStorageProvider("/Storage/" + project.RootID + "/");
             FileSystem fs = new FileSystem(sp);
             ViewBag.FileSystem = fs;
 

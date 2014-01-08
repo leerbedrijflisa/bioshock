@@ -460,6 +460,8 @@
     <None Include="Properties\PublishProfiles\bioshock - Web Deploy.pubxml" />
     <Content Include="Scripts\bioshock\BaseGuiController.js.map" />
     <Content Include="Scripts\bioshock\FullScreenGuiController.js.map" />
+    <None Include="Properties\PublishProfiles\lisa-bioshock - FTP.pubxml" />
+    <None Include="Properties\PublishProfiles\lisa-bioshock - Web Deploy.pubxml" />
     <None Include="Scripts\jquery.validate-vsdoc.js" />
     <Content Include="Scripts\jquery-ui-1.10.3.custom.js" />
     <Content Include="Scripts\jquery-ui-1.10.3.custom.min.js" />

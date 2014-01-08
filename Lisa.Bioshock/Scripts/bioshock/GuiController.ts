@@ -37,6 +37,9 @@ class GuiController {
             }
 
         });
+
+
+
         this.editor.on('gutterClick', (codeMirror) => {
 
         });

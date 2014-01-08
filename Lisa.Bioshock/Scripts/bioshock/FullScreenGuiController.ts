@@ -7,4 +7,19 @@ class FullScreenGuiController extends BaseGuiController {
 
         localStorage.setItem("fullscreen", "true");
     }
+
+    public registerSynchronizeHandlers() {
+
+        this.synchronizer = new Synchronizer(this.previewSelector);
+        this.synchronizer.connectionID = localStorage.getItem("signalR_PreviewID");
+        this.synchronizer.start(() => {
+
+
+            this.synchronizer.update({
+                message: "update",
+                fileID: this.currentGuid,
+                content: this.editor.getValue()
+            });
+        });
+    }
 }
