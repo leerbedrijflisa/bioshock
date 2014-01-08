@@ -33,7 +33,7 @@ var BaseGuiController = (function () {
             });
 
             _this.editor.on('focus', function (codeMirror) {
-                //this.synchronizer.update(codeMirror.getValue());
+                _this.synchronizer.update(codeMirror.getValue());
             });
         };
         this.registerDragHandle = function (handle) {

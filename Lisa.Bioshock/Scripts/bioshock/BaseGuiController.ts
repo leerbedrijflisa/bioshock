@@ -51,7 +51,7 @@ class BaseGuiController {
         });
 
         this.editor.on('focus', (codeMirror) => {
-            //this.synchronizer.update(codeMirror.getValue());
+            this.synchronizer.update(codeMirror.getValue());
         });
     }
 
