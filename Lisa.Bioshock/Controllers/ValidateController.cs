@@ -22,6 +22,9 @@ namespace Lisa.Bioshock.Controllers
             {
                 var checker = new HtmlChecker();
                 var result = checker.Check(new StringReader(source), "");
+                // Temporary fix! Invalid <li> after <ul> will not be shown.
+                result.RemoveAll(error => error.Code.Language == Checkers.LanguageType.Html && error.Code.Number == 30);
+                
                 returnVal = Json(result, JsonRequestBehavior.AllowGet);
             }
             return returnVal;
