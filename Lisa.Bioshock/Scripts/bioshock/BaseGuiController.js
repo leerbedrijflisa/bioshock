@@ -485,7 +485,8 @@ else if (filename.indexOf(".css") > -1)
                     guid: _this.currentGuid,
                     source: _this.editor.getValue()
                 });
-            }, 2000);
+                _this.synchronizer.update({ message: "refresh" });
+            }, 1000);
         }
     };
 

@@ -63,7 +63,8 @@ class BaseGuiController {
                 $.post("/Test/WriteFile", {
                     projectID: this.projectID, guid: this.currentGuid, source: this.editor.getValue()
                 });
-            }, 2000);
+                this.synchronizer.update({ message: "refresh" });
+            }, 1000);
         }
     }
 
