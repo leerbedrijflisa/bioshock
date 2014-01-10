@@ -1,20 +1,41 @@
 /// <reference path="../typings/jquery/jquery.d.ts" />
+var debug = false;
+console.debug = function (subject, message) {
+    if (debug) {
+        console.log("[" + subject + "] " + message);
+    }
+};
+
 var BaseGuiController = (function () {
     function BaseGuiController(editor, options, preview) {
         if (typeof options === "undefined") { options = {}; }
         if (typeof preview === "undefined") { preview = true; }
         var _this = this;
+        this.hasPendingChanges = false;
+        this.savePendingChanges = function () {
+            console.debug('savePendingChanges', _this.hasPendingChanges);
+            if (_this.hasPendingChanges) {
+                _this.saveFile();
+            }
+        };
         this.registerEditor = function (editor) {
+            _this.saveTime = setInterval(_this.savePendingChanges, 1000);
+
             _this.editor = editor;
             _this.editor.on('change', function (codeMirror) {
-                _this.saveFile();
+                _this.hasPendingChanges = true;
+                console.debug('editor', 'onchange called');
+
                 var filename = $("#filename").text();
+
+                console.debug('editor', 'filename: ' + filename);
+
                 if (filename.indexOf(".css") > -1) {
-                    _this.synchronizer.update({
-                        message: "refresh",
-                        fileID: _this.currentGuid,
-                        content: _this.editor.getValue()
-                    });
+                    //this.synchronizer.update({
+                    //    message: "refresh",
+                    //    fileID: this.currentGuid,
+                    //    content: this.editor.getValue()
+                    //});
                 } else {
                     _this.synchronizer.update({
                         message: "update",
@@ -36,7 +57,6 @@ var BaseGuiController = (function () {
                 _this.synchronizer.update(codeMirror.getValue());
             });
         };
-        this.saveTimer = false;
         this.registerDragHandle = function (handle) {
             _this.registerEditorHandlers({ handle: handle });
         };
@@ -150,11 +170,14 @@ var BaseGuiController = (function () {
                             id = _this.lastCSS;
 else if (filename.indexOf(".css") > -1)
                             id = _this.lastHTML;
-                        $.post("/test/GetFileContent", { projectID: _this.projectID, guid: id }, function (data) {
-                            _this.currentGuid = id;
-                            $("#filename").text(data.name);
-                            _this.editor.setValue(data.content);
-                        });
+
+                        if (id) {
+                            $.post("/test/GetFileContent", { projectID: _this.projectID, guid: id }, function (data) {
+                                _this.currentGuid = id;
+                                $("#filename").text(data.name);
+                                _this.editor.setValue(data.content);
+                            });
+                        }
                         //this.GetFilesByContentType();
                     }
 
@@ -486,18 +509,30 @@ else if (filename.indexOf(".css") > -1)
     }
     BaseGuiController.prototype.saveFile = function () {
         var _this = this;
-        if (!this.saveTimer) {
-            this.saveTimer = setTimeout(function () {
-                _this.saveTimer = false;
-                $.post("/Test/WriteFile", {
-                    projectID: _this.projectID,
-                    guid: _this.currentGuid,
-                    source: _this.editor.getValue()
-                }, function (data) {
-                    this.synchronizer.update({ message: "refresh" });
+        console.debug('saveFile', 'called');
+        this.hasPendingChanges = false;
+
+        $.ajax({
+            url: "/Test/WriteFile",
+            type: 'POST',
+            data: {
+                projectID: this.projectID,
+                guid: this.currentGuid,
+                source: this.editor.getValue()
+            },
+            success: function () {
+                console.debug('saveFile', 'saved - complete called');
+
+                _this.synchronizer.update({
+                    message: "refresh",
+                    fileID: _this.currentGuid,
+                    content: _this.editor.getValue()
                 });
-            }, 1000);
-        }
+            },
+            error: function (jqxhr, err1, err2) {
+                console.error(err1, err2);
+            }
+        });
     };
 
     BaseGuiController.prototype.registerPreviewHandlers = function () {

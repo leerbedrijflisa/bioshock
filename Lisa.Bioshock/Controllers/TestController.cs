@@ -169,7 +169,7 @@ namespace Lisa.Bioshock.Controllers
                 contents.Flush();
             }
 
-            return Json(null);
+            return Json(new { Result = true });
         }
 
         public ActionResult FileContents(int id, string filename)

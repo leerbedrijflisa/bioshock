@@ -1,4 +1,12 @@
 /// <reference path="../typings/jquery/jquery.d.ts" />
+
+var debug = false;
+console.debug = (subject: string, message: string) => {
+    if (debug) {
+        console.log("[" + subject + "] " + message);
+    }
+};
+
 class BaseGuiController {
 
     constructor(editor: any, options = {}, preview = true) {
@@ -16,33 +24,49 @@ class BaseGuiController {
         }
     }
 
+    private saveTime;
+    private hasPendingChanges = false;
+
+    private savePendingChanges = () => {
+        console.debug('savePendingChanges', this.hasPendingChanges);
+        if (this.hasPendingChanges) {
+            this.saveFile();
+        }
+    }
+
     public registerEditor = (editor: any) => {
+        this.saveTime = setInterval(this.savePendingChanges, 1000);
 
         this.editor = editor;
         this.editor.on('change', (codeMirror) => {
 
-                this.saveFile();
-                var filename = $("#filename").text();
-                if (filename.indexOf(".css") > -1) {
-                    this.synchronizer.update({
-                        message: "refresh",
-                        fileID: this.currentGuid,
-                        content: this.editor.getValue()
-                    });
-                }
-                else {
-                    this.synchronizer.update({
-                        message: "update",
-                        fileID: this.currentGuid,
-                        content: this.editor.getValue()
-                    });
-                }
-                this.alreadyChanged = false;
-                //this.synchronizer.update(codeMirror.getValue());
+            this.hasPendingChanges = true;
+            console.debug('editor', 'onchange called');
 
-                if (this.$errors.is(':visible')) {
-                    this.$errors.hide();
-                }
+            var filename = $("#filename").text();
+
+            console.debug('editor', 'filename: ' + filename);
+
+            if (filename.indexOf(".css") > -1) {
+                //this.synchronizer.update({
+                //    message: "refresh",
+                //    fileID: this.currentGuid,
+                //    content: this.editor.getValue()
+                //});
+            }
+            else {
+                this.synchronizer.update({
+                    message: "update",
+                    fileID: this.currentGuid,
+                    content: this.editor.getValue()
+                });
+            }
+            this.alreadyChanged = false;
+            //this.synchronizer.update(codeMirror.getValue());
+
+            if (this.$errors.is(':visible')) {
+                this.$errors.hide();
+            }
             
         });
 
@@ -55,18 +79,30 @@ class BaseGuiController {
         });
     }
 
-    private saveTimer: any = false;
     private saveFile() {
-        if (!this.saveTimer) {
-            this.saveTimer = setTimeout(() => {
-                this.saveTimer = false;
-                $.post("/Test/WriteFile", {
-                    projectID: this.projectID, guid: this.currentGuid, source: this.editor.getValue()
-                }, function (data) {
-                    this.synchronizer.update({ message: "refresh" });
+        console.debug('saveFile', 'called');
+        this.hasPendingChanges = false;
+
+        $.ajax({
+            url: "/Test/WriteFile",
+            type: 'POST',
+            data: {
+                projectID: this.projectID, guid: this.currentGuid, source: this.editor.getValue()
+            },
+            success: () => {
+
+                console.debug('saveFile', 'saved - complete called');
+
+                this.synchronizer.update({
+                    message: "refresh",
+                    fileID: this.currentGuid,
+                    content: this.editor.getValue()
                 });
-            }, 1000);
-        }
+            },
+            error: (jqxhr: any, err1: any, err2: any) => {
+                console.error(err1, err2);
+            }
+        });
     }
 
     public registerDragHandle = (handle: string) => {
@@ -250,13 +286,16 @@ class BaseGuiController {
                         id = this.lastCSS;
                     else if (filename.indexOf(".css") > -1)
                         id = this.lastHTML;
-                    $.post("/test/GetFileContent", { projectID: this.projectID, guid: id }, (data) => {
 
-                        this.currentGuid = id;
-                        $("#filename").text(data.name);
-                        this.editor.setValue(data.content);
-                        
-                    });
+                    if (id) {
+                        $.post("/test/GetFileContent", { projectID: this.projectID, guid: id }, (data) => {
+
+                            this.currentGuid = id;
+                            $("#filename").text(data.name);
+                            this.editor.setValue(data.content);
+
+                        });
+                    }
                     
                     //this.GetFilesByContentType();
                 }
