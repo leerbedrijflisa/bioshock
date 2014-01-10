@@ -484,8 +484,9 @@ else if (filename.indexOf(".css") > -1)
                     projectID: _this.projectID,
                     guid: _this.currentGuid,
                     source: _this.editor.getValue()
+                }, function (data) {
+                    this.synchronizer.update({ message: "refresh" });
                 });
-                _this.synchronizer.update({ message: "refresh" });
             }, 1000);
         }
     };

@@ -172,11 +172,17 @@ namespace Lisa.Bioshock.Controllers
             return Json(null);
         }
 
-        public string FileContents(int id, string filename)
+        public ActionResult FileContents(int id, string filename)
         {
+            if(!Request.Url.AbsoluteUri.Contains("?"))
+            {
+                return Redirect(string.Format("/Project/{0}/File/{1}?g={2}", id, filename, Guid.NewGuid()));
+            }
+
             if (filename == null)
             {
-                return string.Empty;
+                filename = "index.html";
+                //return Content(string.Empty);
             }
 
             var project = Db.Projects.Find(id);
@@ -185,13 +191,18 @@ namespace Lisa.Bioshock.Controllers
 
             var file = fileSystem.Root.FindItemByPath("/root/"+ filename, false) as Lisa.Storage.File;
 
-            var content = string.Empty;
-            using (var contents = new StreamReader(file.InputStream))
+            if (file != null)
             {
-                content = contents.ReadToEnd();
-            }
+                Response.AddHeader("Content-Type", file.ContentType);
+                var content = string.Empty;
+                using (var contents = new StreamReader(file.InputStream))
+                {
+                    content = contents.ReadToEnd();
+                }
 
-            return content;
+                return Content(content);
+            }
+            return HttpNotFound();
         }
     }
 }
