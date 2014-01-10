@@ -25,6 +25,7 @@ class BaseGuiController {
     }
 
     private saveTime;
+    private refresh = true;
     private hasPendingChanges = false;
 
     private savePendingChanges = () => {
@@ -48,6 +49,7 @@ class BaseGuiController {
             console.debug('editor', 'filename: ' + filename);
 
             if (filename.indexOf(".css") > -1) {
+                this.refresh = true;
                 //this.synchronizer.update({
                 //    message: "refresh",
                 //    fileID: this.currentGuid,
@@ -55,6 +57,7 @@ class BaseGuiController {
                 //});
             }
             else {
+                this.refresh = false;
                 this.synchronizer.update({
                     message: "update",
                     fileID: this.currentGuid,
@@ -93,11 +96,13 @@ class BaseGuiController {
 
                 console.debug('saveFile', 'saved - complete called');
 
-                this.synchronizer.update({
-                    message: "refresh",
-                    fileID: this.currentGuid,
-                    content: this.editor.getValue()
-                });
+                if (this.refresh) {
+                    this.synchronizer.update({
+                        message: "refresh",
+                        fileID: this.currentGuid,
+                        content: this.editor.getValue()
+                    });
+                }
             },
             error: (jqxhr: any, err1: any, err2: any) => {
                 console.error(err1, err2);

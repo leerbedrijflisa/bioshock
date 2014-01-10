@@ -11,6 +11,7 @@ var BaseGuiController = (function () {
         if (typeof options === "undefined") { options = {}; }
         if (typeof preview === "undefined") { preview = true; }
         var _this = this;
+        this.refresh = true;
         this.hasPendingChanges = false;
         this.savePendingChanges = function () {
             console.debug('savePendingChanges', _this.hasPendingChanges);
@@ -31,12 +32,14 @@ var BaseGuiController = (function () {
                 console.debug('editor', 'filename: ' + filename);
 
                 if (filename.indexOf(".css") > -1) {
+                    _this.refresh = true;
                     //this.synchronizer.update({
                     //    message: "refresh",
                     //    fileID: this.currentGuid,
                     //    content: this.editor.getValue()
                     //});
                 } else {
+                    _this.refresh = false;
                     _this.synchronizer.update({
                         message: "update",
                         fileID: _this.currentGuid,
@@ -523,11 +526,13 @@ else if (filename.indexOf(".css") > -1)
             success: function () {
                 console.debug('saveFile', 'saved - complete called');
 
-                _this.synchronizer.update({
-                    message: "refresh",
-                    fileID: _this.currentGuid,
-                    content: _this.editor.getValue()
-                });
+                if (_this.refresh) {
+                    _this.synchronizer.update({
+                        message: "refresh",
+                        fileID: _this.currentGuid,
+                        content: _this.editor.getValue()
+                    });
+                }
             },
             error: function (jqxhr, err1, err2) {
                 console.error(err1, err2);
