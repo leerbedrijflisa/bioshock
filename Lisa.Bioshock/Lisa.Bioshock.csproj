@@ -569,9 +569,6 @@
       <Name>Lisa.Storage.FileSystem</Name>
     </ProjectReference>
   </ItemGroup>
-  <Target Name="TypeScript" AfterTargets="BeforeBuild">
-    <Exec Command="&quot;$(PROGRAMFILES)\Microsoft SDKs\TypeScript\tsc&quot; --sourcemap  --target ES5  @(TypeScriptCompile ->'&quot;%(fullpath)&quot;' , ' ')" Condition="'@(TypeScriptCompile)'!=''" />
-  </Target>
   <!--
   <PropertyGroup Condition="'$(Configuration)' == 'Debug'">
     <TypeScriptTarget>ES5</TypeScriptTarget>

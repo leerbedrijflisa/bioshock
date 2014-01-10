@@ -7,7 +7,7 @@ var BaseGuiController = (function () {
         this.registerEditor = function (editor) {
             _this.editor = editor;
             _this.editor.on('change', function (codeMirror) {
-                $.post("/Test/WriteFile", { projectID: _this.projectID, guid: _this.currentGuid, source: _this.editor.getValue() });
+                _this.saveFile();
                 var filename = $("#filename").text();
                 if (filename.indexOf(".css") > -1) {
                     _this.synchronizer.update({
@@ -36,6 +36,7 @@ var BaseGuiController = (function () {
                 _this.synchronizer.update(codeMirror.getValue());
             });
         };
+        this.saveTimer = false;
         this.registerDragHandle = function (handle) {
             _this.registerEditorHandlers({ handle: handle });
         };
@@ -137,6 +138,12 @@ var BaseGuiController = (function () {
                     }
 
                     if (event.keyCode === _this.keys.C) {
+                        $.post("/Test/WriteFile", {
+                            projectID: _this.projectID,
+                            guid: _this.currentGuid,
+                            source: _this.editor.getValue()
+                        });
+
                         var filename = $("#filename").text();
                         var id = "";
                         if (filename.indexOf(".html") > -1)
@@ -351,6 +358,12 @@ else if (filename.indexOf(".css") > -1)
                 }
 
                 li.find("a").click(function (event) {
+                    $.post("/Test/WriteFile", {
+                        projectID: _this.projectID,
+                        guid: _this.currentGuid,
+                        source: _this.editor.getValue()
+                    });
+
                     var id = $(event.currentTarget).attr("data-id");
 
                     $.post("/test/GetFileContent", { projectID: _this.projectID, guid: id }, function (data) {
@@ -383,7 +396,7 @@ else if (filename.indexOf(".css") > -1)
             $(_this.addButton).bind("click", _this.createFile);
             $("#newFileName").bind("keydown", function (event) {
                 if (event.keyCode == 13) {
-                    _this.createFile();
+                    $(_this.addButton).click();
                     return false;
                 }
             });
@@ -393,7 +406,7 @@ else if (filename.indexOf(".css") > -1)
             if (fileName.endsWith(".css") || fileName.endsWith(".html")) {
                 $.get("/test/CreateFile", { projectID: _this.projectID, filename: fileName }, function (data) {
                     if (data.Result) {
-                        _this.currentGuid = data.ID;
+                        _this.currentGuid = data.guid;
                         _this.createFileList();
                         _this.isMenuActive = false;
                         _this.toggleOverlay();
@@ -462,6 +475,20 @@ else if (filename.indexOf(".css") > -1)
             this.registerPreviewHandlers();
         }
     }
+    BaseGuiController.prototype.saveFile = function () {
+        var _this = this;
+        if (!this.saveTimer) {
+            this.saveTimer = setTimeout(function () {
+                _this.saveTimer = false;
+                $.post("/Test/WriteFile", {
+                    projectID: _this.projectID,
+                    guid: _this.currentGuid,
+                    source: _this.editor.getValue()
+                });
+            }, 2000);
+        }
+    };
+
     BaseGuiController.prototype.registerPreviewHandlers = function () {
         var iframe = this.$preview[0];
         $(iframe.contentWindow).keydown(this.editorKeyDown).keyup(this.editorKeyUp);
@@ -575,4 +602,3 @@ else if (filename.indexOf(".css") > -1)
     };
     return BaseGuiController;
 })();
-//# sourceMappingURL=BaseGuiController.js.map

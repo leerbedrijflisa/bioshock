@@ -20,8 +20,8 @@ class BaseGuiController {
 
         this.editor = editor;
         this.editor.on('change', (codeMirror) => {
-           
-                $.post("/Test/WriteFile", { projectID: this.projectID, guid: this.currentGuid, source: this.editor.getValue() });
+
+                this.saveFile();
                 var filename = $("#filename").text();
                 if (filename.indexOf(".css") > -1) {
                     this.synchronizer.update({
@@ -53,6 +53,18 @@ class BaseGuiController {
         this.editor.on('focus', (codeMirror) => {
             this.synchronizer.update(codeMirror.getValue());
         });
+    }
+
+    private saveTimer: any = false;
+    private saveFile() {
+        if (!this.saveTimer) {
+            this.saveTimer = setTimeout(() => {
+                this.saveTimer = false;
+                $.post("/Test/WriteFile", {
+                    projectID: this.projectID, guid: this.currentGuid, source: this.editor.getValue()
+                });
+            }, 2000);
+        }
     }
 
     public registerDragHandle = (handle: string) => {
@@ -225,6 +237,10 @@ class BaseGuiController {
 
                 // Opens file switcher
                 if (event.keyCode === this.keys.C) {
+
+                    $.post("/Test/WriteFile", {
+                        projectID: this.projectID, guid: this.currentGuid, source: this.editor.getValue()
+                    });
 
                     var filename = $("#filename").text();
                     var id = "";
@@ -519,6 +535,10 @@ class BaseGuiController {
 
             li.find("a").click((event) => {
 
+                $.post("/Test/WriteFile", {
+                    projectID: this.projectID, guid: this.currentGuid, source: this.editor.getValue()
+                });
+
                 var id = $(event.currentTarget).attr("data-id");
 
                 $.post("/test/GetFileContent", { projectID: this.projectID, guid: id }, (data) => {
@@ -595,7 +615,7 @@ class BaseGuiController {
         $("#newFileName").bind("keydown", (event) => {
 
             if (event.keyCode == 13) {
-                this.createFile();
+                $(this.addButton).click();
                 return false;
             }
         });
@@ -606,12 +626,10 @@ class BaseGuiController {
         var fileName = $("#newFileName").val();
         if (fileName.endsWith(".css") || fileName.endsWith(".html")) {
 
-
             $.get("/test/CreateFile", { projectID: this.projectID, filename: fileName }, (data) => {
 
                 if (data.Result) {
-
-                    this.currentGuid = data.ID;
+                    this.currentGuid = data.guid;
                     this.createFileList();
                     this.isMenuActive = false;
                     this.toggleOverlay();
