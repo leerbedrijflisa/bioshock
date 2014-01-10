@@ -159,15 +159,24 @@ else if (filename.indexOf(".css") > -1)
                     }
 
                     if (event.keyCode === _this.keys.F) {
-                        _this.canToggleEditor = false;
-                        _this.$editorWindow.toggle();
                         var fullscreen = window.open("/editor/?project=" + _this.projectID + "&file=" + _this.currentGuid, "_blank");
                         localStorage.setItem("signalR_PreviewID", _this.synchronizer.connectionID);
 
-                        fullscreen.onunload = function () {
+                        _this.$editorWindow.hide();
+                        _this.canToggleEditor = false;
+
+                        var onbeforeunload = function () {
                             _this.canToggleEditor = true;
                             _this.$editorWindow.show();
                         };
+
+                        if (fullscreen.addEventListener) {
+                            fullscreen.addEventListener("beforeunload", onbeforeunload);
+                        } else if (fullscreen.attachEvent) {
+                            fullscreen.attachEvent("onbeforeunload", onbeforeunload);
+                        } else {
+                            _this.canToggleEditor = true;
+                        }
                     }
                 }
             } else {

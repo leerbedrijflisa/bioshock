@@ -264,15 +264,23 @@ class BaseGuiController {
                 // Open fullscreen
                 if (event.keyCode === this.keys.F) {
 
-                    this.canToggleEditor = false;
-                    this.$editorWindow.toggle();
                     var fullscreen = window.open("/editor/?project=" + this.projectID + "&file=" + this.currentGuid, "_blank");
                     localStorage.setItem("signalR_PreviewID", this.synchronizer.connectionID);
-                    
-                    fullscreen.onunload = () => {
-                        
+
+                    this.$editorWindow.hide();
+                    this.canToggleEditor = false;
+
+                    var onbeforeunload = () => {
                         this.canToggleEditor = true;
                         this.$editorWindow.show();
+                    };
+
+                    if (fullscreen.addEventListener) {
+                        fullscreen.addEventListener("beforeunload", onbeforeunload);
+                    } else if (fullscreen.attachEvent) {
+                        fullscreen.attachEvent("onbeforeunload", onbeforeunload);
+                    } else {
+                        this.canToggleEditor = true;
                     }
                 }
             }

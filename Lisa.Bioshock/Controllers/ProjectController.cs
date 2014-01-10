@@ -45,14 +45,7 @@ namespace Lisa.Bioshock.Controllers
                 IStorageProvider sp = CreateStorageProvider(project);
                 FileSystem fs = new FileSystem(sp);
 
-                var css = fs.Root.Folders.Add("css");
                 var index = fs.Root.Files.Add("index.html", "text/html");
-                var style = css.Files.Add("style.css", "text/css");
-                
-                using (var writer = new System.IO.StreamWriter(index.OutputStream))
-                {
-                    writer.Write("<!DOCTYPE html>\n<html>\n<body>\n\t<h1>My website</h1>\n</body>\n</html>");
-                }
 
                 project.LastOpenedFile = Guid.Parse(index.ID);
                 Db.SaveChanges();
