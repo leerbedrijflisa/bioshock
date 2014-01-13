@@ -1,8 +1,9 @@
 var PreviewState = (function () {
     function PreviewState() {
+        var _this = this;
         this.onKeyUp = function (event) {
             if (event.keyCode == 17 /* CTRL */) {
-                Workspace.instance.stateMachine.pushState(new EditorState());
+                _this.stateMachine.pushState(new EditorState());
             }
         };
         //this.editorState = new EditorState();

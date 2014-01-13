@@ -28,7 +28,7 @@ class PreviewState implements IState {
 
         if (event.keyCode == Keys.CTRL) {
 
-            Workspace.instance.stateMachine.pushState(new EditorState());
+            this.stateMachine.pushState(new EditorState());
         }
     }
 
