@@ -13,6 +13,7 @@ var EditorWindow = (function (_super) {
         this._title = "Geen bestand geopend.";
         this.$editorResizeOverlay = $('#editor-resize-overlay');
         this.triggerOverlay = false;
+        this.initialize();
     }
     EditorWindow.prototype.open = function (onOpen) {
         _super.prototype.open.call(this, onOpen);
@@ -30,42 +31,46 @@ var EditorWindow = (function (_super) {
             this._title = this.$element.find("#filename").html();
         }
 
-        this.editor = CodeMirror.fromTextArea($("#editor")[0], {
-            value: "",
-            lineNumbers: true,
-            mode: "htmlmixed",
-            smartIndent: false,
-            tabSize: 2,
-            theme: "default",
-            gutters: ["Errors", "CodeMirror-linenumbers"],
-            extraKeys: {
-                "Shift-Tab": "indentLess"
-            }
-        });
+        if (this.$element.data('CodeMirror') === undefined) {
+            this.editor = CodeMirror.fromTextArea($("#editor")[0], {
+                value: "",
+                lineNumbers: true,
+                mode: "htmlmixed",
+                smartIndent: false,
+                tabSize: 2,
+                theme: "default",
+                gutters: ["Errors", "CodeMirror-linenumbers"],
+                extraKeys: {
+                    "Shift-Tab": "indentLess"
+                }
+            });
+            this.$element.data('CodeMirror', this.editor);
 
-        this.$element.resizable({
-            minHeight: 52,
-            minWidth: 200,
-            containment: '#editor-resize-overlay',
-            resize: function (event, ui) {
-                _this.$element.width(ui.size.width).height(ui.size.height);
+            this.$element.resizable({
+                minHeight: 52,
+                minWidth: 200,
+                containment: '#editor-resize-overlay',
+                resize: function (event, ui) {
+                    _this.$element.width(ui.size.width).height(ui.size.height);
 
-                _this.editor.refresh();
-            },
-            start: function () {
-                _this.$editorResizeOverlay.show();
-            },
-            stop: function () {
-                _this.$editorResizeOverlay.hide();
-                _this.editor.refresh();
-            },
-            handles: 'all'
-        }).draggable({
-            iframeFix: true,
-            containment: 'window',
-            handle: 'h1'
-        });
-
+                    _this.editor.refresh();
+                },
+                start: function () {
+                    _this.$editorResizeOverlay.show();
+                },
+                stop: function () {
+                    _this.$editorResizeOverlay.hide();
+                    _this.editor.refresh();
+                },
+                handles: 'all'
+            }).draggable({
+                iframeFix: true,
+                containment: 'window',
+                handle: 'h1'
+            });
+        } else {
+            this.editor = this.$element.data('CodeMirror');
+        }
         return _super.prototype.initialize.call(this);
     };
 

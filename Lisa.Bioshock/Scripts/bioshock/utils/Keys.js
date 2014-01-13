@@ -1,6 +1,8 @@
 var Keys;
 (function (Keys) {
     Keys[Keys["ENTER"] = 13] = "ENTER";
+    Keys[Keys["CTRL"] = 17] = "CTRL";
+    Keys[Keys["ESC"] = 27] = "ESC";
     Keys[Keys["A"] = 65] = "A";
     Keys[Keys["B"] = 66] = "B";
     Keys[Keys["C"] = 67] = "C";

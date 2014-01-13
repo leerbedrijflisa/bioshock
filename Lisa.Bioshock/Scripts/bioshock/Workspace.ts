@@ -7,6 +7,7 @@ class Workspace {
 
         this.projectID = $("#ProjectID").val();
         this.ajax = new AjaxHelper(this.projectID);
+        this.stateMachine = new StateMachine(new PreviewState());
 
         Workspace._instance = this;
     }
@@ -21,12 +22,12 @@ class Workspace {
 
 
     // UIWindow Getters \\
-    public get editorWindow(): EditorWindow {
-        if (this._windows["editor"] === undefined) {
-            this._windows["editor"] = new EditorWindow("#editorWindow");
-        }
-        return this._windows["editor"];
-    }
+    //public get editorWindow(): EditorWindow {
+    //    if (this._windows["editor"] === undefined) {
+    //        this._windows["editor"] = new EditorWindow("#editorWindow");
+    //    }
+    //    return this._windows["editor"];
+    //}
 
     public get newFileWindow(): NewFileWindow {
         if (this._windows["newFile"] === undefined) {
@@ -53,6 +54,7 @@ class Workspace {
 
     public ajax: AjaxHelper;
     public projectID: any;
+    public stateMachine: StateMachine;
 
     private static _instance: Workspace;
     private _windows: Object = {};

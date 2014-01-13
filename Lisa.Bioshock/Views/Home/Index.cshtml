@@ -11,6 +11,8 @@
 }
 
 <script type="text/javascript">
+
+    var workspace = undefined;
     $(function () {
 
         //var editor = CodeMirror.fromTextArea($("#editor")[0], {
@@ -29,6 +31,8 @@
         //var guiController = new BaseGuiController();
         //guiController.registerEditor(editor);
         //guiController.openStartUpFile();   
+
+        workspace = Workspace.instance;
     });
 
     function closeMenu() {

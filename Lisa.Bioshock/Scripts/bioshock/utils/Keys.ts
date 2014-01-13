@@ -1,5 +1,7 @@
 enum Keys {
     ENTER = 13,
+    CTRL = 17,
+    ESC = 27,
     A = 65,
     B = 66,
     C = 67,

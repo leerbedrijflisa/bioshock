@@ -4,10 +4,11 @@ class EditorWindow extends UIWindow {
     constructor(selector: any) {
         super(selector);
         this.triggerOverlay = false;
+        this.initialize();
     }
 
     public open(onOpen?: Function) {
-        super.open(onOpen);     
+        super.open(onOpen);   
         
         this.editor.swapDoc(new CodeMirror.Doc(''));
         this.editor.getDoc().setCursor(this.cursor);
@@ -21,52 +22,55 @@ class EditorWindow extends UIWindow {
             this._title = this.$element.find("#filename").html();
         }
 
-        this.editor = CodeMirror.fromTextArea(<HTMLTextAreaElement>$("#editor")[0], {
-            value: "",
-            lineNumbers: true,
-            mode: "htmlmixed",
-            smartIndent: false,
-            tabSize: 2,
-            theme: "default",
-            gutters: ["Errors", "CodeMirror-linenumbers"],
-            extraKeys: {
-                "Shift-Tab": "indentLess"
-            }
-        }); 
+        if (this.$element.data('CodeMirror') === undefined) {
+            this.editor = CodeMirror.fromTextArea(<HTMLTextAreaElement>$("#editor")[0], {
+                value: "",
+                lineNumbers: true,
+                mode: "htmlmixed",
+                smartIndent: false,
+                tabSize: 2,
+                theme: "default",
+                gutters: ["Errors", "CodeMirror-linenumbers"],
+                extraKeys: {
+                    "Shift-Tab": "indentLess"
+                }
+            });
+            this.$element.data('CodeMirror', this.editor);
 
-        this.$element.resizable({
+            this.$element.resizable({
 
-            minHeight: 52,
-            minWidth: 200,
-            containment: '#editor-resize-overlay',
-            resize: (event, ui) => {
+                minHeight: 52,
+                minWidth: 200,
+                containment: '#editor-resize-overlay',
+                resize: (event, ui) => {
 
-                this.$element
-                    .width(ui.size.width)
-                    .height(ui.size.height);
+                    this.$element
+                        .width(ui.size.width)
+                        .height(ui.size.height);
 
-                this.editor.refresh();
-            },
+                    this.editor.refresh();
+                },
 
-            start: () => {
+                start: () => {
 
-                this.$editorResizeOverlay.show();
-            },
+                    this.$editorResizeOverlay.show();
+                },
 
-            stop: () => {
+                stop: () => {
 
-                this.$editorResizeOverlay.hide();
-                this.editor.refresh();
-            },
-            handles: 'all'
-        })
-        .draggable({
+                    this.$editorResizeOverlay.hide();
+                    this.editor.refresh();
+                },
+                handles: 'all'
+            }).draggable({
 
-            iframeFix: true,
-            containment: 'window',
-            handle: 'h1'
-        });
-
+                iframeFix: true,
+                containment: 'window',
+                handle: 'h1'
+            });
+        } else {
+            this.editor = <CodeMirror.Editor>this.$element.data('CodeMirror');
+        }
         return super.initialize();
     }
 
