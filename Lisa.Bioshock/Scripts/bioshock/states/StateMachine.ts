@@ -6,27 +6,29 @@ class StateMachine {
     }
 
     public switchState(state: IState) {
+        state.stateMachine = this;
 
-        if (this.stack.length > 0) {
+        if (this._stack.length > 0) {
 
             this.currentState.suspend();
             this.currentState.leave();
-            this.stack.pop();
+            this._stack.pop();
         }
 
-        this.stack.push(state);
+        this._stack.push(state);
         this.currentState.enter();
         this.currentState.resume();
     }
 
     public pushState(state: IState) {
+        state.stateMachine = this;
 
-        if (this.stack.length > 0) {
+        if (this._stack.length > 0) {
 
             this.currentState.suspend();
         }
 
-        this.stack.push(state);
+        this._stack.push(state);
         this.currentState.enter();
         this.currentState.resume();
     }
@@ -35,27 +37,36 @@ class StateMachine {
 
         this.currentState.suspend();
         this.currentState.leave();
-        this.stack.pop();
+        this._stack.pop();
         this.currentState.resume();
     }
 
     private initialize(state: IState) {
 
-        if (this.initialized) {
+        if (this._initialized) {
 
             throw new Error('Already initialized!');
         } else {
-
+            var preview = <HTMLIFrameElement>$("#preview")[0];
+            this._preview = preview.contentDocument || preview.contentWindow;
             this.switchState(state);
-            this.initialized = true;
+            this._initialized = true;
         }
     }
 
-    private get currentState(): IState {
 
-        return this.stack[this.stack.length - 1];
+    // properties
+    public get preview(): HTMLIFrameElement {
+        return this._preview;
     }
 
-    private stack: IState[] = [];
-    private initialized: boolean = false;
+    private get currentState(): IState {
+        return this._stack[this._stack.length - 1];
+    }
+
+
+    // fields
+    private _stack: IState[] = [];
+    private _initialized: boolean = false;
+    private _preview: any;
 } 

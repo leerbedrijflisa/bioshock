@@ -12,14 +12,14 @@ var EditorWindow = (function (_super) {
         _super.call(this, selector);
         this._title = "Geen bestand geopend.";
         this.$editorResizeOverlay = $('#editor-resize-overlay');
+
         this.triggerOverlay = false;
         this.initialize();
     }
     EditorWindow.prototype.open = function (onOpen) {
         _super.prototype.open.call(this, onOpen);
 
-        this.editor.swapDoc(new CodeMirror.Doc(''));
-        this.editor.getDoc().setCursor(this.cursor);
+        this.editor.refresh();
         this.editor.focus();
 
         return this;
@@ -27,13 +27,15 @@ var EditorWindow = (function (_super) {
 
     EditorWindow.prototype.initialize = function () {
         var _this = this;
+        _super.prototype.initialize.call(this);
+
         if (this.$element !== undefined) {
             this._title = this.$element.find("#filename").html();
         }
 
-        if (this.$element.data('CodeMirror') === undefined) {
+        if (this.$element.data('CodeMirror_instance') === undefined) {
             this.editor = CodeMirror.fromTextArea($("#editor")[0], {
-                value: "",
+                value: "abcde",
                 lineNumbers: true,
                 mode: "htmlmixed",
                 smartIndent: false,
@@ -44,9 +46,7 @@ var EditorWindow = (function (_super) {
                     "Shift-Tab": "indentLess"
                 }
             });
-            this.$element.data('CodeMirror', this.editor);
-
-            this.$element.resizable({
+            this.$element.data('CodeMirror_instance', this.editor).resizable({
                 minHeight: 52,
                 minWidth: 200,
                 containment: '#editor-resize-overlay',
@@ -69,9 +69,10 @@ var EditorWindow = (function (_super) {
                 handle: 'h1'
             });
         } else {
-            this.editor = this.$element.data('CodeMirror');
+            this.editor = this.$element.data('CodeMirror_instance');
         }
-        return _super.prototype.initialize.call(this);
+
+        return this;
     };
 
     Object.defineProperty(EditorWindow.prototype, "contents", {

@@ -1,25 +1,28 @@
 var EditorState = (function () {
     function EditorState() {
-        this.editorWindow = new EditorWindow('#editorWindow');
     }
     EditorState.prototype.enter = function () {
-        this.editorWindow.open();
+        this._editorWindow = new EditorWindow('#editorWindow');
+        this._editorWindow.open();
     };
 
     EditorState.prototype.leave = function () {
-        this.editorWindow.close();
+        this._editorWindow.close();
     };
 
     EditorState.prototype.resume = function () {
+        var preview = this.stateMachine.preview;
+
         $(window).on('keyup', this.onKeyUp);
 
-        this.iframe = $('#preview')[0];
-        $(this.iframe.contentWindow).on('keyup', this.onKeyUp);
+        $(preview).on('keyup', this.onKeyUp);
     };
 
     EditorState.prototype.suspend = function () {
+        var preview = this.stateMachine.preview;
+
         $(window).off('keyup', this.onKeyUp);
-        $(this.iframe.contentWindow).off('keyup', this.onKeyUp);
+        $(preview).off('keyup', this.onKeyUp);
     };
 
     EditorState.prototype.onKeyUp = function (event) {

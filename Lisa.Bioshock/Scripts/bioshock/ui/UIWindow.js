@@ -1,10 +1,16 @@
 /// <reference path="../../typings/jquery/jquery.d.ts" />
 var UIWindow = (function () {
     function UIWindow(selector) {
+        // properties
+        // fields
         this.triggerOverlay = true;
-        this.openEvents = [];
-        this.closeEvents = [];
-        this.$overlay = $('#overlay');
+        this._openEvents = [];
+        this._closeEvents = [];
+        this._$overlay = $('#overlay');
+        this._fadeOptions = {
+            queue: false,
+            duration: 100
+        };
         this.$element = $(selector);
         this.initialize();
     }
@@ -14,16 +20,16 @@ var UIWindow = (function () {
 
     UIWindow.prototype.open = function (onOpen) {
         if (onOpen) {
-            this.openEvents.push(onOpen);
+            this._openEvents.push(onOpen);
         } else {
-            this.$element.fadeIn(250);
+            this.$element.fadeIn(this._fadeOptions);
 
             if (this.triggerOverlay) {
-                this.$overlay.fadeIn(250);
+                this._$overlay.fadeIn(this._fadeOptions);
             }
 
-            for (var i = 0; i < this.openEvents.length; i++) {
-                this.openEvents[i]();
+            for (var i = 0; i < this._openEvents.length; i++) {
+                this._openEvents[i]();
             }
         }
         return this;
@@ -31,16 +37,16 @@ var UIWindow = (function () {
 
     UIWindow.prototype.close = function (onClose) {
         if (onClose) {
-            this.closeEvents.push(onClose);
+            this._closeEvents.push(onClose);
         } else {
-            this.$element.fadeOut(250);
+            this.$element.fadeOut(this._fadeOptions);
 
             if (this.triggerOverlay) {
-                this.$overlay.fadeOut(250);
+                this._$overlay.fadeOut(this._fadeOptions);
             }
 
-            for (var i = 0; i < this.closeEvents.length; i++) {
-                this.closeEvents[i]();
+            for (var i = 0; i < this._closeEvents.length; i++) {
+                this._closeEvents[i]();
             }
         }
         return this;

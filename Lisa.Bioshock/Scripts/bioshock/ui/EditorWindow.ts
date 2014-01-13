@@ -3,28 +3,30 @@
 class EditorWindow extends UIWindow {
     constructor(selector: any) {
         super(selector);
+
         this.triggerOverlay = false;
         this.initialize();
     }
 
     public open(onOpen?: Function) {
         super.open(onOpen);   
-        
-        this.editor.swapDoc(new CodeMirror.Doc(''));
-        this.editor.getDoc().setCursor(this.cursor);
+
+        this.editor.refresh();
         this.editor.focus(); 
 
         return this;
     }
 
     public initialize() {
+        super.initialize();
+
         if (this.$element !== undefined) {
             this._title = this.$element.find("#filename").html();
         }
 
-        if (this.$element.data('CodeMirror') === undefined) {
+        if (this.$element.data('CodeMirror_instance') === undefined) {
             this.editor = CodeMirror.fromTextArea(<HTMLTextAreaElement>$("#editor")[0], {
-                value: "",
+                value: "abcde",
                 lineNumbers: true,
                 mode: "htmlmixed",
                 smartIndent: false,
@@ -35,43 +37,42 @@ class EditorWindow extends UIWindow {
                     "Shift-Tab": "indentLess"
                 }
             });
-            this.$element.data('CodeMirror', this.editor);
+            this.$element.data('CodeMirror_instance', this.editor)
+                .resizable({
+                    minHeight: 52,
+                    minWidth: 200,
+                    containment: '#editor-resize-overlay',
+                    resize: (event, ui) => {
 
-            this.$element.resizable({
+                        this.$element
+                            .width(ui.size.width)
+                            .height(ui.size.height);
 
-                minHeight: 52,
-                minWidth: 200,
-                containment: '#editor-resize-overlay',
-                resize: (event, ui) => {
+                        this.editor.refresh();
+                    },
 
-                    this.$element
-                        .width(ui.size.width)
-                        .height(ui.size.height);
+                    start: () => {
 
-                    this.editor.refresh();
-                },
+                        this.$editorResizeOverlay.show();
+                    },
 
-                start: () => {
+                    stop: () => {
 
-                    this.$editorResizeOverlay.show();
-                },
+                        this.$editorResizeOverlay.hide();
+                        this.editor.refresh();
+                    },
+                    handles: 'all'
+                }).draggable({
 
-                stop: () => {
-
-                    this.$editorResizeOverlay.hide();
-                    this.editor.refresh();
-                },
-                handles: 'all'
-            }).draggable({
-
-                iframeFix: true,
-                containment: 'window',
-                handle: 'h1'
-            });
+                    iframeFix: true,
+                    containment: 'window',
+                    handle: 'h1'
+                });            
         } else {
-            this.editor = <CodeMirror.Editor>this.$element.data('CodeMirror');
+            this.editor = <CodeMirror.Editor>this.$element.data('CodeMirror_instance');
         }
-        return super.initialize();
+
+        return this;
     }
 
     public get contents() {

@@ -85,7 +85,7 @@ var OpenFileWindow = (function (_super) {
         var id = $(event.currentTarget).data('file-id');
 
         Workspace.instance.ajax.getFileContents(id, function (data) {
-            Workspace.instance.editorWindow.openFile(data);
+            new EditorWindow('#editorWindow').openFile(data);
         });
 
         this.close();

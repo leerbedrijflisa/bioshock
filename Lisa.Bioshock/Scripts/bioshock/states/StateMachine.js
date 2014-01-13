@@ -1,27 +1,32 @@
 var StateMachine = (function () {
     function StateMachine(defaultState) {
-        this.stack = [];
-        this.initialized = false;
+        // fields
+        this._stack = [];
+        this._initialized = false;
         this.initialize(defaultState);
     }
     StateMachine.prototype.switchState = function (state) {
-        if (this.stack.length > 0) {
+        state.stateMachine = this;
+
+        if (this._stack.length > 0) {
             this.currentState.suspend();
             this.currentState.leave();
-            this.stack.pop();
+            this._stack.pop();
         }
 
-        this.stack.push(state);
+        this._stack.push(state);
         this.currentState.enter();
         this.currentState.resume();
     };
 
     StateMachine.prototype.pushState = function (state) {
-        if (this.stack.length > 0) {
+        state.stateMachine = this;
+
+        if (this._stack.length > 0) {
             this.currentState.suspend();
         }
 
-        this.stack.push(state);
+        this._stack.push(state);
         this.currentState.enter();
         this.currentState.resume();
     };
@@ -29,22 +34,33 @@ var StateMachine = (function () {
     StateMachine.prototype.popState = function () {
         this.currentState.suspend();
         this.currentState.leave();
-        this.stack.pop();
+        this._stack.pop();
         this.currentState.resume();
     };
 
     StateMachine.prototype.initialize = function (state) {
-        if (this.initialized) {
+        if (this._initialized) {
             throw new Error('Already initialized!');
         } else {
+            var preview = $("#preview")[0];
+            this._preview = preview.contentDocument || preview.contentWindow;
             this.switchState(state);
-            this.initialized = true;
+            this._initialized = true;
         }
     };
 
+    Object.defineProperty(StateMachine.prototype, "preview", {
+        // properties
+        get: function () {
+            return this._preview;
+        },
+        enumerable: true,
+        configurable: true
+    });
+
     Object.defineProperty(StateMachine.prototype, "currentState", {
         get: function () {
-            return this.stack[this.stack.length - 1];
+            return this._stack[this._stack.length - 1];
         },
         enumerable: true,
         configurable: true

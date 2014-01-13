@@ -3,4 +3,6 @@ interface IState {
     leave(): void;
     suspend(): void;
     resume(): void;
+
+    stateMachine: StateMachine;
 }

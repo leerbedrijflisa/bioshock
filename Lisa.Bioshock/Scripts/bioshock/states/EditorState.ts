@@ -1,32 +1,31 @@
 class EditorState implements IState {
 
     constructor() {
-
-        this.editorWindow = new EditorWindow('#editorWindow');
     }
 
     public enter() {
-        
-        this.editorWindow.open();
+        this._editorWindow = new EditorWindow('#editorWindow');
+        this._editorWindow.open();
     }    
 
     public leave() {
 
-        this.editorWindow.close();
+        this._editorWindow.close();
     }
 
     public resume() {
+        var preview = this.stateMachine.preview;
 
         $(window).on('keyup', this.onKeyUp);
 
-        this.iframe = <HTMLIFrameElement>$('#preview')[0];
-        $(this.iframe.contentWindow).on('keyup', this.onKeyUp);
+        $(preview).on('keyup', this.onKeyUp);
     }
 
     public suspend() {
+        var preview = this.stateMachine.preview;
 
         $(window).off('keyup', this.onKeyUp);
-        $(this.iframe.contentWindow).off('keyup', this.onKeyUp);
+        $(preview).off('keyup', this.onKeyUp);
     }
 
     private onKeyUp(event) {
@@ -37,6 +36,11 @@ class EditorState implements IState {
         }
     }
 
-    private editorWindow: EditorWindow;
-    private iframe: HTMLIFrameElement;
+
+    // properties
+
+    // fields
+    public stateMachine: StateMachine;
+
+    private _editorWindow: EditorWindow;
 }  

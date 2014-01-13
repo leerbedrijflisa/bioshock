@@ -14,15 +14,17 @@ var PreviewState = (function () {
     };
 
     PreviewState.prototype.resume = function () {
-        $(window).on('keyup', this.onKeyUp);
+        var preview = this.stateMachine.preview;
 
-        this.iframe = $('#preview')[0];
-        $(this.iframe.contentWindow).on('keyup', this.onKeyUp);
+        $(window).on('keyup', this.onKeyUp);
+        $(preview).on('keyup', this.onKeyUp);
     };
 
     PreviewState.prototype.suspend = function () {
+        var preview = this.stateMachine.preview;
+
         $(window).off('keyup', this.onKeyUp);
-        $(this.iframe.contentWindow).off('keyup', this.onKeyUp);
+        $(preview).off('keyup', this.onKeyUp);
     };
     return PreviewState;
 })();
