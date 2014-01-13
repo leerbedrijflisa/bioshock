@@ -6,6 +6,7 @@ var UIWindow = (function () {
         this.triggerOverlay = true;
         this._openEvents = [];
         this._closeEvents = [];
+        this._exitEvents = [];
         this._$overlay = $('#overlay');
         this._fadeOptions = {
             queue: false,
@@ -49,6 +50,18 @@ var UIWindow = (function () {
                 this._closeEvents[i]();
             }
         }
+        return this;
+    };
+
+    UIWindow.prototype.exit = function (onExit) {
+        if (onExit) {
+            this._exitEvents.push(onExit);
+        } else {
+            for (var i = 0; i < this._exitEvents.length; i++) {
+                this._exitEvents[i]();
+            }
+        }
+
         return this;
     };
     return UIWindow;

@@ -44,6 +44,20 @@ class UIWindow {
         return this;
     }
 
+    public exit(onExit?: Function) {
+        if (onExit) {
+
+            this._exitEvents.push(onExit);
+        } else {
+
+            for (var i = 0; i < this._exitEvents.length; i++) {
+
+                this._exitEvents[i]();
+            }
+        }
+
+        return this;
+    }
 
     // properties
 
@@ -53,6 +67,7 @@ class UIWindow {
 
     private _openEvents = [];
     private _closeEvents = [];
+    private _exitEvents = [];
     private _$overlay = $('#overlay');
     private _fadeOptions = {
         queue: false,
