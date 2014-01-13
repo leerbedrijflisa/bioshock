@@ -8,6 +8,7 @@ var EditorState = (function () {
                 if (event.keyCode == 78 /* N */) {
                     _this.stateMachine.pushState(new NewFileState());
                 } else if (event.keyCode == 79 /* O */) {
+                    _this.stateMachine.pushState(new OpenFileState());
                 }
             }
         };
