@@ -1,5 +1,16 @@
 var EditorState = (function () {
     function EditorState() {
+        var _this = this;
+        this.onKeyUp = function (event) {
+            if (event.keyCode == 17 /* CTRL */) {
+                _this.stateMachine.popState();
+            } else if (event.altKey) {
+                if (event.keyCode == 78 /* N */) {
+                    _this.stateMachine.pushState(new NewFileState());
+                } else if (event.keyCode == 79 /* O */) {
+                }
+            }
+        };
     }
     EditorState.prototype.enter = function () {
         this._editorWindow = new EditorWindow('#editorWindow');
@@ -23,12 +34,6 @@ var EditorState = (function () {
 
         $(window).off('keyup', this.onKeyUp);
         $(preview).off('keyup', this.onKeyUp);
-    };
-
-    EditorState.prototype.onKeyUp = function (event) {
-        if (event.keyCode == 17 /* CTRL */) {
-            Workspace.instance.stateMachine.popState();
-        }
     };
     return EditorState;
 })();

@@ -28,11 +28,20 @@ class EditorState implements IState {
         $(preview).off('keyup', this.onKeyUp);
     }
 
-    private onKeyUp(event) {
+    private onKeyUp = (event: JQueryKeyEventObject) => {
 
         if (event.keyCode == Keys.CTRL) {
 
-            Workspace.instance.stateMachine.popState();
+            this.stateMachine.popState();
+
+        } else if (event.altKey) {
+
+            if (event.keyCode == Keys.N) {
+
+                this.stateMachine.pushState(new NewFileState());
+
+            } else if (event.keyCode == Keys.O) {
+            }
         }
     }
 
