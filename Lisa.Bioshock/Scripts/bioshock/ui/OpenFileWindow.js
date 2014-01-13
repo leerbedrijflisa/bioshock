@@ -32,6 +32,10 @@ var OpenFileWindow = (function (_super) {
             _this.filter(event);
         });
 
+        setTimeout(function () {
+            $filterQuery.focus();
+        }, 100);
+
         return _super.prototype.initialize.call(this);
     };
 
@@ -88,7 +92,7 @@ var OpenFileWindow = (function (_super) {
             new EditorWindow('#editorWindow').openFile(data);
         });
 
-        this.close();
+        this.close().exit();
     };
 
     OpenFileWindow.prototype.createFileList = function () {

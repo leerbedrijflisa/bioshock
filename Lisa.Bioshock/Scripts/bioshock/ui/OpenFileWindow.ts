@@ -25,6 +25,10 @@ class OpenFileWindow extends UIWindow {
             this.filter(event);
         });
 
+        setTimeout(function () {
+            $filterQuery.focus();
+        }, 100);
+
         return super.initialize();
     }    
     
@@ -82,7 +86,8 @@ class OpenFileWindow extends UIWindow {
             new EditorWindow('#editorWindow').openFile(data);
         });
 
-        this.close();
+        this.close()
+            .exit();
     }
 
     private createFileList() {
