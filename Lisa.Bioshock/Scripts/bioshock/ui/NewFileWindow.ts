@@ -51,7 +51,11 @@ class NewFileWindow extends UIWindow {
 
                     /* TODO: Update the editor */
                     $('#filename').text(fileName);
-                    this.close();
+                    this.close()
+                        .exit();
+                } else {
+
+                    alert('Er is een interne fout opgetreden bij het aanmaken van uw bestand!');
                 }
             });
         } else {

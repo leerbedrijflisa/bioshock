@@ -12,6 +12,7 @@ var NewFileWindow = (function (_super) {
         _super.call(this, selector);
         this.cleanup = function () {
             _this.$element.find('#newFileName').val('');
+            return _this;
         };
         this.setUp = function () {
             var $filename = _this.$element.find('#newFileName');
@@ -22,6 +23,7 @@ var NewFileWindow = (function (_super) {
             }, 500);
         };
         this.createFile = function () {
+            console.log('createFile');
             var fileName = _this.$element.find('#newFileName').val();
 
             if (fileName.endsWith('.css') || fileName.endsWith('.html')) {
@@ -29,7 +31,9 @@ var NewFileWindow = (function (_super) {
                     if (data.result) {
                         /* TODO: Update the editor */
                         $('#filename').text(fileName);
-                        _this.close();
+                        _this.close().exit();
+                    } else {
+                        alert('Er is een interne fout opgetreden bij het aanmaken van uw bestand!');
                     }
                 });
             } else {
