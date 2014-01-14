@@ -445,6 +445,7 @@
     <Content Include="Scripts\bioshock\FullScreenGuiController.ts" />
     <TypeScriptCompile Include="Scripts\bioshock\states\EditorState.ts" />
     <TypeScriptCompile Include="Scripts\bioshock\states\IState.ts" />
+    <TypeScriptCompile Include="Scripts\bioshock\states\MenuState.ts" />
     <TypeScriptCompile Include="Scripts\bioshock\states\NewFileState.ts" />
     <TypeScriptCompile Include="Scripts\bioshock\states\OpenFileState.ts" />
     <TypeScriptCompile Include="Scripts\bioshock\states\PreviewState.ts" />
