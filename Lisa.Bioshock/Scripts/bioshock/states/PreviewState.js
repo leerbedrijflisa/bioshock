@@ -1,5 +1,5 @@
 var PreviewState = (function () {
-    function PreviewState(preview) {
+    function PreviewState() {
         var _this = this;
         this.onKeyUp = function (event) {
             if (event.keyCode == 17 /* CTRL */) {
@@ -8,7 +8,6 @@ var PreviewState = (function () {
                 _this.stateMachine.pushState(new MenuState());
             }
         };
-        this._preview = preview.contentDocument || preview.contentWindow;
     }
     PreviewState.prototype.enter = function () {
     };
@@ -18,12 +17,12 @@ var PreviewState = (function () {
 
     PreviewState.prototype.resume = function () {
         $(window).on('keyup', this.onKeyUp);
-        $(this._preview).on('keyup', this.onKeyUp);
+        workspace.preview.addKeyUpHandler(this.onKeyUp);
     };
 
     PreviewState.prototype.suspend = function () {
         $(window).off('keyup', this.onKeyUp);
-        $(this._preview).off('keyup', this.onKeyUp);
+        workspace.preview.removeKeyUpHandler(this.onKeyUp);
     };
     return PreviewState;
 })();

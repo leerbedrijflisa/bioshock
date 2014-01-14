@@ -1,4 +1,4 @@
-class BioshockWorkspace {
+class Workspace {
 
     /**
      * Creates a new BioshockWorkspace.
@@ -9,11 +9,11 @@ class BioshockWorkspace {
     constructor(projectID: string, preview: JQuery);
     constructor(projectID: string, preview: any) {
         this.projectID = projectID;
-        this.preview = <HTMLIFrameElement>$(preview)[0];
+        this.preview = new Preview(preview);
 
         this._ajax = new AjaxHelper(projectID);
         this._synchronizer = new Synchronizer(preview);
-        this.stateMachine = new StateMachine(new PreviewState(this.preview));
+        this.stateMachine = new StateMachine();
     }
 
 
@@ -35,9 +35,10 @@ class BioshockWorkspace {
     // fields
     public projectID: string;
     public stateMachine: StateMachine;
-    public preview: HTMLIFrameElement;
+    public preview: Preview;
 
     private _ajax: AjaxHelper;
     private _synchronizer: Synchronizer;
 }
-var Workspace: BioshockWorkspace;
+
+var workspace: Workspace;

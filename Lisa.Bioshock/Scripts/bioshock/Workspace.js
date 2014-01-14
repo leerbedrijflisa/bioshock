@@ -1,13 +1,13 @@
-var BioshockWorkspace = (function () {
-    function BioshockWorkspace(projectID, preview) {
+var Workspace = (function () {
+    function Workspace(projectID, preview) {
         this.projectID = projectID;
-        this.preview = $(preview)[0];
+        this.preview = new Preview(preview);
 
         this._ajax = new AjaxHelper(projectID);
         this._synchronizer = new Synchronizer(preview);
-        this.stateMachine = new StateMachine(new PreviewState(this.preview));
+        this.stateMachine = new StateMachine();
     }
-    Object.defineProperty(BioshockWorkspace.prototype, "ajax", {
+    Object.defineProperty(Workspace.prototype, "ajax", {
         /**
         * Gets the AjaxHelper instance.
         */
@@ -18,7 +18,7 @@ var BioshockWorkspace = (function () {
         configurable: true
     });
 
-    Object.defineProperty(BioshockWorkspace.prototype, "synchronizer", {
+    Object.defineProperty(Workspace.prototype, "synchronizer", {
         /**
         * Gets the Synchronizer instance.
         */
@@ -28,7 +28,8 @@ var BioshockWorkspace = (function () {
         enumerable: true,
         configurable: true
     });
-    return BioshockWorkspace;
+    return Workspace;
 })();
-var Workspace;
+
+var workspace;
 //# sourceMappingURL=Workspace.js.map

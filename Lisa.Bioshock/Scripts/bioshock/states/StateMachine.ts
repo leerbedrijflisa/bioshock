@@ -2,32 +2,6 @@
 class StateMachine {
 
     /**
-     * Creates a new instance of the StateMachine.
-     *
-     * @param {IState} defaultState - The first state to be enabled.
-     */
-    constructor(defaultState: IState) {
-
-        this.initialize(defaultState);
-    }
-
-    /**
-     * Initializes the StateMachine.
-     *
-     * @param {IState} state - The first state to be enabled.
-     */
-    public initialize(state: IState) {
-        if (this._initialized) {
-
-            throw new Error('Already initialized!');
-        } else {
-            this.switchState(state);
-            this._initialized = true;
-        }
-    }
-
-    
-    /**
      * Switch to a new state and leaves the current one.
      *
      * @param {IState} state - The new state to switch to.
@@ -78,15 +52,6 @@ class StateMachine {
         this.currentState.resume();
     }
 
-
-
-    /**
-     * Gets the contentDocument/contentWindow of the preview's IFrame.
-     */
-    //public get preview() {
-    //    return Workspace.preview.contentDocument || Workspace.preview.contentWindow;
-    //}
-
     /**
      * Gets the current state.
      */
@@ -97,5 +62,4 @@ class StateMachine {
 
     // fields
     private _stack: IState[] = [];
-    private _initialized: boolean = false;
 } 

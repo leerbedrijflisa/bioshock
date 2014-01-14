@@ -25,18 +25,13 @@ var EditorState = (function () {
     };
 
     EditorState.prototype.resume = function () {
-        var preview = this.stateMachine.preview;
-
         $(window).on('keyup', this.onKeyUp);
-
-        $(preview).on('keyup', this.onKeyUp);
+        workspace.preview.addKeyUpHandler(this.onKeyUp);
     };
 
     EditorState.prototype.suspend = function () {
-        var preview = this.stateMachine.preview;
-
         $(window).off('keyup', this.onKeyUp);
-        $(preview).off('keyup', this.onKeyUp);
+        workspace.preview.removeKeyUpHandler(this.onKeyUp);
     };
     return EditorState;
 })();

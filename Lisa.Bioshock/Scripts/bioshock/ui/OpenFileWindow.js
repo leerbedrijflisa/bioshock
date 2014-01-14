@@ -85,7 +85,7 @@ var OpenFileWindow = (function (_super) {
     OpenFileWindow.prototype.updateEditor = function (event) {
         var id = $(event.currentTarget).data('file-id');
 
-        Workspace.ajax.getFileContents(id, function (data) {
+        workspace.ajax.getFileContents(id, function (data) {
             new EditorWindow('#editorWindow').openFile(data);
         });
 
@@ -98,7 +98,7 @@ var OpenFileWindow = (function (_super) {
 
         this.files = [];
 
-        Workspace.ajax.getFiles(function (data) {
+        workspace.ajax.getFiles(function (data) {
             for (var i in data) {
                 if (data.hasOwnProperty(i)) {
                     _this.generateFolderTree(data[i], $fileList);

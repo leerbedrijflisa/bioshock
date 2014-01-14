@@ -113,14 +113,14 @@ class EditorWindow extends UIWindow {
 
 
     private editorChange() {
-        Workspace.ajax.writeFile({
+        workspace.ajax.writeFile({
             fileID: this.fileID,
             contents: this.editor.getDoc().getValue()
         });
 
         if (this.fileName.indexOf(".css") > -1) {
 
-            Workspace.synchronizer.update({
+            workspace.synchronizer.update({
                 message: SynchronizeMessages.REFRESH,
                 fileID: this.fileID,
                 contents: this.editor.getDoc().getValue()
@@ -128,7 +128,7 @@ class EditorWindow extends UIWindow {
 
         } else {
 
-            Workspace.synchronizer.update({
+            workspace.synchronizer.update({
                 message: SynchronizeMessages.UPDATE,
                 fileID: this.fileID,
                 contents: this.editor.getDoc().getValue()
@@ -141,7 +141,7 @@ class EditorWindow extends UIWindow {
     }
 
     private editorFocus() {
-        Workspace.synchronizer.update({
+        workspace.synchronizer.update({
             message: SynchronizeMessages.UPDATE,
             fileID: this.fileID,
             contents: this.editor.getDoc().getValue()

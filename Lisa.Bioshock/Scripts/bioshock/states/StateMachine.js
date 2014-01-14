@@ -1,30 +1,9 @@
 /// <reference path="IState.ts" />
 var StateMachine = (function () {
-    /**
-    * Creates a new instance of the StateMachine.
-    *
-    * @param {IState} defaultState - The first state to be enabled.
-    */
-    function StateMachine(defaultState) {
+    function StateMachine() {
         // fields
         this._stack = [];
-        this._initialized = false;
-        this.initialize(defaultState);
     }
-    /**
-    * Initializes the StateMachine.
-    *
-    * @param {IState} state - The first state to be enabled.
-    */
-    StateMachine.prototype.initialize = function (state) {
-        if (this._initialized) {
-            throw new Error('Already initialized!');
-        } else {
-            this.switchState(state);
-            this._initialized = true;
-        }
-    };
-
     /**
     * Switch to a new state and leaves the current one.
     *
@@ -75,12 +54,6 @@ var StateMachine = (function () {
     };
 
     Object.defineProperty(StateMachine.prototype, "currentState", {
-        /**
-        * Gets the contentDocument/contentWindow of the preview's IFrame.
-        */
-        //public get preview() {
-        //    return Workspace.preview.contentDocument || Workspace.preview.contentWindow;
-        //}
         /**
         * Gets the current state.
         */

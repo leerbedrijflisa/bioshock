@@ -79,7 +79,7 @@ class OpenFileWindow extends UIWindow {
     private updateEditor(event) {
         var id = $(event.currentTarget).data('file-id');
 
-        Workspace.ajax.getFileContents(id, (data) => {
+        workspace.ajax.getFileContents(id, (data) => {
             new EditorWindow('#editorWindow').openFile(data);
         });
 
@@ -91,7 +91,7 @@ class OpenFileWindow extends UIWindow {
 
         this.files = [];
 
-        Workspace.ajax.getFiles((data) => {
+        workspace.ajax.getFiles((data) => {
             for (var i in data) {
                 if (data.hasOwnProperty(i)) {
                     this.generateFolderTree(data[i], $fileList);

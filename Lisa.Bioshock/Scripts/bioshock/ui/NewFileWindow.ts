@@ -46,7 +46,7 @@ class NewFileWindow extends UIWindow {
 
         if (fileName.endsWith('.css') || fileName.endsWith('.html')) {
 
-            Workspace.ajax.createFile({ filename: fileName }, (data) => {
+            workspace.ajax.createFile({ filename: fileName }, (data) => {
                 if (data.result) {
 
                     /* TODO: Update the editor */

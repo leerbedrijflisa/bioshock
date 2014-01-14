@@ -14,18 +14,13 @@ class EditorState implements IState {
     }
 
     public resume() {
-        var preview = this.stateMachine.preview;
-
         $(window).on('keyup', this.onKeyUp);
-
-        $(preview).on('keyup', this.onKeyUp);
+        workspace.preview.addKeyUpHandler(this.onKeyUp);
     }
 
     public suspend() {
-        var preview = this.stateMachine.preview;
-
         $(window).off('keyup', this.onKeyUp);
-        $(preview).off('keyup', this.onKeyUp);
+        workspace.preview.removeKeyUpHandler(this.onKeyUp);
     }
 
     private onKeyUp = (event: JQueryKeyEventObject) => {
@@ -56,6 +51,5 @@ class EditorState implements IState {
 
     // fields
     public stateMachine: StateMachine;
-
     private _editorWindow: EditorWindow;
 }  

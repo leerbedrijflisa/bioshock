@@ -122,19 +122,19 @@ var EditorWindow = (function (_super) {
     };
 
     EditorWindow.prototype.editorChange = function () {
-        Workspace.ajax.writeFile({
+        workspace.ajax.writeFile({
             fileID: this.fileID,
             contents: this.editor.getDoc().getValue()
         });
 
         if (this.fileName.indexOf(".css") > -1) {
-            Workspace.synchronizer.update({
+            workspace.synchronizer.update({
                 message: 1 /* REFRESH */,
                 fileID: this.fileID,
                 contents: this.editor.getDoc().getValue()
             });
         } else {
-            Workspace.synchronizer.update({
+            workspace.synchronizer.update({
                 message: 2 /* UPDATE */,
                 fileID: this.fileID,
                 contents: this.editor.getDoc().getValue()
@@ -147,7 +147,7 @@ var EditorWindow = (function (_super) {
     };
 
     EditorWindow.prototype.editorFocus = function () {
-        Workspace.synchronizer.update({
+        workspace.synchronizer.update({
             message: 2 /* UPDATE */,
             fileID: this.fileID,
             contents: this.editor.getDoc().getValue()
