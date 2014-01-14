@@ -1,16 +1,28 @@
-/// <reference path="../../typings/jquery/jquery.d.ts" />
 class UIWindow {
 
+    /**
+     * Creates a new instance of the UIWindow - it is recommended to create a derived class.
+     *
+     * @param {any} selector - The (jQuery) selector to find the window in the DOM.
+     */
     constructor(selector: any) {        
         this.$element = $(selector);
         this.initialize();
     }
 
+    /**
+    * Initializes the window.
+    */
     public initialize() {
         this._isVisible = this.$element.is(":visible");
         return this;
     }
 
+    /**
+    * Opens the window or, when onOpen is given, adds an event handler.
+    *
+    * @param {Function} onOpen? - When given, adds an event handler that will be called after the window opens.
+    */
     public open(onOpen?: Function) {
         if (onOpen) {
             this._openEvents.push(onOpen);
@@ -32,6 +44,11 @@ class UIWindow {
         return this;
     }
 
+    /**
+    * Opens the window or, when onClose is given, adds an event handler.
+    *
+    * @param {Function} onClose? - When given, adds an event handler that will be called after the window close.
+    */
     public close(onClose?: Function) {
         if (onClose) {
             this._closeEvents.push(onClose);
