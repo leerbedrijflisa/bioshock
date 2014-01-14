@@ -25,7 +25,7 @@ var NewFileWindow = (function (_super) {
             var fileName = _this.$element.find('#newFileName').val();
 
             if (fileName.endsWith('.css') || fileName.endsWith('.html')) {
-                Workspace.instance.ajax.createFile({ filename: fileName }, function (data) {
+                Workspace.ajax.createFile({ filename: fileName }, function (data) {
                     if (data.result) {
                         /* TODO: Update the editor */
                         $('#filename').text(fileName);

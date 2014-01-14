@@ -1,6 +1,3 @@
-/// <reference path="../../typings/jquery/jquery.d.ts" />
-/// <reference path="../Workspace.ts" />
-/// <reference path="UIWindow.ts" />
 class OpenFileWindow extends UIWindow {
 
     public constructor(selector: any) {
@@ -82,7 +79,7 @@ class OpenFileWindow extends UIWindow {
     private updateEditor(event) {
         var id = $(event.currentTarget).data('file-id');
 
-        Workspace.instance.ajax.getFileContents(id, (data) => {
+        Workspace.ajax.getFileContents(id, (data) => {
             new EditorWindow('#editorWindow').openFile(data);
         });
 
@@ -94,7 +91,7 @@ class OpenFileWindow extends UIWindow {
 
         this.files = [];
 
-        Workspace.instance.ajax.getFiles((data) => {
+        Workspace.ajax.getFiles((data) => {
             for (var i in data) {
                 if (data.hasOwnProperty(i)) {
                     this.generateFolderTree(data[i], $fileList);

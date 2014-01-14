@@ -4,9 +4,6 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-/// <reference path="../../typings/jquery/jquery.d.ts" />
-/// <reference path="../Workspace.ts" />
-/// <reference path="UIWindow.ts" />
 var OpenFileWindow = (function (_super) {
     __extends(OpenFileWindow, _super);
     function OpenFileWindow(selector) {
@@ -88,7 +85,7 @@ var OpenFileWindow = (function (_super) {
     OpenFileWindow.prototype.updateEditor = function (event) {
         var id = $(event.currentTarget).data('file-id');
 
-        Workspace.instance.ajax.getFileContents(id, function (data) {
+        Workspace.ajax.getFileContents(id, function (data) {
             new EditorWindow('#editorWindow').openFile(data);
         });
 
@@ -101,7 +98,7 @@ var OpenFileWindow = (function (_super) {
 
         this.files = [];
 
-        Workspace.instance.ajax.getFiles(function (data) {
+        Workspace.ajax.getFiles(function (data) {
             for (var i in data) {
                 if (data.hasOwnProperty(i)) {
                     _this.generateFolderTree(data[i], $fileList);
