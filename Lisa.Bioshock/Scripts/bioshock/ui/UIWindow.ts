@@ -6,7 +6,8 @@ class UIWindow {
         this.initialize();
     }
 
-    public initialize() {        
+    public initialize() {
+        this._isVisible = this.$element.is(":visible");
         return this;
     }
 
@@ -14,14 +15,18 @@ class UIWindow {
         if (onOpen) {
             this._openEvents.push(onOpen);
         } else {
-            this.$element.fadeIn(this._fadeOptions);
 
-            if (this.triggerOverlay) {
-                this._$overlay.fadeIn(this._fadeOptions);
-            }
+            if (!this._isVisible) {
+                this.$element.fadeIn(this._fadeOptions);
+                this._isVisible = true;
 
-            for (var i = 0; i < this._openEvents.length; i++) {
-                this._openEvents[i]();
+                if (this.triggerOverlay) {
+                    this._$overlay.fadeIn(this._fadeOptions);
+                }
+
+                for (var i = 0; i < this._openEvents.length; i++) {
+                    this._openEvents[i]();
+                }
             }
         }
         return this;
@@ -31,31 +36,20 @@ class UIWindow {
         if (onClose) {
             this._closeEvents.push(onClose);
         } else {
-            this.$element.fadeOut(this._fadeOptions);
 
-            if (this.triggerOverlay) {
-                this._$overlay.fadeOut(this._fadeOptions);
-            }
+            if (this._isVisible) {
+                this.$element.fadeOut(this._fadeOptions);
+                this._isVisible = false;
 
-            for (var i = 0; i < this._closeEvents.length; i++) {
-                this._closeEvents[i]();
-            }
-        }
-        return this;
-    }
+                if (this.triggerOverlay) {
+                    this._$overlay.fadeOut(this._fadeOptions);
+                }
 
-    public exit(onExit?: Function) {
-        if (onExit) {
-
-            this._exitEvents.push(onExit);
-        } else {
-
-            for (var i = 0; i < this._exitEvents.length; i++) {
-
-                this._exitEvents[i]();
+                for (var i = 0; i < this._closeEvents.length; i++) {
+                    this._closeEvents[i]();
+                }
             }
         }
-
         return this;
     }
 
@@ -67,10 +61,10 @@ class UIWindow {
 
     private _openEvents = [];
     private _closeEvents = [];
-    private _exitEvents = [];
     private _$overlay = $('#overlay');
     private _fadeOptions = {
         queue: false,
         duration: 100
     };
+    private _isVisible = false;
 };
