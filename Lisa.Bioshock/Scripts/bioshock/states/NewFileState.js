@@ -9,8 +9,10 @@ var NewFileState = (function () {
     }
     NewFileState.prototype.enter = function () {
         var _this = this;
-        this._window = new NewFileWindow('#newFileWindow').open().exit(function () {
-            _this.stateMachine.popState();
+        this._window = new NewFileWindow('#newFileWindow').open().close(function () {
+            if (_this.stateMachine.currentState == _this) {
+                _this.stateMachine.popState();
+            }
         });
     };
 

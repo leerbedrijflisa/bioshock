@@ -6,9 +6,10 @@ class NewFileState implements IState {
     public enter() {
         this._window = <NewFileWindow> new NewFileWindow('#newFileWindow')
             .open()
-            .exit(() => {
-
-                this.stateMachine.popState();
+            .close(() => {
+                if (this.stateMachine.currentState == this) {
+                    this.stateMachine.popState();
+                }
             });
     }
 
