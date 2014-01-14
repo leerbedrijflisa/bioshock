@@ -51,8 +51,7 @@ class NewFileWindow extends UIWindow {
 
                     /* TODO: Update the editor */
                     $('#filename').text(fileName);
-                    this.close()
-                        .exit();
+                    this.close();
                 } else {
 
                     alert('Er is een interne fout opgetreden bij het aanmaken van uw bestand!');

@@ -92,7 +92,7 @@ var OpenFileWindow = (function (_super) {
             new EditorWindow('#editorWindow').openFile(data);
         });
 
-        this.close().exit();
+        this.close();
     };
 
     OpenFileWindow.prototype.createFileList = function () {

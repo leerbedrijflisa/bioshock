@@ -86,8 +86,7 @@ class OpenFileWindow extends UIWindow {
             new EditorWindow('#editorWindow').openFile(data);
         });
 
-        this.close()
-            .exit();
+        this.close();
     }
 
     private createFileList() {
