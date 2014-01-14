@@ -20,6 +20,7 @@ var StateMachine = (function () {
     };
 
     StateMachine.prototype.pushState = function (state) {
+        console.log('pushing state: ' + state);
         state.stateMachine = this;
 
         if (this._stack.length > 0) {
@@ -32,9 +33,14 @@ var StateMachine = (function () {
     };
 
     StateMachine.prototype.popState = function () {
-        this.currentState.suspend();
-        this.currentState.leave();
+        console.log('popping state: ' + this.currentState);
+
+        var current = this.currentState;
+
         this._stack.pop();
+        current.suspend();
+        current.leave();
+
         this.currentState.resume();
     };
 

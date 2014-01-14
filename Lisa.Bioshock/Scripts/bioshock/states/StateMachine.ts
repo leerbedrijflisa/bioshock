@@ -21,6 +21,7 @@ class StateMachine {
     }
 
     public pushState(state: IState) {
+        console.log('pushing state: ' + state);
         state.stateMachine = this;
 
         if (this._stack.length > 0) {
@@ -34,10 +35,14 @@ class StateMachine {
     }
 
     public popState() {
+        console.log('popping state: ' + this.currentState);
 
-        this.currentState.suspend();
-        this.currentState.leave();
+        var current = this.currentState;
+
         this._stack.pop();
+        current.suspend();
+        current.leave();
+
         this.currentState.resume();
     }
 
@@ -60,7 +65,7 @@ class StateMachine {
         return this._preview;
     }
 
-    private get currentState(): IState {
+    public get currentState(): IState {
         return this._stack[this._stack.length - 1];
     }
 
