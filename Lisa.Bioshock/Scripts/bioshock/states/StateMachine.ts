@@ -21,7 +21,6 @@ class StateMachine {
     }
 
     public pushState(state: IState) {
-        console.log('pushing state: ' + state);
         state.stateMachine = this;
 
         if (this._stack.length > 0) {
@@ -35,7 +34,6 @@ class StateMachine {
     }
 
     public popState() {
-        console.log('popping state: ' + this.currentState);
 
         var current = this.currentState;
 
