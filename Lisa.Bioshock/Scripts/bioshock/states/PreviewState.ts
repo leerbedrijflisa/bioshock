@@ -1,7 +1,7 @@
 class PreviewState implements IState {
 
-    constructor() {
-        //this.editorState = new EditorState();
+    constructor(preview: HTMLIFrameElement) {
+        this._preview = preview.contentDocument || preview.contentWindow;
     }
 
     public enter(): void {        
@@ -11,17 +11,13 @@ class PreviewState implements IState {
     }
 
     public resume(): void {
-        var preview = this.stateMachine.preview;
-
         $(window).on('keyup', this.onKeyUp);
-        $(preview).on('keyup', this.onKeyUp);            
+        $(this._preview).on('keyup', this.onKeyUp);            
     }
 
     public suspend(): void {
-        var preview = this.stateMachine.preview;
-
         $(window).off('keyup', this.onKeyUp);
-        $(preview).off('keyup', this.onKeyUp);
+        $(this._preview).off('keyup', this.onKeyUp);
     }
 
     private onKeyUp = (event: JQueryKeyEventObject) => {
@@ -41,4 +37,6 @@ class PreviewState implements IState {
 
     // fields
     public stateMachine: StateMachine;
+
+    private _preview: any;
 } 

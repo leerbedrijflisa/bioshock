@@ -20,8 +20,6 @@ var StateMachine = (function () {
         if (this._initialized) {
             throw new Error('Already initialized!');
         } else {
-            var preview = $("#preview")[0];
-            this._preview = preview.contentDocument || preview.contentWindow;
             this.switchState(state);
             this._initialized = true;
         }
@@ -76,18 +74,13 @@ var StateMachine = (function () {
         this.currentState.resume();
     };
 
-    Object.defineProperty(StateMachine.prototype, "preview", {
+    Object.defineProperty(StateMachine.prototype, "currentState", {
         /**
         * Gets the contentDocument/contentWindow of the preview's IFrame.
         */
-        get: function () {
-            return this._preview;
-        },
-        enumerable: true,
-        configurable: true
-    });
-
-    Object.defineProperty(StateMachine.prototype, "currentState", {
+        //public get preview() {
+        //    return Workspace.preview.contentDocument || Workspace.preview.contentWindow;
+        //}
         /**
         * Gets the current state.
         */

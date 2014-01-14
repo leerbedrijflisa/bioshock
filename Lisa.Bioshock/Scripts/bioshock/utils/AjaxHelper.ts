@@ -1,3 +1,8 @@
+interface IAjaxWriteFileOptions {
+    fileID: string;
+    contents: string;
+}
+
 class AjaxHelper {
 
     /**
@@ -44,6 +49,11 @@ class AjaxHelper {
         this.makeRequest('/ajax/createfile', data, true, success, error);
     }
 
+    /**
+     */
+    public writeFile(data: IAjaxWriteFileOptions, success?: Function, error?: Function) {
+        this.makeRequest('/test/writefile', data, true, success, error);
+    }
     
     /** The actual request. */
     private makeRequest(url: string, data: Object, isPost: boolean, success: Function, error?: Function) {
@@ -56,7 +66,9 @@ class AjaxHelper {
             'url': url,
             'data': data,
             'success': function (result) {
-                success(result);
+                if (success) {
+                    success(result);
+                }
             },
             'error': function (jqXHR: any, textStatus: string, errorThrown: string) {
                 if (error) {

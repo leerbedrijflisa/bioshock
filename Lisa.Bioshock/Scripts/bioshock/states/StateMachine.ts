@@ -21,8 +21,6 @@ class StateMachine {
 
             throw new Error('Already initialized!');
         } else {
-            var preview = <HTMLIFrameElement>$("#preview")[0];
-            this._preview = preview.contentDocument || preview.contentWindow;
             this.switchState(state);
             this._initialized = true;
         }
@@ -85,9 +83,9 @@ class StateMachine {
     /**
      * Gets the contentDocument/contentWindow of the preview's IFrame.
      */
-    public get preview() {
-        return this._preview;
-    }
+    //public get preview() {
+    //    return Workspace.preview.contentDocument || Workspace.preview.contentWindow;
+    //}
 
     /**
      * Gets the current state.
@@ -100,5 +98,4 @@ class StateMachine {
     // fields
     private _stack: IState[] = [];
     private _initialized: boolean = false;
-    private _preview: any;
 } 

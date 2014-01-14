@@ -10,8 +10,6 @@ var EditorWindow = (function (_super) {
     __extends(EditorWindow, _super);
     function EditorWindow(selector) {
         _super.call(this, selector);
-        this._title = "Geen bestand geopend.";
-        this.$editorResizeOverlay = $('#editor-resize-overlay');
 
         this.triggerOverlay = false;
         this.initialize();
@@ -29,12 +27,18 @@ var EditorWindow = (function (_super) {
         var _this = this;
         _super.prototype.initialize.call(this);
 
-        if (this.$element !== undefined) {
-            this._title = this.$element.find("#filename").html();
+        if (this.$element === undefined) {
+            return;
         }
 
+        this.$editor = $("#editor");
+        this.$editorResizeOverlay = $('#editor-resize-overlay');
+        this.$fileName = this.$element.find("#filename");
+
+        this._currentFile = this.$editor.data('FileData');
+
         if (this.$element.data('CodeMirror_instance') === undefined) {
-            this.editor = CodeMirror.fromTextArea($("#editor")[0], {
+            this.editor = CodeMirror.fromTextArea(this.$editor[0], {
                 value: "abcde",
                 lineNumbers: true,
                 mode: "htmlmixed",
@@ -46,10 +50,14 @@ var EditorWindow = (function (_super) {
                     "Shift-Tab": "indentLess"
                 }
             });
+            this.editor.on('change', this.editorChange);
+            this.editor.on('focus', this.editorFocus);
+
             this.$element.data('CodeMirror_instance', this.editor).resizable({
                 minHeight: 52,
                 minWidth: 200,
-                containment: '#editor-resize-overlay',
+                containment: this.$editorResizeOverlay,
+                handles: 'all',
                 resize: function (event, ui) {
                     _this.$element.width(ui.size.width).height(ui.size.height);
 
@@ -61,8 +69,7 @@ var EditorWindow = (function (_super) {
                 stop: function () {
                     _this.$editorResizeOverlay.hide();
                     _this.editor.refresh();
-                },
-                handles: 'all'
+                }
             }).draggable({
                 iframeFix: true,
                 containment: 'window',
@@ -100,32 +107,75 @@ var EditorWindow = (function (_super) {
     });
 
 
-    Object.defineProperty(EditorWindow.prototype, "title", {
-        get: function () {
-            return this._title;
-        },
-        set: function (title) {
-            this._title = title;
-            this.$element.find("#filename").html(this._title);
-        },
-        enumerable: true,
-        configurable: true
-    });
-
-
     EditorWindow.prototype.openFile = function (file) {
-        console.log(file);
         if (file.type == 1 /* FOLDER */) {
             throw new Error("Could not open a folder.");
         }
 
-        this.title = file.name;
         this.$element.data("file-id", file.id);
 
         var doc = new CodeMirror.Doc('', file.fileProps.contentType);
         this.editor.swapDoc(doc);
         this.contents = file.fileProps.contents;
+
+        this._currentFile = file;
     };
+
+    EditorWindow.prototype.editorChange = function () {
+        Workspace.ajax.writeFile({
+            fileID: this.fileID,
+            contents: this.editor.getDoc().getValue()
+        });
+
+        if (this.fileName.indexOf(".css") > -1) {
+            Workspace.synchronizer.update({
+                message: 1 /* REFRESH */,
+                fileID: this.fileID,
+                contents: this.editor.getDoc().getValue()
+            });
+        } else {
+            Workspace.synchronizer.update({
+                message: 2 /* UPDATE */,
+                fileID: this.fileID,
+                contents: this.editor.getDoc().getValue()
+            });
+        }
+
+        if (this.$errors.is(':visible')) {
+            this.$errors.hide();
+        }
+    };
+
+    EditorWindow.prototype.editorFocus = function () {
+        Workspace.synchronizer.update({
+            message: 2 /* UPDATE */,
+            fileID: this.fileID,
+            contents: this.editor.getDoc().getValue()
+        });
+    };
+
+    EditorWindow.prototype.keyUp = function () {
+    };
+
+    Object.defineProperty(EditorWindow.prototype, "fileID", {
+        get: function () {
+            return this._currentFile.id;
+        },
+        enumerable: true,
+        configurable: true
+    });
+
+    Object.defineProperty(EditorWindow.prototype, "fileName", {
+        get: function () {
+            return this._currentFile.name;
+        },
+        set: function (name) {
+            this._currentFile.name = name;
+            this.$fileName.text(name);
+        },
+        enumerable: true,
+        configurable: true
+    });
     return EditorWindow;
 })(UIWindow);
 //# sourceMappingURL=EditorWindow.js.map

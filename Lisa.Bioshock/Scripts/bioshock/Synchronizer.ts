@@ -11,7 +11,17 @@ interface ISynchronizeClient {
     addMessage(message: any);
 }
 interface ISynchronizeServer {
-    send(message: any);
+    send(message: any, connID: string);
+}
+interface ISynchronizeMessage {
+    message: SynchronizeMessages;
+    fileID: string;
+    contents: string;
+}
+
+enum SynchronizeMessages {
+    REFRESH = 1,
+    UPDATE = 2
 }
 
 class Synchronizer {
@@ -21,29 +31,14 @@ class Synchronizer {
      * 
      * @param {string} preview - The selector of the element that should be updated when a message arrives.
      */
-    constructor(preview: string) {
+    constructor(preview: string);
+    constructor(preview: JQuery);
+    constructor(preview: any) {
 
-        this.previewId = preview;
+        this.$preview = $(preview);
         this.hub.client.addMessage = this.onRead;
     }
 
-    private previewId: string;
-    private isConnected = false;
-    private onRead = (message: string) => {
-
-        
-        //var title = message.match(/<title>(.+)<\//im);
-        var title = message.match(/<title>(.+?)(<\/|$)/);
-        if (title) {
-
-            document.title = title[1];
-        }
-
-        $(this.previewId).contents().find('html').html(message);
-
-    }
-
-    private hub = $.connection.synchronizeHub;
 
     /**
      * Start a connection with the hub
@@ -54,11 +49,13 @@ class Synchronizer {
 
         $.connection.hub.start().done(() => {
 
-            this.isConnected = true;
-
             if (done) {
                 done();
             }
+
+            this.isConnected = true;
+        }).fail(() => {
+            alert("SingalR Connection Failed.");
         });
     }
 
@@ -67,20 +64,71 @@ class Synchronizer {
      *
      * @param {*} message - The message to send as an update
      */ 
-    public update(message: any) {
+    public update(message: ISynchronizeMessage) {
 
         if (this.isConnected) {
-            this.hub.server.send(message);
+            this.hub.server.send(message, this.overridenConnectionID || $.connection.hub.id);
         }
     }
 
+    private onRead = (message: ISynchronizeMessage) => {
+
+        if (message.contents != null) {
+            var title = message.contents.match(/<title>(.*?)(<\/|$)/);
+            if (title) {
+
+                document.title = title[1];
+            }
+        }
+
+        var contents = this.$preview.contents();
+        var html = contents.find('html');
+
+        if (html[0] != null) {
+            switch (message.message) {
+
+                case SynchronizeMessages.REFRESH:
+                    html[0].innerHTML = html[0].innerHTML;
+                    break;
+
+                case SynchronizeMessages.UPDATE:
+                    html[0].innerHTML = message.contents;
+                    break;
+            }
+        }
+    }
+
+
+    /**
+     */
+    public get connectionID(): string {
+        if (this.isConnected) {
+            return this.overridenConnectionID || $.connection.hub.id;
+        }
+        return "";
+    }
+
+    /**
+     */
+    public set connectionID(connectionID: string) {
+        this.overridenConnectionID = connectionID;
+    }
+
+
     /**
      * Sets the preview
-     * 
+     *
      * @param {string} selector - The selector of the element that should be updated when a message arrives.
      */
-    public setPreview(selector: string) {
-
-        this.previewId = selector;
+    public setPreview(selector: string);
+    public setPreview(selector: JQuery);
+    public setPreview(selector: any) {
+        this.$preview = selector;
     }
+
+    // fields
+    private $preview: JQuery;
+    private isConnected = false;
+    private hub = $.connection.synchronizeHub;
+    private overridenConnectionID;
 }

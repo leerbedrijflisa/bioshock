@@ -8,9 +8,9 @@ var UIWindow = (function () {
         // properties
         // fields
         this.triggerOverlay = true;
+        this.$overlay = $('#overlay');
         this._openEvents = [];
         this._closeEvents = [];
-        this._$overlay = $('#overlay');
         this._fadeOptions = {
             queue: false,
             duration: 100
@@ -41,7 +41,7 @@ var UIWindow = (function () {
                 this._isVisible = true;
 
                 if (this.triggerOverlay) {
-                    this._$overlay.fadeIn(this._fadeOptions);
+                    this.$overlay.fadeIn(this._fadeOptions);
                 }
 
                 for (var i = 0; i < this._openEvents.length; i++) {
@@ -66,7 +66,7 @@ var UIWindow = (function () {
                 this._isVisible = false;
 
                 if (this.triggerOverlay) {
-                    this._$overlay.fadeOut(this._fadeOptions);
+                    this.$overlay.fadeOut(this._fadeOptions);
                 }
 
                 for (var i = 0; i < this._closeEvents.length; i++) {

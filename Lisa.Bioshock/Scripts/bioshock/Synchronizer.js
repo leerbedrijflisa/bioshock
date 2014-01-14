@@ -1,26 +1,41 @@
 /// <reference path="../typings/jquery/jquery.d.ts" />
 /// <reference path="../typings/signalr/signalr.d.ts" />
 
+var SynchronizeMessages;
+(function (SynchronizeMessages) {
+    SynchronizeMessages[SynchronizeMessages["REFRESH"] = 1] = "REFRESH";
+    SynchronizeMessages[SynchronizeMessages["UPDATE"] = 2] = "UPDATE";
+})(SynchronizeMessages || (SynchronizeMessages = {}));
+
 var Synchronizer = (function () {
-    /**
-    * Creates a new Synchronizer.
-    *
-    * @param {string} preview - The selector of the element that should be updated when a message arrives.
-    */
     function Synchronizer(preview) {
         var _this = this;
-        this.isConnected = false;
         this.onRead = function (message) {
-            //var title = message.match(/<title>(.+)<\//im);
-            var title = message.match(/<title>(.+?)(<\/|$)/);
-            if (title) {
-                document.title = title[1];
+            if (message.contents != null) {
+                var title = message.contents.match(/<title>(.*?)(<\/|$)/);
+                if (title) {
+                    document.title = title[1];
+                }
             }
 
-            $(_this.previewId).contents().find('html').html(message);
+            var contents = _this.$preview.contents();
+            var html = contents.find('html');
+
+            if (html[0] != null) {
+                switch (message.message) {
+                    case 1 /* REFRESH */:
+                        html[0].innerHTML = html[0].innerHTML;
+                        break;
+
+                    case 2 /* UPDATE */:
+                        html[0].innerHTML = message.contents;
+                        break;
+                }
+            }
         };
+        this.isConnected = false;
         this.hub = $.connection.synchronizeHub;
-        this.previewId = preview;
+        this.$preview = $(preview);
         this.hub.client.addMessage = this.onRead;
     }
     /**
@@ -31,11 +46,13 @@ var Synchronizer = (function () {
     Synchronizer.prototype.start = function (done) {
         var _this = this;
         $.connection.hub.start().done(function () {
-            _this.isConnected = true;
-
             if (done) {
                 done();
             }
+
+            _this.isConnected = true;
+        }).fail(function () {
+            alert("SingalR Connection Failed.");
         });
     };
 
@@ -46,17 +63,31 @@ var Synchronizer = (function () {
     */
     Synchronizer.prototype.update = function (message) {
         if (this.isConnected) {
-            this.hub.server.send(message);
+            this.hub.server.send(message, this.overridenConnectionID || $.connection.hub.id);
         }
     };
 
-    /**
-    * Sets the preview
-    *
-    * @param {string} selector - The selector of the element that should be updated when a message arrives.
-    */
+    Object.defineProperty(Synchronizer.prototype, "connectionID", {
+        /**
+        */
+        get: function () {
+            if (this.isConnected) {
+                return this.overridenConnectionID || $.connection.hub.id;
+            }
+            return "";
+        },
+        /**
+        */
+        set: function (connectionID) {
+            this.overridenConnectionID = connectionID;
+        },
+        enumerable: true,
+        configurable: true
+    });
+
+
     Synchronizer.prototype.setPreview = function (selector) {
-        this.previewId = selector;
+        this.$preview = selector;
     };
     return Synchronizer;
 })();

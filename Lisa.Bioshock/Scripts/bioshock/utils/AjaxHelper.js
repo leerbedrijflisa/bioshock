@@ -39,6 +39,12 @@ var AjaxHelper = (function () {
         this.makeRequest('/ajax/createfile', data, true, success, error);
     };
 
+    /**
+    */
+    AjaxHelper.prototype.writeFile = function (data, success, error) {
+        this.makeRequest('/test/writefile', data, true, success, error);
+    };
+
     /** The actual request. */
     AjaxHelper.prototype.makeRequest = function (url, data, isPost, success, error) {
         if (data === undefined || data === null) {
@@ -50,7 +56,9 @@ var AjaxHelper = (function () {
             'url': url,
             'data': data,
             'success': function (result) {
-                success(result);
+                if (success) {
+                    success(result);
+                }
             },
             'error': function (jqXHR, textStatus, errorThrown) {
                 if (error) {

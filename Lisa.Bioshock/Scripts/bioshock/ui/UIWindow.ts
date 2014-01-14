@@ -33,7 +33,7 @@ class UIWindow {
                 this._isVisible = true;
 
                 if (this.triggerOverlay) {
-                    this._$overlay.fadeIn(this._fadeOptions);
+                    this.$overlay.fadeIn(this._fadeOptions);
                 }
 
                 for (var i = 0; i < this._openEvents.length; i++) {
@@ -59,7 +59,7 @@ class UIWindow {
                 this._isVisible = false;
 
                 if (this.triggerOverlay) {
-                    this._$overlay.fadeOut(this._fadeOptions);
+                    this.$overlay.fadeOut(this._fadeOptions);
                 }
 
                 for (var i = 0; i < this._closeEvents.length; i++) {
@@ -76,9 +76,9 @@ class UIWindow {
     public triggerOverlay: boolean = true;
     public $element: JQuery;
 
+    private $overlay = $('#overlay');
     private _openEvents = [];
     private _closeEvents = [];
-    private _$overlay = $('#overlay');
     private _fadeOptions = {
         queue: false,
         duration: 100
