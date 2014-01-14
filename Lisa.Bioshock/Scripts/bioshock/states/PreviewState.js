@@ -4,6 +4,8 @@ var PreviewState = (function () {
         this.onKeyUp = function (event) {
             if (event.keyCode == 17 /* CTRL */) {
                 _this.stateMachine.pushState(new EditorState());
+            } else if (event.keyCode == 27 /* ESC */) {
+                _this.stateMachine.pushState(new MenuState());
             }
         };
         //this.editorState = new EditorState();

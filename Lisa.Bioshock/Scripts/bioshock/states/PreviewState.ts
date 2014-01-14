@@ -24,11 +24,15 @@ class PreviewState implements IState {
         $(preview).off('keyup', this.onKeyUp);
     }
 
-    private onKeyUp = (event) => {
+    private onKeyUp = (event: JQueryKeyEventObject) => {
 
         if (event.keyCode == Keys.CTRL) {
 
             this.stateMachine.pushState(new EditorState());
+
+        } else if (event.keyCode == Keys.ESC) {
+
+            this.stateMachine.pushState(new MenuState());
         }
     }
 
