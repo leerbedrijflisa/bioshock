@@ -10,6 +10,8 @@ var EditorState = (function () {
                 } else if (event.keyCode == 79 /* O */) {
                     _this.stateMachine.pushState(new OpenFileState());
                 }
+            } else if (event.keyCode == 27 /* ESC */) {
+                _this.stateMachine.pushState(new MenuState());
             }
         };
     }

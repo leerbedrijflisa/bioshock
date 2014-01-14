@@ -44,6 +44,10 @@ class EditorState implements IState {
 
                 this.stateMachine.pushState(new OpenFileState());
             }
+
+        } else if (event.keyCode == Keys.ESC) {
+
+            this.stateMachine.pushState(new MenuState());
         }
     }
 
