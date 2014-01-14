@@ -11,34 +11,11 @@
 }
 
 <script type="text/javascript">
-
-    var workspace = undefined;
+    // Global instance of the BioshockWorkspace that can be used by other classes.
     $(function () {
-
-        //var editor = CodeMirror.fromTextArea($("#editor")[0], {
-        //    value: "",
-        //    lineNumbers: true,
-        //    mode: "htmlmixed",
-        //    smartIndent: false,
-        //    tabSize: 2,
-        //    theme: "default",
-        //    gutters: ["Errors", "CodeMirror-linenumbers"],
-        //    extraKeys: {
-        //        "Shift-Tab": "indentLess"
-        //    }
-        //});        
-
-        //var guiController = new BaseGuiController();
-        //guiController.registerEditor(editor);
-        //guiController.openStartUpFile();   
-
-        workspace = Workspace.instance;
+        Workspace = new BioshockWorkspace($("#ProjectID").val());
     });
-
-    function closeMenu() {
-
-        $.event.trigger({ type: 'keyup', keyCode: 27 });        
-    }
+    
 </script>
 
 <iframe id="preview" frameborder="0" ></iframe>
