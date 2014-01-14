@@ -14,6 +14,8 @@ var EditorState = (function () {
                 _this.stateMachine.pushState(new MenuState());
             }
         };
+        this.onEditorChange = function (event) {
+        };
     }
     EditorState.prototype.enter = function () {
         this._editorWindow = new EditorWindow('#editorWindow');
@@ -27,6 +29,7 @@ var EditorState = (function () {
     EditorState.prototype.resume = function () {
         $(window).on('keyup', this.onKeyUp);
         workspace.preview.addKeyUpHandler(this.onKeyUp);
+        workspace.editor.addChangeHandler(this.onEditorChange);
     };
 
     EditorState.prototype.suspend = function () {

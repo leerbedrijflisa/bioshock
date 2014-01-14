@@ -3,9 +3,9 @@ var PreviewState = (function () {
         var _this = this;
         this.onKeyUp = function (event) {
             if (event.keyCode == 17 /* CTRL */) {
-                _this.stateMachine.pushState(new EditorState());
+                _this.stateMachine.pushState(new EditorState);
             } else if (event.keyCode == 27 /* ESC */) {
-                _this.stateMachine.pushState(new MenuState());
+                _this.stateMachine.pushState(new MenuState);
             }
         };
     }

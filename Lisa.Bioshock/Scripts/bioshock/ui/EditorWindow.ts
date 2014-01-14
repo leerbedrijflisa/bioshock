@@ -20,10 +20,6 @@ class EditorWindow extends UIWindow {
     public initialize() {
         super.initialize();
 
-        if (this.$element === undefined) {
-            return;
-        }
-
         this.$editor = $("#editor");
         this.$editorResizeOverlay = $('#editor-resize-overlay');
         this.$fileName = this.$element.find("#filename");

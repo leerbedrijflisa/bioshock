@@ -22,12 +22,10 @@ class PreviewState implements IState {
     private onKeyUp = (event: JQueryKeyEventObject) => {
 
         if (event.keyCode == Keys.CTRL) {
-
-            this.stateMachine.pushState(new EditorState());
-
-        } else if (event.keyCode == Keys.ESC) {
-
-            this.stateMachine.pushState(new MenuState());
+            this.stateMachine.pushState(new EditorState);
+        }
+        else if (event.keyCode == Keys.ESC) {
+            this.stateMachine.pushState(new MenuState);
         }
     }
 

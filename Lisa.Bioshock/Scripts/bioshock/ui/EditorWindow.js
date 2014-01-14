@@ -27,10 +27,6 @@ var EditorWindow = (function (_super) {
         var _this = this;
         _super.prototype.initialize.call(this);
 
-        if (this.$element === undefined) {
-            return;
-        }
-
         this.$editor = $("#editor");
         this.$editorResizeOverlay = $('#editor-resize-overlay');
         this.$fileName = this.$element.find("#filename");
