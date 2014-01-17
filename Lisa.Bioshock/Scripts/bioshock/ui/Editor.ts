@@ -1,10 +1,25 @@
+/// <reference path="../../typings/codemirror/codemirror.d.ts" />
+
 interface EditorEventObject {
     contents: string;
+    fileID: string;
+    fileName: string;
 }
 
 class Editor {
     constructor(selector: string) {
-        this.editor = CodeMirror.fromTextArea(<HTMLTextAreaElement> $(selector)[0]);
+        this.editor = CodeMirror.fromTextArea(<HTMLTextAreaElement> $(selector)[0], {
+            value: "abcde",
+            lineNumbers: true,
+            mode: "htmlmixed",
+            smartIndent: false,
+            tabSize: 2,
+            theme: "default",
+            gutters: ["Errors", "CodeMirror-linenumbers"],
+            extraKeys: {
+                "Shift-Tab": "indentLess"
+            }
+        });
         this.editor.on('change', this.onChange);
     }
 
@@ -17,6 +32,14 @@ class Editor {
         this.changeEventHandlers.splice(index);
     }
 
+    public refresh() {
+        this.editor.refresh();
+    }
+
+    public focus() {
+        this.editor.focus();
+    }
+
     public get contents() {
         return this.editor.getDoc().getValue();
     }
@@ -25,7 +48,7 @@ class Editor {
         this.editor.getDoc().setValue(value);
     }
 
-    private onChange() {
+    private onChange = () => {
         var eventArgs = {
             contents: this.contents
         };
@@ -36,5 +59,5 @@ class Editor {
     }
 
     private editor: CodeMirror.Editor;
-    private changeEventHandlers: { (EditorEventObject): void }[];
+    private changeEventHandlers: { (EditorEventObject): void }[] = [];
 } 

@@ -5,20 +5,22 @@ class EditorWindow extends UIWindow {
         super(selector);
 
         this.triggerOverlay = false;
-        this.initialize();
+        //this.initialize();
     }
 
     public open(onOpen?: Function) {
         super.open(onOpen);   
 
-        this.editor.refresh();
-        this.editor.focus(); 
+        //this.editor.refresh();
+        //this.editor.focus(); 
 
         return this;
     }
 
     public initialize() {
         super.initialize();
+
+        return;
 
         this.$editor = $("#editor");
         this.$editorResizeOverlay = $('#editor-resize-overlay');
@@ -109,39 +111,18 @@ class EditorWindow extends UIWindow {
 
 
     private editorChange() {
-        workspace.ajax.writeFile({
-            fileID: this.fileID,
-            contents: this.editor.getDoc().getValue()
-        });
 
-        if (this.fileName.indexOf(".css") > -1) {
-
-            workspace.synchronizer.update({
-                message: SynchronizeMessages.REFRESH,
-                fileID: this.fileID,
-                contents: this.editor.getDoc().getValue()
-            });
-
-        } else {
-
-            workspace.synchronizer.update({
-                message: SynchronizeMessages.UPDATE,
-                fileID: this.fileID,
-                contents: this.editor.getDoc().getValue()
-            });
-        }
-
-        if (this.$errors.is(':visible')) {
-            this.$errors.hide();
-        }
+        //if (this.$errors.is(':visible')) {
+        //    this.$errors.hide();
+        //}
     }
 
     private editorFocus() {
-        workspace.synchronizer.update({
-            message: SynchronizeMessages.UPDATE,
-            fileID: this.fileID,
-            contents: this.editor.getDoc().getValue()
-        });
+        //workspace.synchronizer.update({
+        //    message: SynchronizeMessages.UPDATE,
+        //    fileID: this.fileID,
+        //    contents: this.editor.getDoc().getValue()
+        //});
     }
 
     private keyUp() {

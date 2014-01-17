@@ -443,6 +443,7 @@
     <Content Include="Content\CodeMirror\mode\livescript\livescript.ls" />
     <Content Include="Scripts\bioshock\BaseGuiController.ts" />
     <Content Include="Scripts\bioshock\FullScreenGuiController.ts" />
+    <TypeScriptCompile Include="Scripts\bioshock\Monitor.ts" />
     <TypeScriptCompile Include="Scripts\bioshock\states\EditorState.ts" />
     <TypeScriptCompile Include="Scripts\bioshock\states\IState.ts" />
     <TypeScriptCompile Include="Scripts\bioshock\states\MenuState.ts" />
@@ -450,7 +451,9 @@
     <TypeScriptCompile Include="Scripts\bioshock\states\OpenFileState.ts" />
     <TypeScriptCompile Include="Scripts\bioshock\states\PreviewState.ts" />
     <TypeScriptCompile Include="Scripts\bioshock\states\StateMachine.ts" />
+    <TypeScriptCompile Include="Scripts\bioshock\ui\Editor.ts" />
     <TypeScriptCompile Include="Scripts\bioshock\ui\MenuWindow.ts" />
+    <TypeScriptCompile Include="Scripts\bioshock\ui\Preview.ts" />
     <TypeScriptCompile Include="Scripts\bioshock\ui\UIWindow.ts" />
     <TypeScriptCompile Include="Scripts\bioshock\ui\OpenFileWindow.ts" />
     <TypeScriptCompile Include="Scripts\bioshock\utils\AjaxHelper.ts" />

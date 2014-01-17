@@ -1,4 +1,9 @@
-interface IAjaxWriteFileOptions {
+interface AjaxCallbacks {
+    error? (jqXHR: JQueryXHR, textStatus: string, errorThrow: string): any;
+    success? (data: any, textStatus: string, jqXHR: JQueryXHR): any;
+}
+
+interface AjaxWriteFileOptions extends AjaxCallbacks {
     fileID: string;
     contents: string;
 }
@@ -10,7 +15,7 @@ class AjaxHelper {
      *
      * @param {string} projectID - This ID will be used for ajax requests.
      */
-    constructor(projectID: string) {
+    constructor(projectID: number) {
         this.projectID = projectID;
     }
 
@@ -51,8 +56,13 @@ class AjaxHelper {
 
     /**
      */
-    public writeFile(data: IAjaxWriteFileOptions, success?: Function, error?: Function) {
-        this.makeRequest('/test/writefile', data, true, success, error);
+    public writeFile(options: AjaxWriteFileOptions) {
+        var data = {
+            fileID: options.fileID,
+            contents: options.contents
+        };
+
+        this.makeRequest('/test/writefile', data, true, options.success, options.error);
     }
     
     /** The actual request. */
@@ -80,5 +90,5 @@ class AjaxHelper {
     }
 
     /** The ID of the current project. */
-    public projectID: string;
+    public projectID: number;
 };
