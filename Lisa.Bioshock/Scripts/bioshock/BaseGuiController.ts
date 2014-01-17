@@ -1,4 +1,12 @@
 /// <reference path="../typings/jquery/jquery.d.ts" />
+/// <reference path="../typings/jqueryui/jqueryui.d.ts" />
+var debug = false;
+//console.debug = (subject: string, message: string) => {
+//    if (debug) {
+//        console.log("[" + subject + "] " + message);
+//    }
+//};
+
 class BaseGuiController {
 
     constructor(editor: any, options = {}, preview = true) {
@@ -14,13 +22,26 @@ class BaseGuiController {
 
             this.registerPreviewHandlers();
         }
+
+        
+    }
+
+    private saveTime;
+    private refresh = true;
+    private hasPendingChanges = false;
+
+    private savePendingChanges = () => {
+        console.debug('savePendingChanges', this.hasPendingChanges);
+        if (this.hasPendingChanges) {
+            this.saveFile();
+        }
     }
 
     public registerEditor = (editor: any) => {
-
+        this.saveTime = setInterval(this.savePendingChanges, 1000);
+        var ScrollPosition = JSON.parse(localStorage.getItem("ScrollPosition"));
         this.editor = editor;
         this.editor.on('change', (codeMirror) => {
-           
                 $.post("/Test/WriteFile", { projectID: this.projectID, guid: this.currentGuid, source: this.editor.getValue() });
                 var filename = $("#filename").text();
                 if (filename.indexOf(".css") > -1) {
@@ -40,10 +61,44 @@ class BaseGuiController {
                 this.alreadyChanged = false;
                 //this.synchronizer.update(codeMirror.getValue());
 
-                if (this.$errors.is(':visible')) {
-                    this.$errors.hide();
-                }
+            this.hasPendingChanges = true;
+            console.debug('editor', 'onchange called');
+
+            var filename = $("#filename").text();
+
+            console.debug('editor', 'filename: ' + filename);
+
+            if (filename.indexOf(".css") > -1) {
+                this.refresh = true;
+                //this.synchronizer.update({
+                //    message: "refresh",
+                //    fileID: this.currentGuid,
+                //    content: this.editor.getValue()
+                //});
+            }
+            else {
+                this.refresh = false;
+                this.synchronizer.update({
+                    message: "update",
+                    fileID: this.currentGuid,
+                    content: this.editor.getValue()
+                });
+            }
+            this.alreadyChanged = false;
+            //this.synchronizer.update(codeMirror.getValue());
+
+            if (this.$errors.is(':visible')) {
+                this.$errors.hide();
+            }
             
+        });
+
+        this.editor.scrollTo(ScrollPosition.left, ScrollPosition.top);
+        //this.editor.setSize(ScrollPosition.clientWidth, ScrollPosition.clientHeight);
+
+        this.editor.on('scroll', (codeMirror) => {
+            localStorage.setItem("ScrollPosition", JSON.stringify(codeMirror.getScrollInfo()));
+            console.log(codeMirror.getScrollInfo());
         });
 
         this.editor.on('gutterClick', (codeMirror) => {
@@ -52,6 +107,34 @@ class BaseGuiController {
 
         this.editor.on('focus', (codeMirror) => {
             this.synchronizer.update(codeMirror.getValue());
+        });
+    }
+
+    private saveFile() {
+        console.debug('saveFile', 'called');
+        this.hasPendingChanges = false;
+
+        $.ajax({
+            url: "/Test/WriteFile",
+            type: 'POST',
+            data: {
+                projectID: this.projectID, guid: this.currentGuid, source: this.editor.getValue()
+            },
+            success: () => {
+
+                console.debug('saveFile', 'saved - complete called');
+
+                if (this.refresh) {
+                    this.synchronizer.update({
+                        message: "refresh",
+                        fileID: this.currentGuid,
+                        content: this.editor.getValue()
+                    });
+                }
+            },
+            error: (jqxhr: any, err1: any, err2: any) => {
+                console.error(err1, err2);
+            }
         });
     }
 
@@ -226,19 +309,26 @@ class BaseGuiController {
                 // Opens file switcher
                 if (event.keyCode === this.keys.C) {
 
+                    $.post("/Test/WriteFile", {
+                        projectID: this.projectID, guid: this.currentGuid, source: this.editor.getValue()
+                    });
+
                     var filename = $("#filename").text();
                     var id = "";
                     if (filename.indexOf(".html") > -1)
                         id = this.lastCSS;
                     else if (filename.indexOf(".css") > -1)
                         id = this.lastHTML;
-                    $.post("/test/GetFileContent", { projectID: this.projectID, guid: id }, (data) => {
 
-                        this.currentGuid = id;
-                        $("#filename").text(data.name);
-                        this.editor.setValue(data.content);
-                        
-                    });
+                    if (id) {
+                        $.post("/test/GetFileContent", { projectID: this.projectID, guid: id }, (data) => {
+
+                            this.currentGuid = id;
+                            $("#filename").text(data.name);
+                            this.editor.setValue(data.content);
+
+                        });
+                    }
                     
                     //this.GetFilesByContentType();
                 }
@@ -246,15 +336,23 @@ class BaseGuiController {
                 // Open fullscreen
                 if (event.keyCode === this.keys.F) {
 
-                    this.canToggleEditor = false;
-                    this.$editorWindow.toggle();
                     var fullscreen = window.open("/editor/?project=" + this.projectID + "&file=" + this.currentGuid, "_blank");
                     localStorage.setItem("signalR_PreviewID", this.synchronizer.connectionID);
-                    
-                    fullscreen.onunload = () => {
                         
+                    this.$editorWindow.hide();
+                    this.canToggleEditor = false;
+
+                    var onbeforeunload = () => {
                         this.canToggleEditor = true;
                         this.$editorWindow.show();
+                    };
+
+                    if (fullscreen.addEventListener) {
+                        fullscreen.addEventListener("beforeunload", onbeforeunload);
+                    } else if (fullscreen.attachEvent) {
+                        fullscreen.attachEvent("onbeforeunload", onbeforeunload);
+                    } else {
+                        this.canToggleEditor = true;
                     }
                 }
             }
@@ -428,7 +526,7 @@ class BaseGuiController {
         $('#openFileWindow .filter_query').keyup(this.applyFilter);
         this.createFileList();
         var scrollbar: any = $("#file_list");
-        scrollbar.niceScroll({ autohidemode: false, touchbehavior: false, cursorcolor: "#fff", cursoropacitymax: 1, cursorwidth: 16, cursorborder: false, cursorborderradius: false, background: "#121012", autohidemode: false, railpadding: { top: 2, right: 2, bottom: 2 } }).cursor.css({ "background": "#FF4200" });
+        scrollbar.niceScroll({ touchbehavior: false, cursorcolor: "#fff", cursoropacitymax: 1, cursorwidth: 16, cursorborder: false, cursorborderradius: false, background: "#121012", autohidemode: false, railpadding: { top: 2, right: 2, bottom: 2 } }).cursor.css({ "background": "#FF4200" });
         $('.nicescroll-rails').show({
             complete: function () {
                 var scroll: any = $("#file_list");
@@ -519,6 +617,10 @@ class BaseGuiController {
 
             li.find("a").click((event) => {
 
+                $.post("/Test/WriteFile", {
+                    projectID: this.projectID, guid: this.currentGuid, source: this.editor.getValue()
+                });
+
                 var id = $(event.currentTarget).attr("data-id");
 
                 $.post("/test/GetFileContent", { projectID: this.projectID, guid: id }, (data) => {
@@ -595,7 +697,7 @@ class BaseGuiController {
         $("#newFileName").bind("keydown", (event) => {
 
             if (event.keyCode == 13) {
-                this.createFile();
+                $(this.addButton).click();
                 return false;
             }
         });
@@ -606,12 +708,10 @@ class BaseGuiController {
         var fileName = $("#newFileName").val();
         if (fileName.endsWith(".css") || fileName.endsWith(".html")) {
 
-
             $.get("/test/CreateFile", { projectID: this.projectID, filename: fileName }, (data) => {
 
                 if (data.Result) {
-
-                    this.currentGuid = data.ID;
+                    this.currentGuid = data.guid;
                     this.createFileList();
                     this.isMenuActive = false;
                     this.toggleOverlay();
@@ -619,16 +719,23 @@ class BaseGuiController {
                     this.isMenuAvailable = true;
                     this.editor.setValue("");
                     $("#filename").text(fileName);
-
                     this.editor.focus();
+                    this.$editorWindow.show();
+                    this.editor.refresh();
+                } else {
+                    $('#newFileError').slideUp(50, function () {
+                        $('#newFileErrorMessage').text(data.ErrorMessage);
+                    });
+                    $('#newFileError').slideDown(100);
                 }
 
             });
 
         } else {
-            $("#newFileName").tooltip({ content: "Kan geen bestand maken zonder extensie" });
-            $("#newFileName").tooltip("option", "show", { effect: "blind", duration: 700 });
-            $("#newFileName").tooltip("open");
+            $('#newFileError').slideUp(50, function () {
+                $('#newFileErrorMessage').text("Vul een extensie in.");
+            });
+            $('#newFileError').slideDown(100);
         }
 
     }
@@ -642,7 +749,6 @@ class BaseGuiController {
         errorMarker.innerHTML = "<img style='cursor: pointer; width:10px; margin-left:15px; margin-bottom:1px;' src='/Content/Images/ErrorIcon.png'/>";
         return errorMarker;
     }
-
 
     private toggleOverlay() {
 

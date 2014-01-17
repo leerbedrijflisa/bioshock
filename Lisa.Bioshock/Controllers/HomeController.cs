@@ -27,7 +27,7 @@ namespace Lisa.Bioshock.Controllers
             return View(project);
         }
 
-        [Authorize]
+        //[Authorize]
         public ActionResult TestAuthentication()
         {
             return Content("<h1>Authorized!</h1>");

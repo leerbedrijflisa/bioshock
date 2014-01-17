@@ -1,3 +1,6 @@
+/// <reference path="../typings/jquery/jquery.d.ts" />
+/// <reference path="../typings/signalr/signalr.d.ts" />
+
 var Synchronizer = (function () {
     /**
     * Creates a new Synchronizer.
@@ -7,6 +10,7 @@ var Synchronizer = (function () {
     function Synchronizer(preview) {
         var _this = this;
         this.onRead = function (message) {
+            //var title = message.match(/<title>(.+)<\//im);
             if (message.content != null) {
                 var title = message.content.match(/<title>(.+?)(<\/|$)/);
                 if (title) {
@@ -14,15 +18,18 @@ var Synchronizer = (function () {
                 }
             }
             var preview = $(_this.previewId);
+
+            var scrolltop = preview.scrollTop();
             var contents = preview.contents();
             var html = contents.find('html');
             if (html[0] != null) {
                 if (message.message == "refresh")
                     html[0].innerHTML = html[0].innerHTML;
-else if (message.message == "update") {
+                else if (message.message == "update") {
                     html[0].innerHTML = message.content;
                 }
             }
+            //preview.scrollTop(scrolltop);
         };
         this.hub = $.connection.synchronizeHub;
         this.previewId = preview;

@@ -43,15 +43,19 @@ class Synchronizer {
             }
         }
         var preview = $(this.previewId);
+
+        var scrolltop = preview.scrollTop();
         var contents = preview.contents();
         var html = contents.find('html');
-        if(html[0] != null){
+        if (html[0] != null) {
             if (message.message == "refresh")
                 html[0].innerHTML = html[0].innerHTML;
             else if (message.message == "update") {
                 html[0].innerHTML = message.content;
             }
         }
+
+        //preview.scrollTop(scrolltop);
     }
 
     private hub = $.connection.synchronizeHub;

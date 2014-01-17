@@ -213,6 +213,25 @@ textarea {
     vertical-align: middle;
 }
 
+#newFileError{
+    position: absolute;
+    font-family: 'Segoe UI';
+    font-size: 16px;
+    top: 121px;
+    left: 214px;
+    line-height:0px;
+    width: 663.5px;
+    height: 17px;
+    display: none;
+    padding-top: 14px;
+    color: white;
+    background-color: #ff4200;
+}
+
+#newFileErrorMessage{
+    margin: 0 0 0 10px;
+}
+
 #opacityOverlay{
 
     width: 100%;

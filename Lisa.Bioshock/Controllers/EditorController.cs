@@ -19,7 +19,7 @@ namespace Lisa.Bioshock.Controllers
             string FileID = Request.QueryString["file"];
             var project = Db.Projects.Find(ProjectID);
 
-            LocalStorageProvider provider = new LocalStorageProvider("/Storage/" + project.RootID);
+            IStorageProvider provider = CreateStorageProvider(project);
             FileSystem fileSystem = new FileSystem(provider);
 
             var file = fileSystem.Root.FindItemByID(FileID);

@@ -22,6 +22,7 @@ namespace Lisa.Bioshock.Controllers
             {
                 var checker = new HtmlChecker();
                 var result = checker.Check(new StringReader(source), "");
+                
                 returnVal = Json(result, JsonRequestBehavior.AllowGet);
             }
             return returnVal;
