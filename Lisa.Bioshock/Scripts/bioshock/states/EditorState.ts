@@ -2,6 +2,13 @@ class EditorState implements IState {
 
     public enter() {
         this.editorWindow = new EditorWindow('#editorWindow');
+        this.editorWindow.onEditorResize = (type: ResizeType) => {
+
+            if (type == ResizeType.RESIZING || type == ResizeType.STOP) {
+                workspace.editor.refresh();
+            }
+        }
+
         this.editorWindow.open();
 
         this.monitor = new Monitor(workspace.signalR, workspace.preview, workspace.editor);
