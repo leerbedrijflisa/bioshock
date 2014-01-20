@@ -44,7 +44,11 @@ class EditorState implements IState {
                 this.stateMachine.pushState(new NewFileState());
             }
             else if (event.keyCode == Keys.O) {
-                this.stateMachine.pushState(new OpenFileState());
+
+                var openFileState = new OpenFileState();
+                openFileState.onOpenFile = this.onOpenFile;
+
+                this.stateMachine.pushState(openFileState);
             }
         }
         else if (event.keyCode == Keys.ESC) {
@@ -58,6 +62,13 @@ class EditorState implements IState {
             fileName: event.fileName,
             contents: event.contents
         });
+    }
+
+    private onOpenFile = (file: IStorageItem): void => {
+
+        workspace.editor.openFile(file);
+        workspace.preview.fileId = file.id;
+        this.editorWindow.title = file.name;
     }
 
     // properties
