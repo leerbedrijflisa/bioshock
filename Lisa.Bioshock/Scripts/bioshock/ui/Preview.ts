@@ -21,7 +21,7 @@ class Preview {
     }
 
     public update(file: FileDescriptor, contents: string) {
-        if (this.fileId === file.id) {
+        if (this.fileId === file.ID) {
             this.applyChanges(contents);
         }
         else {
@@ -53,8 +53,12 @@ class Preview {
         html.html(html.html());
     }
 
-    private get fileId() {
+    public get fileId() {
         return $(this.element).data('fileId');
+    }
+
+    public set fileId(id: string) {
+        $(this.element).data('fileId', id);
     }
 
     private element: HTMLIFrameElement;
