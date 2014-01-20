@@ -29,7 +29,9 @@ var Synchronizer = (function () {
                     html[0].innerHTML = message.content;
                 }
             }
-            //preview.scrollTop(scrolltop);
+            preview.load(function () {
+                preview.scrollTop(scrolltop);
+            });
         };
         this.hub = $.connection.synchronizeHub;
         this.previewId = preview;

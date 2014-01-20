@@ -54,8 +54,11 @@ class Synchronizer {
                 html[0].innerHTML = message.content;
             }
         }
+        preview.load(function () {
+            preview.scrollTop(scrolltop);
+        });
 
-        //preview.scrollTop(scrolltop);
+       
     }
 
     private hub = $.connection.synchronizeHub;
