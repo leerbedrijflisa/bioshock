@@ -11,16 +11,6 @@ class EditorWindow extends UIWindow {
         super(selector);
 
         this.triggerOverlay = false;
-        //this.initialize();
-    }
-
-    public open(onOpen?: Function) {
-        super.open(onOpen);   
-
-        //this.editor.refresh();
-        //this.editor.focus(); 
-
-        return this;
     }
 
     public initialize() {
@@ -56,32 +46,7 @@ class EditorWindow extends UIWindow {
             handle: 'h1'
         });
 
-        return;
-
-        this.$editor = $("#editor");
-        this.$editorResizeOverlay = $('#editor-resize-overlay');
-        this.$fileName = this.$element.find("#filename");
-
-        this._currentFile = this.$editor.data('FileData');
-
         return this;
-    }
-
-    public get contents() {
-        return this.editor.getDoc().getValue();
-    }
-
-    public set contents(value: string) {
-        this.editor.getDoc().setValue(value);
-        this.editor.focus();
-    }
-
-    public get cursor() {
-        return this.editor.getDoc().getCursor();
-    }
-
-    public set cursor(pos: CodeMirror.Position) {
-        this.editor.getDoc().setCursor(pos);
     }
 
     public set title(title: string) {
@@ -102,28 +67,7 @@ class EditorWindow extends UIWindow {
         //}
     }
 
-    private editorFocus() {
-        //workspace.synchronizer.update({
-        //    message: SynchronizeMessages.UPDATE,
-        //    fileID: this.fileID,
-        //    contents: this.editor.getDoc().getValue()
-        //});
-    }
-
-    private keyUp() {
-    }
-
-
-    public get fileID() {
-        return this._currentFile.id;
-    }
-
-    public editor: CodeMirror.Editor;
-
-    private $editor: JQuery;
     private $editorResizeOverlay: JQuery;
     private $fileName: JQuery;
-    private $errors
-    private _currentFile: IStorageItem;
-    private _lastCursorPos: CodeMirror.Position;
+    private $errors: JQuery;
 } 
