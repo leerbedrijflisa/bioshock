@@ -22,7 +22,7 @@ interface SynchronizeMessage {
 
 interface FileDescriptor {
     projectID: number;
-    id: string;
+    ID: string;
     name: string;
 }
 
@@ -50,7 +50,7 @@ class Synchronizer {
      */ 
     public processChanges(message: SynchronizeMessage) {
         var file = {
-            id: message.fileID,
+            ID: message.fileID,
             name: message.fileName,
             projectID: this.projectID
         };
