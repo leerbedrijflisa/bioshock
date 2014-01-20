@@ -1,9 +1,9 @@
 /// <reference path="../../typings/codemirror/codemirror.d.ts" />
 
 interface EditorEventObject {
-    contents: string;
-    fileID: string;
-    fileName: string;
+    contents?: string;
+    fileID?: string;
+    fileName?: string;
 }
 
 class Editor {
@@ -48,9 +48,19 @@ class Editor {
         this.editor.getDoc().setValue(value);
     }
 
+    public openFile(file: IStorageItem): void {
+        this.currentFile = file;
+        var doc = new CodeMirror.Doc('', file.fileProps.contentType);
+        this.editor.swapDoc(doc);
+        this.contents = file.fileProps.contents;        
+        
+    }
+
     private onChange = () => {
-        var eventArgs = {
-            contents: this.contents
+        var eventArgs: EditorEventObject = {
+            contents: this.contents,
+            fileID: this.currentFile.id,
+            fileName: this.currentFile.name
         };
 
         for (var i = 0; i < this.changeEventHandlers.length; i++) {
@@ -60,4 +70,5 @@ class Editor {
 
     private editor: CodeMirror.Editor;
     private changeEventHandlers: { (EditorEventObject): void }[] = [];
+    private currentFile: IStorageItem;
 } 
