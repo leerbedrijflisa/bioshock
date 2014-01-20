@@ -28,7 +28,10 @@ class OpenFileWindow extends UIWindow {
 
         return super.initialize();
     }    
-    
+
+    public onOpenFile(fileId: string): void {
+    }
+
     private filter(event) {
         var filter = $(event.target).val();
         var $highlights = this.$element.find('#block .highlights');
@@ -76,14 +79,9 @@ class OpenFileWindow extends UIWindow {
         return false;
     }
 
-    private updateEditor(event) {
+    private updateEditor(event: JQueryEventObject) {
         var id = $(event.currentTarget).data('file-id');
-
-        workspace.ajax.getFileContents(id, (data) => {
-            new EditorWindow('#editorWindow').openFile(data);
-        });
-
-        this.close();
+        this.onOpenFile(id);
     }
 
     private createFileList() {
