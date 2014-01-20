@@ -20,6 +20,32 @@ class EditorWindow extends UIWindow {
     public initialize() {
         super.initialize();
 
+        this.$editorResizeOverlay = $('#editor-resize-overlay');
+        this.$fileName = this.$element.find('#filename');
+
+        this.$element.resizable({
+            minHeight: 52,
+            minWidth: 200,
+            containment: this.$editorResizeOverlay,
+            handles: 'all',
+            resize: (event, ui) => {
+
+                this.$element
+                    .width(ui.size.width)
+                    .height(ui.size.height);
+            },
+            start: () => {
+                this.$editorResizeOverlay.show();
+            },
+            stop: () => {
+                this.$editorResizeOverlay.hide();
+            }
+        }).draggable({
+            iframeFix: true,
+            containment: 'window',
+            handle: 'h1'
+        });
+
         return;
 
         this.$editor = $("#editor");
@@ -27,53 +53,6 @@ class EditorWindow extends UIWindow {
         this.$fileName = this.$element.find("#filename");
 
         this._currentFile = this.$editor.data('FileData');
-
-        if (this.$element.data('CodeMirror_instance') === undefined) {
-            this.editor = CodeMirror.fromTextArea(<HTMLTextAreaElement>this.$editor[0], {
-                value: "abcde",
-                lineNumbers: true,
-                mode: "htmlmixed",
-                smartIndent: false,
-                tabSize: 2,
-                theme: "default",
-                gutters: ["Errors", "CodeMirror-linenumbers"],
-                extraKeys: {
-                    "Shift-Tab": "indentLess"
-                }
-            });
-            this.editor.on('change', this.editorChange);
-            this.editor.on('focus', this.editorFocus);
-
-            this.$element.data('CodeMirror_instance', this.editor)
-                .resizable({
-                    minHeight: 52,
-                    minWidth: 200,
-                    containment: this.$editorResizeOverlay,
-                    handles: 'all',
-                    resize: (event, ui) => {
-
-                        this.$element
-                            .width(ui.size.width)
-                            .height(ui.size.height);
-
-                        this.editor.refresh();
-                    },
-                    start: () => {
-                        this.$editorResizeOverlay.show();
-                    },
-                    stop: () => {
-                        this.$editorResizeOverlay.hide();
-                        this.editor.refresh();
-                    }
-                }).draggable({
-
-                    iframeFix: true,
-                    containment: 'window',
-                    handle: 'h1'
-                });            
-        } else {
-            this.editor = <CodeMirror.Editor>this.$element.data('CodeMirror_instance');
-        }
 
         return this;
     }
@@ -95,20 +74,13 @@ class EditorWindow extends UIWindow {
         this.editor.getDoc().setCursor(pos);
     }
 
-    public openFile(file: IStorageItem) {
-        if (file.type == StorageItemType.FOLDER) {
-            throw new Error("Could not open a folder.");
-        }
-
-        this.$element.data("file-id", file.id);
-
-        var doc = new CodeMirror.Doc('', file.fileProps.contentType);
-        this.editor.swapDoc(doc);
-        this.contents = file.fileProps.contents;
-
-        this._currentFile = file;
+    public set title(title: string) {
+        this.$fileName.text(title);
     }
 
+    public get title(): string {
+        return this.$fileName.text();
+    }
 
     private editorChange() {
 
@@ -132,15 +104,6 @@ class EditorWindow extends UIWindow {
     public get fileID() {
         return this._currentFile.id;
     }
-
-    public get fileName(): string {
-        return this._currentFile.name;
-    }
-    public set fileName(name: string) {
-        this._currentFile.name = name;
-        this.$fileName.text(name);
-    }
-
 
     public editor: CodeMirror.Editor;
 
