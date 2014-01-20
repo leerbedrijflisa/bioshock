@@ -1,5 +1,11 @@
 /// <reference path="../../typings/codemirror/codemirror.d.ts" />
 /// <reference path="../../typings/jqueryui/jqueryui.d.ts" />
+enum ResizeType {
+    RESIZING = 1,
+    START = 2,
+    STOP = 3
+}
+
 class EditorWindow extends UIWindow {
     constructor(selector: any) {
         super(selector);
@@ -33,12 +39,16 @@ class EditorWindow extends UIWindow {
                 this.$element
                     .width(ui.size.width)
                     .height(ui.size.height);
+
+                this.onEditorResize(ResizeType.RESIZING);
             },
             start: () => {
                 this.$editorResizeOverlay.show();
+                this.onEditorResize(ResizeType.START);
             },
             stop: () => {
                 this.$editorResizeOverlay.hide();
+                this.onEditorResize(ResizeType.STOP);
             }
         }).draggable({
             iframeFix: true,
@@ -80,6 +90,9 @@ class EditorWindow extends UIWindow {
 
     public get title(): string {
         return this.$fileName.text();
+    }
+
+    public onEditorResize(type: ResizeType): void {
     }
 
     private editorChange() {
