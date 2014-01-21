@@ -46,6 +46,16 @@ class EditorState implements IState {
         if (event.keyCode == Keys.CTRL && !this.ignoreCtrl) {
             this.stateMachine.popState();
         }
+        else if (event.keyCode == Keys.NUMLOCK) {
+            var validator = new Validator();
+            validator.onFileValidationFinished = (data) => {
+
+                var errorCount = workspace.editor.renderErrors(data);
+                this.editorWindow.errorCount = errorCount;
+                this.editorWindow.showErrors();
+            }
+            validator.validateFile(workspace.editor.file.name, workspace.editor.contents);
+        }
         else if (event.altKey) {
             if (event.keyCode == Keys.N) {
                 this.stateMachine.pushState(new NewFileState());
@@ -69,6 +79,8 @@ class EditorState implements IState {
             fileName: event.fileName,
             contents: event.contents
         });
+
+        this.editorWindow.hideErrors();
     }
 
     private onOpenFile = (file: IStorageItem): void => {
