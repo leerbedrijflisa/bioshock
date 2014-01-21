@@ -13,7 +13,6 @@ namespace Lisa.Bioshock.Controllers
     public partial class ProjectController
     {
         //[AjaxAuthorize]
-        [HttpPost]
         [OutputCache(NoStore = true, Location = OutputCacheLocation.None)]
         public ActionResult CreateFile(int projectID, string fileName)
         {
@@ -38,14 +37,14 @@ namespace Lisa.Bioshock.Controllers
                     result = true,
                     fileID = file.ID,
                     contentType = file.ContentType,
-                });
+                }, JsonRequestBehavior.AllowGet);
             }
 
             return Json(new
             {
                 result = false,
                 errorMessage = "Er bestaat al een bestand met deze naam."
-            });
+            }, JsonRequestBehavior.AllowGet);
         }
 
 
@@ -99,7 +98,6 @@ namespace Lisa.Bioshock.Controllers
 
 
         //[AjaxAuthorize]
-        [HttpPost]
         [OutputCache(NoStore = true, Location = OutputCacheLocation.None)]
         public ActionResult GetFiles(int projectID)
         {
@@ -115,7 +113,6 @@ namespace Lisa.Bioshock.Controllers
 
 
         //[AjaxAuthorize]
-        [HttpPost]
         [OutputCache(NoStore = true, Location = OutputCacheLocation.None)]
         public ActionResult GetFile(int projectID, string fileID, bool readContents = false)
         {

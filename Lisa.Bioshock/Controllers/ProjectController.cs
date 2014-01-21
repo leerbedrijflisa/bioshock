@@ -12,7 +12,7 @@ using System.Web.Mvc;
 
 namespace Lisa.Bioshock.Controllers
 {
-    [Authorize]
+    //[Authorize]
     public partial class ProjectController : BaseController
     {
         //

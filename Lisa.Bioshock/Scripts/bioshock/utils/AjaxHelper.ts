@@ -27,7 +27,7 @@ class AjaxHelper {
      * @param {Function} error? - When given, this handler will be triggered when any errors occurs in the ajax request.
      */
     public getFiles(success: Function, error?: Function) {
-        this.makeRequest('/ajax/getfiles', null, true, success, error);
+        this.makeRequest('/project/getfiles', null, false, success, error);
     }
 
 
@@ -39,7 +39,7 @@ class AjaxHelper {
      * @param {Function} error? - When given, this handler will be triggered when any errors occurs in the ajax request.
      */
     public getFileContents(fileID: string, success: Function, error?: Function) {
-        this.makeRequest('/ajax/getfilecontents', { fileID: fileID }, true, success, error);
+        this.makeRequest('/project/getfile', { fileID: fileID, readContents: true }, false, success, error);
     }
 
 
@@ -51,7 +51,7 @@ class AjaxHelper {
      * @param {Function} error? - When given, this handler will be triggered when any errors occurs in the ajax request.
      */
     public createFile(data: Object, success: Function, error?: Function) {
-        this.makeRequest('/ajax/createfile', data, true, success, error);
+        this.makeRequest('/project/createfile', data, false, success, error);
     }
 
     /**
@@ -62,7 +62,7 @@ class AjaxHelper {
             contents: options.contents
         };
 
-        this.makeRequest('/test/writefile', data, true, options.success, options.error);
+        this.makeRequest('/project/writefile', data, true, options.success, options.error);
     }
     
     /** The actual request. */
