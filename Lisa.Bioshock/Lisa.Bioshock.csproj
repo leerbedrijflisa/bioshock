@@ -451,12 +451,14 @@
     <TypeScriptCompile Include="Scripts\bioshock\states\OpenFileState.ts" />
     <TypeScriptCompile Include="Scripts\bioshock\states\PreviewState.ts" />
     <TypeScriptCompile Include="Scripts\bioshock\states\StateMachine.ts" />
+    <TypeScriptCompile Include="Scripts\bioshock\ui\CodeMirrorEditor.ts" />
     <TypeScriptCompile Include="Scripts\bioshock\ui\Editor.ts" />
     <TypeScriptCompile Include="Scripts\bioshock\ui\MenuWindow.ts" />
     <TypeScriptCompile Include="Scripts\bioshock\ui\Preview.ts" />
     <TypeScriptCompile Include="Scripts\bioshock\ui\UIWindow.ts" />
     <TypeScriptCompile Include="Scripts\bioshock\ui\OpenFileWindow.ts" />
     <TypeScriptCompile Include="Scripts\bioshock\utils\AjaxHelper.ts" />
+    <TypeScriptCompile Include="Scripts\bioshock\Validator.ts" />
     <TypeScriptCompile Include="Scripts\bioshock\Workspace.ts" />
     <TypeScriptCompile Include="Scripts\bioshock\ui\NewFileWindow.ts" />
     <TypeScriptCompile Include="Scripts\bioshock\ui\EditorWindow.ts" />
