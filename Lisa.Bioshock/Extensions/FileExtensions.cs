@@ -21,7 +21,12 @@ namespace Lisa.Bioshock.Extensions
             using (var writer = new System.IO.StreamWriter(file.OutputStream))
             {
                 writer.Write(newContents);
-                writer.BaseStream.SetLength(newContents.Length);
+
+                if (writer.BaseStream.CanSeek) 
+                {
+                    writer.BaseStream.SetLength(newContents.Length);
+                }
+                
                 writer.Flush();
             }
         }
