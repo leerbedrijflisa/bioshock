@@ -18,6 +18,7 @@ class EditorWindow extends UIWindow {
 
         this.$editorResizeOverlay = $('#editor-resize-overlay');
         this.$fileName = this.$element.find('#filename');
+        this.$errors = this.$element.find('#errors');
 
         this.$element.resizable({
             minHeight: 52,
@@ -49,6 +50,12 @@ class EditorWindow extends UIWindow {
         return this;
     }
 
+    public set errorCount(count: number) {
+        this.$element
+            .find('#errorcount')
+            .text(count == 0 ? 'Geen' : count);
+    }
+
     public set title(title: string) {
         this.$fileName.text(title);
     }
@@ -57,14 +64,19 @@ class EditorWindow extends UIWindow {
         return this.$fileName.text();
     }
 
-    public onEditorResize(type: ResizeType): void {
+    public hideErrors() {
+        if (this.$errors.is(':visible')) {
+            this.$errors.hide();
+        }
     }
 
-    private editorChange() {
+    public showErrors() {
+        if (this.$errors.not(':visible')) {
+            this.$errors.show();
+        }
+    }
 
-        //if (this.$errors.is(':visible')) {
-        //    this.$errors.hide();
-        //}
+    public onEditorResize(type: ResizeType): void {
     }
 
     private $editorResizeOverlay: JQuery;
