@@ -21,6 +21,7 @@ class Editor {
             }
         });
         this.editor.on('change', this.onChange);
+        this.codeMirrorEditor = new CodeMirrorEditor();
     }
 
     public addChangeHandler(eventHandler: (EditorEventObject) => void) {
@@ -52,8 +53,19 @@ class Editor {
         this.currentFile = file;
         var doc = new CodeMirror.Doc('', file.fileProps.contentType);
         this.editor.swapDoc(doc);
-        this.contents = file.fileProps.contents;        
-        
+        this.contents = file.fileProps.contents;       
+    }
+
+    public renderErrors(data: any): number {
+        for (var j = 0; j < this.widgets.length; j++) {
+            this.widgets[j].clear();
+        }
+        this.editor.clearGutter("Errors");
+        this.widgets = [];
+
+        this.widgets = this.codeMirrorEditor.generateErrors(data, this.editor);
+
+        return this.widgets.length;
     }
 
     private onChange = () => {
@@ -68,7 +80,13 @@ class Editor {
         }
     }
 
+    public get file(): IStorageItem {
+        return this.currentFile;
+    }
+
     private editor: CodeMirror.Editor;
+    private codeMirrorEditor: CodeMirrorEditor;
     private changeEventHandlers: { (EditorEventObject): void }[] = [];
     private currentFile: IStorageItem;
+    private widgets: CodeMirror.LineWidget[] = [];
 } 
