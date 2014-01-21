@@ -14,8 +14,6 @@ namespace Lisa.Bioshock.Controllers
 {
     public class TestController : BaseController
     {
-        LocalStorageProvider provider;
-        FileSystem fileSystem;
         Lisa.Storage.File file;
 
         [ValidateInput(false)]
@@ -23,9 +21,7 @@ namespace Lisa.Bioshock.Controllers
         public JsonResult GetFiles(int projectID, string contentType = null)
         {
             var project = Db.Projects.Find(projectID);
-
-            LocalStorageProvider provider = new LocalStorageProvider("/Storage/" + project.RootID);
-            FileSystem fileSystem = new FileSystem(provider);
+            var fileSystem = GetFileSystem(project.RootID);
 
             if (contentType != null)
             {
@@ -56,10 +52,9 @@ namespace Lisa.Bioshock.Controllers
         {
             var project = Db.Projects.Find(projectID);
 
-            LocalStorageProvider provider = new LocalStorageProvider("/Storage/" + project.RootID);
-            FileSystem fileSystem = new FileSystem(provider);
-
+            var fileSystem = GetFileSystem(project.RootID);
             var file = fileSystem.Root.FindItemByID(guid) as Lisa.Storage.File;
+
             if (file == null)
             {
                 return HttpNotFound();
@@ -92,9 +87,7 @@ namespace Lisa.Bioshock.Controllers
         public ActionResult CreateFile(int projectID, string filename)
         {
             var project = Db.Projects.Find(projectID);
-
-            LocalStorageProvider provider = new LocalStorageProvider("/Storage/" + project.RootID);
-            FileSystem fileSystem = new FileSystem(provider);
+            var fileSystem = GetFileSystem(project.RootID);
 
             if (!FileExists(fileSystem, filename))
             {
@@ -113,7 +106,7 @@ namespace Lisa.Bioshock.Controllers
             return Json(new { Result = false}, JsonRequestBehavior.AllowGet);
         }
 
-        private bool FileExists(FileSystem filesystem, string filename)
+        private bool FileExists(FileSystem fileSystem, string filename)
         {
             var file = fileSystem.Root.FindItemByPath("/root/" + filename) as Lisa.Storage.File;
             return file != null;
@@ -125,10 +118,9 @@ namespace Lisa.Bioshock.Controllers
         {
             var project = Db.Projects.Find(projectID);
 
-            LocalStorageProvider provider = new LocalStorageProvider("/Storage/" + project.RootID);
-            FileSystem fileSystem = new FileSystem(provider);
-
+            var fileSystem = GetFileSystem(project.RootID);
             var file = fileSystem.Root.FindItemByID(guid) as Lisa.Storage.File;
+
             var content = string.Empty;
             using (var contents = new StreamWriter(file.OutputStream))
             {

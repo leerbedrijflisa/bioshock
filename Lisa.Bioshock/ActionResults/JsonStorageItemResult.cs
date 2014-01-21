@@ -33,11 +33,11 @@ namespace Lisa.Bioshock.ActionResults
             this.Data = builder.BuildJson(root);
         }
 
-        public JsonStorageItemResult(File file)
+        public JsonStorageItemResult(File file, bool readContents)
             : this()
         {
             var builder = new JsonStorageItemBuilder();
-            this.Data = builder.BuildJson(file, true);
+            this.Data = builder.BuildJson(file, readContents);
         }
     }
 }

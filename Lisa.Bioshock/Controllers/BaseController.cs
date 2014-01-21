@@ -97,6 +97,37 @@ namespace Lisa.Bioshock.Controllers
             return this.GetFileSystem(rootID.ToString());
         }
 
+        protected string GetContentType(string fileName)
+        {
+            if(string.IsNullOrEmpty(fileName))
+            {
+                return null;
+            }
+
+            string fileExt = System.IO.Path.GetExtension(fileName);
+
+            switch(fileExt)
+            {
+                case "htm":
+                case "html":
+                    return "text/html";
+
+                case "css":
+                    return "text/css";
+
+                //case "js":
+                //    return "text/javascript";
+
+                //case "php":
+                //    return "text/php";
+
+                case null:
+                case "":
+                default:
+                    return null;
+            }
+        }
+
         protected override void Dispose(bool disposing)
         {
             Db.Dispose();

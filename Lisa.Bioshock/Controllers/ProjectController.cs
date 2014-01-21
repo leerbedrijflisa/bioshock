@@ -13,7 +13,7 @@ using System.Web.Mvc;
 namespace Lisa.Bioshock.Controllers
 {
     [Authorize]
-    public class ProjectController : BaseController
+    public partial class ProjectController : BaseController
     {
         //
         // GET: /Project/
@@ -42,22 +42,6 @@ namespace Lisa.Bioshock.Controllers
                 Db.Projects.Add(project);
                 Db.SaveChanges();
 
-                LocalStorageProvider sp 
-                    = new LocalStorageProvider(@"C:\Storage\" + project.RootID + @"\");
-                FileSystem fs = new FileSystem(sp);
-
-                var css = fs.Root.Folders.Add("css");
-                var index = fs.Root.Files.Add("index.html", "text/html");
-                var style = css.Files.Add("style.css", "text/css");
-                
-                using (var writer = new System.IO.StreamWriter(index.OutputStream))
-                {
-                    writer.Write("<!DOCTYPE html>\n<html>\n<body>\n\t<h1>My website</h1>\n</body>\n</html>");
-                }
-
-                project.LastOpenedFile = Guid.Parse(index.ID);
-                Db.SaveChanges();
-
                 return RedirectToAction("Index", "Home", new { ID = project.ID });
             }
 
@@ -73,11 +57,7 @@ namespace Lisa.Bioshock.Controllers
                 return HttpNotFound();
             }
 
-            LocalStorageProvider sp 
-                = new LocalStorageProvider(@"C:\Storage\" + project.RootID + @"\");
-            FileSystem fs = new FileSystem(sp);
-            ViewBag.FileSystem = fs;
-
+            ViewBag.FileSystem = GetFileSystem(project.RootID);
             return View(project);
         }
 
