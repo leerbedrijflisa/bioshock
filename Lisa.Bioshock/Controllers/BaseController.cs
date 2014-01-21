@@ -79,21 +79,22 @@ namespace Lisa.Bioshock.Controllers
             //}
         }
 
-        protected FileSystem CreateFileSystem(string rootID)
+        protected FileSystem GetFileSystem(string rootID)
         {
-            //TODO: set up and use the CloudStorageProvider
-
-            //var cs = ConfigurationManager.ConnectionStrings["AzureCloud"].ConnectionString;
-            //CloudStorageProvider provider = new CloudStorageProvider(cs, rootID);
-            LocalStorageProvider provider = new LocalStorageProvider("/Storage/" + rootID);
+            var provider = new CloudStorageProvider
+            (
+                ConfigurationManager.AppSettings["CloudStorageConnectionString"],
+                "bioshock",
+                rootID.ToString()
+            );
             FileSystem fileSystem = new FileSystem(provider);
 
             return fileSystem;
         }
 
-        protected FileSystem CreateFileSystem(Guid rootID)
+        protected FileSystem GetFileSystem(Guid rootID)
         {
-            return this.CreateFileSystem(rootID.ToString());
+            return this.GetFileSystem(rootID.ToString());
         }
 
         protected override void Dispose(bool disposing)

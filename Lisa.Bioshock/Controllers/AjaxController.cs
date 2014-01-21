@@ -16,7 +16,7 @@ namespace Lisa.Bioshock.Controllers
     [OutputCache(NoStore = true, Location = OutputCacheLocation.None)]
     public class AjaxController : BaseController
     {
-        [AjaxAuthorize]
+        //[AjaxAuthorize]
         [HttpPost]
         public ActionResult GetFiles(int projectID, string contentType = null)
         {
@@ -26,7 +26,7 @@ namespace Lisa.Bioshock.Controllers
                 return HttpNotFound();
             }
 
-            var fileSystem = CreateFileSystem(project.RootID);
+            var fileSystem = GetFileSystem(project.RootID);
 
             if (contentType != null)
             {
@@ -40,7 +40,7 @@ namespace Lisa.Bioshock.Controllers
         }
 
 
-        [AjaxAuthorize]
+        //[AjaxAuthorize]
         [HttpPost]
         public ActionResult GetFileContents(int projectID, string fileID)
         {
@@ -50,7 +50,7 @@ namespace Lisa.Bioshock.Controllers
                 return HttpNotFound();
             }
 
-            var fileSystem = CreateFileSystem(project.RootID);
+            var fileSystem = GetFileSystem(project.RootID);
             var file = fileSystem.Root.FindItemByID(fileID) as File;
             if (file == null)
             {
@@ -61,7 +61,7 @@ namespace Lisa.Bioshock.Controllers
         }
 
 
-        [AjaxAuthorize]
+        //[AjaxAuthorize]
         [HttpPost]
         // TODO: Support the creating of files inside folders
         public ActionResult CreateFile(int projectID, string fileName)
@@ -72,7 +72,7 @@ namespace Lisa.Bioshock.Controllers
                 return HttpNotFound();
             }
 
-            var fileSystem = CreateFileSystem(project.RootID);
+            var fileSystem = GetFileSystem(project.RootID);
             var fileExt = System.IO.Path.GetExtension(fileName);
 
             if (!ItemExists(fileSystem, "/root/"+ fileName))
@@ -104,7 +104,7 @@ namespace Lisa.Bioshock.Controllers
         }
 
 
-        [AjaxAuthorize]
+        //[AjaxAuthorize]
         [HttpPost]
         public ActionResult WriteFile(int projectID, string fileID, string contents)
         {
@@ -115,7 +115,7 @@ namespace Lisa.Bioshock.Controllers
             }
 
             bool result = true;
-            var fileSystem = CreateFileSystem(project.RootID);
+            var fileSystem = GetFileSystem(project.RootID);
             var file = fileSystem.Root.FindItemByID(fileID) as File;
 
             if (file == null)
