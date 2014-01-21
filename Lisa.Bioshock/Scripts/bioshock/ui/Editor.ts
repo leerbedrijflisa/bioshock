@@ -53,7 +53,8 @@ class Editor {
         this.currentFile = file;
         var doc = new CodeMirror.Doc('', file.fileProps.contentType);
         this.editor.swapDoc(doc);
-        this.contents = file.fileProps.contents;       
+        this.contents = file.fileProps.contents;    
+        this.editor.focus();   
     }
 
     public renderErrors(data: any): number {
