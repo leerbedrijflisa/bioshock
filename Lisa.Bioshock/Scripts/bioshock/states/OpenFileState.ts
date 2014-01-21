@@ -7,7 +7,7 @@ class OpenFileState implements IState {
     }
 
     public enter() {
-        this._window = <OpenFileWindow> new OpenFileWindow('#openFileWindow')
+        this.window = <OpenFileWindow> new OpenFileWindow('#openFileWindow')
             .open()
             .close(() => {
                 if (this.stateMachine.currentState == this) {
@@ -15,21 +15,21 @@ class OpenFileState implements IState {
                 }
             });
 
-        this._window.onOpenFile = (fileId: string) => {
+        this.window.onOpenFile = (fileId: string) => {
             workspace.ajax.getFileContents(fileId, (file: IStorageItem) => {
                 if (file.type == StorageItemType.FOLDER) {
                     throw new Error("Could not open a folder.");
                 }
 
                 this.onOpenFile(file);
-                this._window.close();
+                this.window.close();
             });
         };
     }
 
     public leave() {
 
-        this._window.close();
+        this.window.close();
         this.onOpenFile = function () { };
     }
 
@@ -54,5 +54,5 @@ class OpenFileState implements IState {
     // fields
     public stateMachine: StateMachine;
 
-    private _window: OpenFileWindow;
+    private window: OpenFileWindow;
 } 

@@ -108,7 +108,7 @@ namespace Lisa.Bioshock.Controllers
             }
 
             var fileSystem = GetFileSystem(project.RootID);
-            return new JsonStorageItemResult(fileSystem.Root);
+            return new JsonStorageItemResult(new List<StorageItem> { fileSystem.Root });
         }
 
 
