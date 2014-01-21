@@ -173,6 +173,7 @@
     <Compile Include="Controllers\ProjectController.ajax.cs" />
     <Compile Include="Controllers\ProjectController.cs" />
     <Compile Include="Extensions\FileExtensions.cs" />
+    <Compile Include="Helpers\FileSystemHelper.cs" />
     <Compile Include="LisaClaimTypes.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\TestController.cs" />
