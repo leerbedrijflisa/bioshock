@@ -50,6 +50,7 @@ namespace Lisa.Bioshock.Controllers
 
         //[AjaxAuthorize]
         [HttpPost]
+        [ValidateInput(false)]
         [OutputCache(NoStore = true, Location = OutputCacheLocation.None)]
         public ActionResult WriteFile(int projectID, string fileID, string contents)
         {
@@ -130,6 +131,28 @@ namespace Lisa.Bioshock.Controllers
             }
 
             return new JsonStorageItemResult(file, readContents);
+        }
+
+        //[AjaxAuthorize]
+        [HttpGet]
+        [OutputCache(NoStore = true, Location = OutputCacheLocation.None)]
+        public ActionResult GetStartUpFile(int projectID)
+        {
+            var project = Db.Projects.Find(projectID);
+            if (project == null)
+            {
+                return HttpNotFound();
+            }
+
+            var fileSystem = GetFileSystem(project.RootID);
+            var file = fileSystem.Root.FindItemByID(project.LastOpenedFile.ToString()) as File;
+
+            if (file == null)
+            {
+                return HttpNotFound();
+            }
+
+            return new JsonStorageItemResult(file, true);
         }
     }
 }
