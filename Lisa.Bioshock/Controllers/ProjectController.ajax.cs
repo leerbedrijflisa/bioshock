@@ -32,6 +32,9 @@ namespace Lisa.Bioshock.Controllers
                 string contentType = GetContentType(fileName);
                 var file = fileSystem.Root.Files.Add(fileName, contentType);
 
+                project.LastOpenedFile = Guid.Parse(file.ID);
+                Db.SaveChanges();
+
                 return Json(new
                 {
                     result = true,
@@ -129,6 +132,9 @@ namespace Lisa.Bioshock.Controllers
             {
                 return HttpNotFound();
             }
+
+            project.LastOpenedFile = Guid.Parse(file.ID);
+            Db.SaveChanges();
 
             return new JsonStorageItemResult(file, readContents);
         }
