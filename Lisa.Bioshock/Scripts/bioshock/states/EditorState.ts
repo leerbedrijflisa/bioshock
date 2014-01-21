@@ -11,6 +11,10 @@ class EditorState implements IState {
 
         this.editorWindow.open();
 
+        if (workspace.editor.file === undefined) {
+            this.openStartUpFile();
+        }
+
         this.monitor = new Monitor(workspace.signalR, workspace.preview, workspace.editor);
         this.synchronizer = new Synchronizer(workspace.signalR, workspace.projectID);
     }    
@@ -35,6 +39,14 @@ class EditorState implements IState {
         $(window).off('keydown', this.onKeyDown);
         workspace.preview.removeKeyUpHandler(this.onKeyUp);
         workspace.preview.removeKeyDownHandler(this.onKeyDown);
+    }
+
+    private openStartUpFile = () => {
+        $.get('/project/getstartupfile', { projectID: workspace.projectID }, (file: IStorageItem) => {
+            workspace.editor.openFile(file);
+            workspace.preview.fileId = file.id;
+            this.editorWindow.title = file.name;
+        });
     }
 
     private onKeyDown = (event: JQueryKeyEventObject) => {
@@ -78,6 +90,16 @@ class EditorState implements IState {
             fileID: event.fileID,
             fileName: event.fileName,
             contents: event.contents
+        });
+
+        // TEMPORARY WRITE FILE FIX!!!
+        var data = {
+            projectID: workspace.projectID,
+            fileID: event.fileID,
+            contents: event.contents
+        };
+        $.post('/project/writefile', data, function (result) {
+            console.log(result);
         });
 
         this.editorWindow.hideErrors();
