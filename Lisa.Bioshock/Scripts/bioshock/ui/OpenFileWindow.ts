@@ -90,16 +90,12 @@ class OpenFileWindow extends UIWindow {
         this.files = [];
 
         workspace.ajax.getFiles((data) => {
-            for (var i in data) {
-                if (data.hasOwnProperty(i)) {
-                    this.generateFolderTree(data[i], $fileList);
-                }
-            }
+            this.generateFolderTree(data, $fileList);
         });
     }
 
     private generateFolderTree(item: IStorageItem, $fileList, $ul?) {
-        var path = item.fullPath.replace('/root', '');
+        var path = item.fullPath;
 
         if (path == '') {
             path = '/';
