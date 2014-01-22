@@ -108,7 +108,10 @@ class EditorState implements IState {
     private onOpenFile = (file: IStorageItem): void => {
 
         workspace.editor.openFile(file);
-        workspace.preview.fileId = file.id;
+
+        if (file.name.indexOf('.html') > -1) {
+            workspace.preview.fileId = file.id;
+        }
         this.editorWindow.title = file.name;
     }
 

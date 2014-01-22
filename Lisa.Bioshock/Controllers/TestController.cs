@@ -1,4 +1,5 @@
 ﻿using Lisa.Bioshock.ActionResults;
+using Lisa.Bioshock.Helpers;
 using Lisa.Bioshock.Models;
 using Lisa.Storage;
 using Lisa.Storage.Data;
@@ -21,7 +22,7 @@ namespace Lisa.Bioshock.Controllers
         public JsonResult GetFiles(int projectID, string contentType = null)
         {
             var project = Db.Projects.Find(projectID);
-            var fileSystem = GetFileSystem(project.RootID);
+            var fileSystem = FileSystemHelper.GetFileSystem(project.RootID);
 
             if (contentType != null)
             {
@@ -48,16 +49,16 @@ namespace Lisa.Bioshock.Controllers
 
         [HttpPost]
         [OutputCache(NoStore = true, Location = OutputCacheLocation.None)]
-        public ActionResult GetFileContent(int projectID, string guid)
+        public ActionResult GetFileContent(int projectID, string guid = null)
         {
             var project = Db.Projects.Find(projectID);
 
-            var fileSystem = GetFileSystem(project.RootID);
+            var fileSystem = FileSystemHelper.GetFileSystem(project.RootID);
             var file = fileSystem.Root.FindItemByID(guid) as Lisa.Storage.File;
 
             if (file == null)
             {
-                return HttpNotFound();
+               return HttpNotFound();
             }
 
             var content = string.Empty;
@@ -87,7 +88,7 @@ namespace Lisa.Bioshock.Controllers
         public ActionResult CreateFile(int projectID, string filename)
         {
             var project = Db.Projects.Find(projectID);
-            var fileSystem = GetFileSystem(project.RootID);
+            var fileSystem = FileSystemHelper.GetFileSystem(project.RootID);
 
             if (!FileExists(fileSystem, filename))
             {
@@ -118,7 +119,7 @@ namespace Lisa.Bioshock.Controllers
         {
             var project = Db.Projects.Find(projectID);
 
-            var fileSystem = GetFileSystem(project.RootID);
+            var fileSystem = FileSystemHelper.GetFileSystem(project.RootID);
             var file = fileSystem.Root.FindItemByID(guid) as Lisa.Storage.File;
 
             var content = string.Empty;
@@ -130,6 +131,41 @@ namespace Lisa.Bioshock.Controllers
             }
 
             return Json(null);
+        }
+
+
+
+
+        public ActionResult FileContents(int id, string filename)
+        {
+            if (!Request.Url.AbsoluteUri.Contains("?"))
+            {
+                return Redirect(string.Format("/Project/{0}/File/{1}?g={2}", id, filename, Guid.NewGuid()));
+            }
+
+            if (filename == null)
+            {
+                filename = "index.html";
+                //return Content(string.Empty);
+            }
+
+            var project = Db.Projects.Find(id);
+            FileSystem fileSystem = FileSystemHelper.GetFileSystem(project.RootID);
+
+            var file = fileSystem.Root.FindItemByPath(filename, false) as Lisa.Storage.File;
+
+            if (file != null)
+            {
+                Response.AddHeader("Content-Type", file.ContentType);
+                var content = string.Empty;
+                using (var contents = new StreamReader(file.InputStream))
+                {
+                    content = contents.ReadToEnd();
+                }
+
+                return Content(content);
+            }
+            return HttpNotFound();
         }
     }
 }

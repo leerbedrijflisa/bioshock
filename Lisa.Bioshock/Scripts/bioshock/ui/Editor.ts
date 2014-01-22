@@ -57,6 +57,11 @@ class Editor {
         this.editor.focus();   
     }
 
+    public newFile(contentType): void {
+        var doc = new CodeMirror.Doc('', contentType);
+        this.editor.swapDoc(doc);
+    }
+
     public renderErrors(data: any): number {
         for (var j = 0; j < this.widgets.length; j++) {
             this.widgets[j].clear();

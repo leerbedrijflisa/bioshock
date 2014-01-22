@@ -1,13 +1,29 @@
 ﻿@model Project
+
 @{
-    ViewBag.Title = Model.Name;
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";   
 }
 
-<h2>@Model.Name</h2>
+@if (Model != null) 
+{
+    <input type="hidden" value="@Model.ID" id="ProjectID" />
+}
 
-<h3>Root</h3>
+<script type="text/javascript">
+    // Global instance of the BioshockWorkspace that can be used by other classes.
+    console.log = function (message) { };
+    $(function () {
 
-@Html.Partial("_TreeView", (IEnumerable<Lisa.Storage.StorageItem>)ViewBag.FileSystem.Root.Items)
+        $("#preview").contents().html('');
+        workspace = new Workspace($("#ProjectID").val(), "#preview");
+        workspace.stateMachine.switchState(new PreviewState);
+    });
 
-@* TODO: CHANGE TO REAL OWNER!!!!!! *@
-<p><small>Gemaakt door: @User.Identity.Name op @Model.Created.ToShortDateString()</small></p>
+</script>
+
+<iframe id="preview" frameborder="0" data-file-id="" src="/Project/@Model.ID/File/"></iframe>
+@Html.Partial("_EditorWindow")
+@Html.Partial("_EditorMenuWindow")
+@Html.Partial("_NewFileWindow")
+@Html.Partial("_OpenFileWindow")

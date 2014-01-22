@@ -1,5 +1,6 @@
 ﻿using Lisa.Bioshock.ActionResults;
 using Lisa.Bioshock.Extensions;
+using Lisa.Bioshock.Helpers;
 using Lisa.Storage;
 using System;
 using System.Collections.Generic;
@@ -24,7 +25,7 @@ namespace Lisa.Bioshock.Controllers
                 return HttpNotFound();
             }
 
-            var fileSystem = GetFileSystem(project.RootID);
+            var fileSystem = FileSystemHelper.GetFileSystem(project.RootID);
 
             // Check if file already exists
             if (fileSystem.Root.FindItemByPath(fileName, false) == null)
@@ -63,7 +64,7 @@ namespace Lisa.Bioshock.Controllers
                 return HttpNotFound();
             }
 
-            var fileSystem = GetFileSystem(project.RootID);
+            var fileSystem = FileSystemHelper.GetFileSystem(project.RootID);
             var file = fileSystem.Root.FindItemByID(fileID) as File;
 
             if (file == null)
@@ -111,7 +112,7 @@ namespace Lisa.Bioshock.Controllers
                 return HttpNotFound();
             }
 
-            var fileSystem = GetFileSystem(project.RootID);
+            var fileSystem = FileSystemHelper.GetFileSystem(project.RootID);
             return new JsonStorageItemResult(new List<StorageItem> { fileSystem.Root });
         }
 
@@ -126,7 +127,7 @@ namespace Lisa.Bioshock.Controllers
                 return HttpNotFound();
             }
 
-            var fileSystem = GetFileSystem(project.RootID);
+            var fileSystem = FileSystemHelper.GetFileSystem(project.RootID);
             var file = fileSystem.Root.FindItemByID(fileID) as File;
             if (file == null)
             {
@@ -150,7 +151,7 @@ namespace Lisa.Bioshock.Controllers
                 return HttpNotFound();
             }
 
-            var fileSystem = GetFileSystem(project.RootID);
+            var fileSystem = FileSystemHelper.GetFileSystem(project.RootID);
             var file = fileSystem.Root.FindItemByID(project.LastOpenedFile.ToString()) as File;
 
             if (file == null)

@@ -13,6 +13,21 @@ namespace Lisa.Bioshock
         {
             routes.IgnoreRoute("{resource}.axd/{*pathInfo}");
 
+            routes.MapRoute(
+                "GetFile",
+                "Project/{id}/File/{*filename}",
+                new
+                {
+                    controller = "Test",
+                    action = "FileContents",
+                    filename = UrlParameter.Optional
+                },
+                new
+                {
+                    id = @"\d+"
+                }
+            );
+
             //routes.MapRoute(
             //    name: "AjaxFiles",
             //    url: "ajax/files/{task}",

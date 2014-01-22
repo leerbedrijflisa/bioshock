@@ -1,4 +1,5 @@
 ﻿using Lisa.Bioshock.Data.Tables;
+using Lisa.Bioshock.Helpers;
 using Lisa.Bioshock.Models;
 using Lisa.Storage;
 using Lisa.Storage.Data;
@@ -48,16 +49,14 @@ namespace Lisa.Bioshock.Controllers
             return View(form);
         }
 
-        public ActionResult Details(int id =0)
+        public ActionResult Details(int id = 0)
         {
-            Project project = Db.Projects.Find(id);
-
+            var project = Db.Projects.Find(id);
             if (project == null)
             {
-                return HttpNotFound();
+                return RedirectToAction("Index", "Project");
             }
 
-            ViewBag.FileSystem = GetFileSystem(project.RootID);
             return View(project);
         }
 

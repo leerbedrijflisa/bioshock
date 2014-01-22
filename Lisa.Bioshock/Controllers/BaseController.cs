@@ -82,24 +82,6 @@ namespace Lisa.Bioshock.Controllers
             ViewBag.CurrentUser = CurrentUser;
         }
 
-        protected FileSystem GetFileSystem(string rootID)
-        {
-            var provider = new CloudStorageProvider
-            (
-                ConfigurationManager.AppSettings["CloudStorageConnectionString"],
-                "bioshock",
-                rootID.ToString()
-            );
-            FileSystem fileSystem = new FileSystem(provider);
-
-            return fileSystem;
-        }
-
-        protected FileSystem GetFileSystem(Guid rootID)
-        {
-            return this.GetFileSystem(rootID.ToString());
-        }
-
         protected string GetContentType(string fileName)
         {
             if(string.IsNullOrEmpty(fileName))

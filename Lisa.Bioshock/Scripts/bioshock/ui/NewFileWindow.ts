@@ -42,6 +42,7 @@ class NewFileWindow extends UIWindow {
     }
 
     private createFile = () => {
+        console.log('Create file called.');
         var fileName = this.$element.find('#newFileName').val();
 
         if (fileName.endsWith('.css') || fileName.endsWith('.html')) {
@@ -49,7 +50,7 @@ class NewFileWindow extends UIWindow {
             workspace.ajax.createFile({ filename: fileName }, (data) => {
                 if (data.result) {
 
-                    /* TODO: Update the editor */
+                    workspace.editor.newFile(data.contentType);
                     $('#filename').text(fileName);
                     this.close();
                 } else {
