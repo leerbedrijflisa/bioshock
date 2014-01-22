@@ -7,6 +7,8 @@ using Lisa.Bioshock.Data;
 using Lisa.Storage;
 using Lisa.Storage.Data;
 using Lisa.Bioshock.Extensions;
+using Lisa.Bioshock.Helpers;
+using System.Threading.Tasks;
 
 namespace Lisa.Bioshock.Models
 {
@@ -21,8 +23,11 @@ namespace Lisa.Bioshock.Models
     {
         public void ProcessChanges(FileDescriptor file, string contents)
         {
-            WriteFile(file, contents);
-
+            //Task.Run(() =>
+            //{
+            //    WriteFile(file, contents);
+            //    Console.WriteLine("Task.Run(WriteFile)");
+            //});
             Clients.All.Update(file, contents);
         }
 
@@ -33,7 +38,7 @@ namespace Lisa.Bioshock.Models
                 var project = db.Projects.Find(file.ProjectID);
                 if (project != null)
                 {
-                    var fileSystem = CreateFileSystem(project.RootID);
+                    var fileSystem = FileSystemHelper.GetFileSystem(project.RootID);
                     var currentFile = fileSystem.Root.FindItemByID(file.ID) as File;
 
                     if (currentFile != null)
