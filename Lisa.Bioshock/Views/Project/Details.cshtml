@@ -12,17 +12,13 @@
 
 <script type="text/javascript">
     // Global instance of the BioshockWorkspace that can be used by other classes.
-    console.log = function (message) { };
-    $(function () {
-
-        $("#preview").contents().html('');
+    function initialize() {
         workspace = new Workspace($("#ProjectID").val(), "#preview");
         workspace.stateMachine.switchState(new PreviewState);
-    });
-
+    }
 </script>
 
-<iframe id="preview" frameborder="0" data-file-id="" src="/Project/@Model.ID/File/"></iframe>
+<iframe id="preview" frameborder="0" data-file-id="" src="/Project/@Model.ID/File/index.html" onload="initialize()"></iframe>
 @Html.Partial("_EditorWindow")
 @Html.Partial("_EditorMenuWindow")
 @Html.Partial("_NewFileWindow")

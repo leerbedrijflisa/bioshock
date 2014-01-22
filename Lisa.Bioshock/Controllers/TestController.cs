@@ -135,7 +135,7 @@ namespace Lisa.Bioshock.Controllers
 
 
 
-
+        [OutputCache(NoStore = true, Location = OutputCacheLocation.None)] //<--- MAGIC IN IE!!!!
         public ActionResult FileContents(int id, string filename)
         {
             if (!Request.Url.AbsoluteUri.Contains("?"))
@@ -146,7 +146,6 @@ namespace Lisa.Bioshock.Controllers
             if (filename == null)
             {
                 filename = "index.html";
-                //return Content(string.Empty);
             }
 
             var project = Db.Projects.Find(id);
@@ -160,7 +159,7 @@ namespace Lisa.Bioshock.Controllers
                 var content = string.Empty;
                 using (var contents = new StreamReader(file.InputStream))
                 {
-                    content = contents.ReadToEnd();
+                    content = contents.ReadToEnd(); //<-- THIS SUCKS IN IE!!!!
                 }
 
                 return Content(content);

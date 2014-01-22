@@ -43,7 +43,7 @@ namespace Lisa.Bioshock.Controllers
                 Db.Projects.Add(project);
                 Db.SaveChanges();
 
-                return RedirectToAction("Index", "Home", new { ID = project.ID });
+                return RedirectToAction("Details", "Project", new { ID = project.ID });
             }
 
             return View(form);
