@@ -3,6 +3,9 @@ class NewFileState implements IState {
     constructor() {
     }
 
+    public onNewFile(file: IStorageItem) {
+    }
+
     public enter() {
         this._window = <NewFileWindow> new NewFileWindow('#newFileWindow')
             .open()
@@ -11,6 +14,19 @@ class NewFileState implements IState {
                     this.stateMachine.popState();
                 }
             });
+        this._window.onNewFile = (fileName: string) => {
+            if (fileName.indexOf('.html') > -1 || fileName.indexOf('.css') > -1) {
+                workspace.ajax.createFile({ fileName: fileName }, (data: AjaxFileResult) => {
+                    if (data.result) {
+                        this.onNewFile(data);
+                    } else {
+                        this._window.showError(data.errorMessage);
+                    }
+                });
+            } else {
+                this._window.showError('Extensie wordt niet herkend.');
+            }
+        }
     }
 
     public leave() {

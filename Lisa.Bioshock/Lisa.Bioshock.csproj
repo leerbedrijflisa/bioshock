@@ -163,6 +163,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ActionResults\JsonErrorResult.cs" />
     <Compile Include="ActionResults\JsonStorageItemResult.cs" />
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\FilterConfig.cs" />
@@ -443,6 +444,7 @@
     <Content Include="Content\Site.css" />
     <Content Include="Content\CodeMirror\mode\livescript\livescript.ls" />
     <Content Include="Scripts\bioshock\BaseGuiController.ts" />
+    <Content Include="Scripts\bioshock\filesystem\StorageItem.js" />
     <Content Include="Scripts\bioshock\FullScreenGuiController.ts" />
     <TypeScriptCompile Include="Scripts\bioshock\Monitor.ts" />
     <TypeScriptCompile Include="Scripts\bioshock\states\EditorState.ts" />
@@ -465,6 +467,27 @@
     <TypeScriptCompile Include="Scripts\bioshock\ui\EditorWindow.ts" />
     <TypeScriptCompile Include="Scripts\bioshock\filesystem\StorageItem.ts" />
     <TypeScriptCompile Include="Scripts\bioshock\utils\Keys.ts" />
+    <Content Include="Scripts\bioshock\Monitor.js" />
+    <Content Include="Scripts\bioshock\states\EditorState.js" />
+    <Content Include="Scripts\bioshock\states\IState.js" />
+    <Content Include="Scripts\bioshock\states\MenuState.js" />
+    <Content Include="Scripts\bioshock\states\NewFileState.js" />
+    <Content Include="Scripts\bioshock\states\OpenFileState.js" />
+    <Content Include="Scripts\bioshock\states\PreviewState.js" />
+    <Content Include="Scripts\bioshock\states\StateMachine.js" />
+    <Content Include="Scripts\bioshock\Synchronizer.js" />
+    <Content Include="Scripts\bioshock\ui\CodeMirrorEditor.js" />
+    <Content Include="Scripts\bioshock\ui\Editor.js" />
+    <Content Include="Scripts\bioshock\ui\EditorWindow.js" />
+    <Content Include="Scripts\bioshock\ui\MenuWindow.js" />
+    <Content Include="Scripts\bioshock\ui\NewFileWindow.js" />
+    <Content Include="Scripts\bioshock\ui\OpenFileWindow.js" />
+    <Content Include="Scripts\bioshock\ui\Preview.js" />
+    <Content Include="Scripts\bioshock\ui\UIWindow.js" />
+    <Content Include="Scripts\bioshock\utils\AjaxHelper.js" />
+    <Content Include="Scripts\bioshock\utils\Keys.js" />
+    <Content Include="Scripts\bioshock\Validator.js" />
+    <Content Include="Scripts\bioshock\Workspace.js" />
     <Content Include="Scripts\jquery-1.9.1.js" />
     <Content Include="Scripts\jquery-ui-1.10.3.js" />
     <Content Include="Scripts\jquery.nicescroll.min.js" />
@@ -478,6 +501,8 @@
     <Content Include="Views\Home\Fullscreen.cshtml" />
     <None Include="Properties\PublishProfiles\bioshock - FTP.pubxml" />
     <None Include="Properties\PublishProfiles\bioshock - Web Deploy.pubxml" />
+    <None Include="Properties\PublishProfiles\lisa-bioshock - FTP.pubxml" />
+    <None Include="Properties\PublishProfiles\lisa-bioshock - Web Deploy.pubxml" />
     <None Include="Scripts\jquery.validate-vsdoc.js" />
     <Content Include="Scripts\jquery-ui-1.10.3.custom.js" />
     <Content Include="Scripts\jquery-ui-1.10.3.custom.min.js" />

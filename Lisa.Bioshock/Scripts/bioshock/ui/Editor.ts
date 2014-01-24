@@ -67,11 +67,8 @@ class Editor {
         this.handleCursorChange = true;
     }
 
-    public newFile(contentType): void {
-        this.handleCursorChange = false;
-        var doc = new CodeMirror.Doc('', contentType);
-        this.editor.swapDoc(doc);
-        this.handleCursorChange = true;
+    public newFile(file: IStorageItem): void {
+        this.openFile(file);
     }
 
     public renderErrors(data: any): number {

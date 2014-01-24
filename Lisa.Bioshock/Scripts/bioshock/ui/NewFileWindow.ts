@@ -24,7 +24,19 @@ class NewFileWindow extends UIWindow {
             return false;
         });
 
+        this.$error = $("#newFileErrorMessage");
+
         return super.initialize();
+    }
+
+    public onNewFile(fileName: string) {
+    }
+
+    public showError = (message: string) => {
+        this.$error.slideUp(50, () => {
+            this.$error.text(message);
+            this.$error.slideDown(100);
+        });
     }
 
     private cleanup = () => {
@@ -42,24 +54,30 @@ class NewFileWindow extends UIWindow {
     }
 
     private createFile = () => {
-        console.log('Create file called.');
-        var fileName = this.$element.find('#newFileName').val();
+        //    console.log('Create file called.');
+        //    var fileName = this.$element.find('#newFileName').val();
 
-        if (fileName.endsWith('.css') || fileName.endsWith('.html')) {
+        //    if (fileName.endsWith('.css') || fileName.endsWith('.html')) {
 
-            workspace.ajax.createFile({ filename: fileName }, (data) => {
-                if (data.result) {
+        //        workspace.ajax.createFile({ filename: fileName }, (file: IStorageItem) => {
+        //            if (data.result) {
 
-                    workspace.editor.newFile(data.contentType);
-                    $('#filename').text(fileName);
-                    this.close();
-                } else {
+        //                workspace.editor.newFile(data.contentType);
+        //                $('#filename').text(fileName);
+        //                this.onNewFile(file);
+        //                this.close();
+        //            } else {
 
-                    alert('Er is een interne fout opgetreden bij het aanmaken van uw bestand!');
-                }
-            });
-        } else {
-            alert('Kan geen bestand aanmaken zonder extensie!');
-        }
+        //                alert('Er is een interne fout opgetreden bij het aanmaken van uw bestand!');
+        //            }
+        //        });
+        //    } else {
+        //        alert('Kan geen bestand aanmaken zonder extensie!');
+        //    }
+
+        this.onNewFile(this.$element.find('#newFileName').val());
+        this.close();
     }
+
+    private $error: JQuery;
 };

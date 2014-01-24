@@ -104,6 +104,7 @@ namespace Lisa.Bioshock.Models
                 Subs = items,
 
                 // new
+                result = true,
                 id = item.ID,
                 name = item.Name,
                 path = item.Path,

@@ -15,6 +15,11 @@ interface IStorageItem {
     }
 }
 
+interface AjaxFileResult extends IStorageItem {
+    result: boolean;
+    errorMessage?: string;
+}
+
 enum StorageItemType {
     FOLDER = 1,
     FILE = 2

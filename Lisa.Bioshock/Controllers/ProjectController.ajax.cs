@@ -36,19 +36,17 @@ namespace Lisa.Bioshock.Controllers
                 project.LastOpenedFile = Guid.Parse(file.ID);
                 Db.SaveChanges();
 
-                return Json(new
-                {
-                    result = true,
-                    fileID = file.ID,
-                    contentType = file.ContentType,
-                }, JsonRequestBehavior.AllowGet);
+                //return Json(new
+                //{
+                //    result = true,
+                //    fileID = file.ID,
+                //    contentType = file.ContentType,
+                //}, JsonRequestBehavior.AllowGet);
+
+                return new JsonStorageItemResult(file, false);
             }
 
-            return Json(new
-            {
-                result = false,
-                errorMessage = "Er bestaat al een bestand met deze naam."
-            }, JsonRequestBehavior.AllowGet);
+            return new JsonErrorResult("Er bestaat al een bestand met deze naam.");
         }
 
 

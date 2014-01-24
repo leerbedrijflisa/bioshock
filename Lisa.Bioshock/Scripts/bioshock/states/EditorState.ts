@@ -17,6 +17,7 @@ class EditorState implements IState {
 
         this.monitor = new Monitor(workspace.signalR, workspace.preview, workspace.editor);
         this.synchronizer = new Synchronizer(workspace.signalR, workspace.projectID);
+        this._syncInterval = setInterval(this.syncInterval, 1000);
     }    
 
     public leave() {
@@ -71,7 +72,11 @@ class EditorState implements IState {
         }
         else if (event.altKey) {
             if (event.keyCode == Keys.N) {
-                this.stateMachine.pushState(new NewFileState());
+
+                var newFileState = new NewFileState();
+                newFileState.onNewFile = this.onOpenFile;
+
+                this.stateMachine.pushState(newFileState);
             }
             else if (event.keyCode == Keys.O) {
 
@@ -98,6 +103,11 @@ class EditorState implements IState {
             contents: event.contents
         });
 
+        clearTimeout(this.editorChangeTimer);
+        this.editorChangeTimer = setTimeout(() => {
+            this.saveFile = true;
+        }, 1500);
+
         // TEMPORARY WRITE FILE FIX!!!
         var data = {
             projectID: workspace.projectID,
@@ -105,16 +115,19 @@ class EditorState implements IState {
             contents: event.contents
         };
 
-        //console.log('Editor change');
-        $.post('/project/writefile', data, function (result) {
-            //console.log(result);
-        });
-
         this.editorWindow.hideErrors();
     }
 
     private onOpenFile = (file: IStorageItem): void => {
+        clearTimeout(this.editorChangeTimer);
+        this.saveFile = false;
+
         var currentFile = workspace.editor.file;
+
+        workspace.ajax.writeFile({
+            fileID: currentFile.id,
+            contents: currentFile.fileProps.contents
+        })
 
         if (file.name.indexOf('.html') > -1) {
             workspace.preview.fileId = file.id;
@@ -127,6 +140,16 @@ class EditorState implements IState {
         }
     }
 
+    private syncInterval = () => {
+        if (this.saveFile) {
+            workspace.ajax.writeFile({
+                fileID: workspace.editor.file.id,
+                contents: workspace.editor.contents
+            });
+            this.saveFile = false;
+        }
+    }
+
     // properties
 
     // fields
@@ -136,4 +159,7 @@ class EditorState implements IState {
     private synchronizer: Synchronizer;
     private ignoreCtrl: boolean = false;
     private lastOpenedFile: IStorageItem;
+    private _syncInterval: number;
+    private editorChangeTimer: number;
+    private saveFile: boolean = false;
 }  

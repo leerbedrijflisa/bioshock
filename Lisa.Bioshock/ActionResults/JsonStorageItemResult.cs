@@ -16,7 +16,7 @@ namespace Lisa.Bioshock.ActionResults
         private JsonStorageItemResult()
         {
             this.ContentType = "application/json";
-            this.JsonRequestBehavior = System.Web.Mvc.JsonRequestBehavior.AllowGet;
+            this.JsonRequestBehavior = JsonRequestBehavior.AllowGet;
         }
 
         public JsonStorageItemResult(IEnumerable<StorageItem> items)
