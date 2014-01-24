@@ -21,6 +21,7 @@ class Editor {
             }
         });
         this.editor.on('change', this.onChange);
+        this.editor.on('cursorActivity', this.onCursorChange);
         this.codeMirrorEditor = new CodeMirrorEditor();
     }
 
@@ -53,13 +54,24 @@ class Editor {
         this.currentFile = file;
         var doc = new CodeMirror.Doc('', file.fileProps.contentType);
         this.editor.swapDoc(doc);
-        this.contents = file.fileProps.contents;    
-        this.editor.focus();   
+
+        this.handleCursorChange = false;
+        this.contents = file.fileProps.contents;
+
+        var cursor = JSON.parse(localStorage.getItem("caret_" + file.id));
+        if (cursor !== undefined) {
+            this.editor.getDoc().setCursor(cursor);
+        }
+
+        this.editor.focus();
+        this.handleCursorChange = true;
     }
 
     public newFile(contentType): void {
+        this.handleCursorChange = false;
         var doc = new CodeMirror.Doc('', contentType);
         this.editor.swapDoc(doc);
+        this.handleCursorChange = true;
     }
 
     public renderErrors(data: any): number {
@@ -86,6 +98,14 @@ class Editor {
         }
     }
 
+    private onCursorChange = () => {
+        if (this.handleCursorChange && this.contents !== undefined && this.contents.length > 0) {
+            // save the current cursor position.
+            var cursor = this.editor.getDoc().getCursor();
+            localStorage.setItem("caret_" + this.currentFile.id, JSON.stringify(cursor));
+        }
+    }
+
     public get file(): IStorageItem {
         return this.currentFile;
     }
@@ -95,4 +115,5 @@ class Editor {
     private changeEventHandlers: { (EditorEventObject): void }[] = [];
     private currentFile: IStorageItem;
     private widgets: CodeMirror.LineWidget[] = [];
+    private handleCursorChange: boolean = true;
 } 
