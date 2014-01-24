@@ -56,10 +56,11 @@ class Preview {
     }
 
     private updateBody(contents: string) {
-        var bodyMatch = contents.match(/<body>((.*?|[\r\n*?])*?)(<\/body(.*?)>|<\/html(.*?)>)/gmi);
+        var bodyMatch = contents.match(/<body>((.*?|[\r\n*?])*?).*?$/gi);
 
         if (bodyMatch != null && bodyMatch.length > 0) {
-            this.document.find('body')[0].innerHTML = bodyMatch[0];
+            this.document.find('body')[0].innerHTML = bodyMatch[0].replace(/<\/body>/gi, '')
+                                                                  .replace(/<\/html>/gi, '');
         }
     }
 
