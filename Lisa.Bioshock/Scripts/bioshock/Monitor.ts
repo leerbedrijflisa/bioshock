@@ -13,7 +13,7 @@ class Monitor {
 
     private update(file: FileDescriptor, contents: string) {
         this.preview.update(file, contents);
-        console.log('update preview...');
+        //console.log('update preview...');
     }
 
     private hub: HubProxy;

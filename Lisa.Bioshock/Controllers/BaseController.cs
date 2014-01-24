@@ -89,7 +89,7 @@ namespace Lisa.Bioshock.Controllers
                 return null;
             }
 
-            string fileExt = System.IO.Path.GetExtension(fileName);
+            string fileExt = System.IO.Path.GetExtension(fileName).TrimStart('.');
 
             switch(fileExt)
             {

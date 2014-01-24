@@ -155,14 +155,29 @@ namespace Lisa.Bioshock.Controllers
 
             if (file != null)
             {
-                Response.AddHeader("Content-Type", file.ContentType);
+                //file.ContentType = "text/css";
+                // Both of these lines don't work... strangely.
+                //Response.AddHeader("Content-Type", file.ContentType);
+                //Response.ContentType = file.ContentType;
+                //Response.Expires = 0;
+                //Response.Headers.Set("Expires", "0");
+                //Request.Headers.Add("Expires", "0");
+                //Request.Headers.Set("Expires", "0");
+                // Firefox ignores Expires and Cache-Control
+
                 var content = string.Empty;
                 using (var contents = new StreamReader(file.InputStream))
                 {
                     content = contents.ReadToEnd(); //<-- THIS SUCKS IN IE!!!!
                 }
 
-                return Content(content);
+                return new ContentResult
+                {
+                    // This DOES work...???
+                    ContentType = file.ContentType,
+                    Content = content,
+                    ContentEncoding = System.Text.Encoding.UTF8
+                };
             }
             return HttpNotFound();
         }

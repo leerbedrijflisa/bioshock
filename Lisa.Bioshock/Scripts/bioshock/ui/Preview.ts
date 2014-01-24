@@ -42,48 +42,34 @@ class Preview {
         }
     }
 
-    private updateHead(contents: string) {
-        //var head = this.document.find('head');
-        //head.html(head.html());
+    private updateHead(contents: string, reload = false) {
+        var headMatch = contents.match(/<head>((.*?|[\r\n*?])*?)(<\/head(.*?)>|<body(.*?)>)/gmi);
 
-        //var headMatch = contents.match(/<head>((.*?|[\r\n*?])*?)(<\/head(.*?)>|<body(.*?)>)/gmi);
+        if (headMatch != null && headMatch.length > 0) {
+            var link = headMatch[0].match(/<link (.*?)>/gmi);
 
-        //if (headMatch != null && headMatch.length > 0) {
-        //    var link = headMatch[0].match(/<link (.*?)>/gmi);
-
-        //    if (link != null && link.length > 0 && this.oldLink != link[0]) {
-        //        this.document.find('head').html(headMatch[0]);
-        //        this.oldLink = link[0];
-        //    }
-        //}
+            if (link != null && link.length > 0 && (reload || this.oldLink != link[0])) {
+                this.document.find('head').html(link[0]);
+                this.oldLink = link[0];
+            }
+        }
     }
 
     private updateBody(contents: string) {
-        //var bodyMatch = contents.match(/<body>((.*?|[\r\n*?])*?)(<\/body(.*?)>|<\/html(.*?)>)/gmi);
-        //console.error(bodyMatch);
+        var bodyMatch = contents.match(/<body>((.*?|[\r\n*?])*?)(<\/body(.*?)>|<\/html(.*?)>)/gmi);
 
-        //if (bodyMatch != null && bodyMatch.length > 0) {
-        //    console.error(this.document.find('body').html());
-        //    this.document.find('body')[0].innerHTML = bodyMatch[0];
-        //}
+        if (bodyMatch != null && bodyMatch.length > 0) {
+            this.document.find('body')[0].innerHTML = bodyMatch[0];
+        }
     }
 
     private updateContents(contents: string) {
-        //this.updateHead(contents);
-        //this.updateBody(contents);
-
-        //console.error(contents);
-        //var html = this.document.find("html");
-        //html.html(contents);
-
-        this.element.contentDocument.documentElement.innerHTML = contents;
+        this.updateHead(contents);
+        this.updateBody(contents);
     }
 
     private reloadDependencies() {
-        //this.updateHead(this.document.find("head").html());
-
-        //var html = this.document.find("html");
-        //html.html(html.html());
+        this.updateHead(this.document.find("head")[0].outerHTML, true);
     }
 
     public get fileId() {

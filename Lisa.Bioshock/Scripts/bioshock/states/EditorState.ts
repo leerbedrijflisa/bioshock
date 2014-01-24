@@ -98,20 +98,20 @@ class EditorState implements IState {
             fileID: event.fileID,
             contents: event.contents
         };
+
+        //console.log('Editor change');
         $.post('/project/writefile', data, function (result) {
-            console.log(result);
+            //console.log(result);
         });
 
         this.editorWindow.hideErrors();
     }
 
     private onOpenFile = (file: IStorageItem): void => {
-
-        workspace.editor.openFile(file);
-
         if (file.name.indexOf('.html') > -1) {
             workspace.preview.fileId = file.id;
         }
+        workspace.editor.openFile(file);
         this.editorWindow.title = file.name;
     }
 
