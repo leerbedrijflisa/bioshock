@@ -46,6 +46,7 @@ class EditorState implements IState {
             workspace.editor.openFile(file);
             workspace.preview.fileId = file.id;
             this.editorWindow.title = file.name;
+            this.lastOpenedFile = file;
         });
     }
 
@@ -79,6 +80,11 @@ class EditorState implements IState {
 
                 this.stateMachine.pushState(openFileState);
             }
+            else if (event.keyCode == Keys.C) {
+                if (this.lastOpenedFile !== undefined) {
+                    this.onOpenFile(this.lastOpenedFile);
+                }
+            }
         }
         else if (event.keyCode == Keys.ESC) {
             this.stateMachine.pushState(new MenuState());
@@ -108,11 +114,17 @@ class EditorState implements IState {
     }
 
     private onOpenFile = (file: IStorageItem): void => {
+        var currentFile = workspace.editor.file;
+
         if (file.name.indexOf('.html') > -1) {
             workspace.preview.fileId = file.id;
         }
         workspace.editor.openFile(file);
         this.editorWindow.title = file.name;
+
+        if (currentFile.fileProps.contentType != this.lastOpenedFile.fileProps.contentType) {
+            this.lastOpenedFile = currentFile;
+        }
     }
 
     // properties
@@ -123,4 +135,5 @@ class EditorState implements IState {
     private monitor: Monitor;
     private synchronizer: Synchronizer;
     private ignoreCtrl: boolean = false;
+    private lastOpenedFile: IStorageItem;
 }  

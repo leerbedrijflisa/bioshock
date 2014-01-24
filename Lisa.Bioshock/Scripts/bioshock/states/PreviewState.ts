@@ -26,11 +26,11 @@ class PreviewState implements IState {
         }
         else if (event.altKey) {
             if (event.keyCode == Keys.O) {
-                this.stateMachine.pushState(new EditorState());
+                //this.stateMachine.pushState(new EditorState());
                 this.stateMachine.pushState(new OpenFileState());
             }
             else if (event.keyCode == Keys.N) {
-                this.stateMachine.pushState(new EditorState());
+                //this.stateMachine.pushState(new EditorState());
                 this.stateMachine.pushState(new NewFileState());
             }
         }

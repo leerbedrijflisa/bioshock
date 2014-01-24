@@ -59,7 +59,7 @@ class Editor {
         this.contents = file.fileProps.contents;
 
         var cursor = JSON.parse(localStorage.getItem("caret_" + file.id));
-        if (cursor !== undefined) {
+        if (cursor !== null) {
             this.editor.getDoc().setCursor(cursor);
         }
 
@@ -87,6 +87,8 @@ class Editor {
     }
 
     private onChange = () => {
+        this.file.fileProps.contents = this.contents;
+
         var eventArgs: EditorEventObject = {
             contents: this.contents,
             fileID: this.currentFile.id,

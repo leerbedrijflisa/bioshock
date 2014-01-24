@@ -39,8 +39,13 @@ namespace Lisa.Bioshock.Controllers
                     Name = form.Name,
                     Owner = CurrentUser
                 };
-
                 Db.Projects.Add(project);
+                Db.SaveChanges();
+
+                FileSystem fileSystem = FileSystemHelper.GetFileSystem(project.RootID);
+                File index = fileSystem.Root.Files.Add("index.html", "text/html");
+                project.LastOpenedFile = Guid.Parse(index.ID);
+
                 Db.SaveChanges();
 
                 return RedirectToAction("Details", "Project", new { ID = project.ID });
