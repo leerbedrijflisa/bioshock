@@ -18,9 +18,13 @@
 
         // prevent 'backspace' from going to the previous page.
         var keydown = function (e) {
-            if (e.keyCode == Keys.BACKSPACE) {
-                e.preventDefault();
-                return false;
+            var tagName = $(e.target).prop('tagName');
+
+            if (tagName != 'INPUT' && tagName != 'TEXTAREA') {
+                if (e.keyCode == Keys.BACKSPACE) {
+                    e.preventDefault();
+                    return false;
+                }
             }
             return true;
         };

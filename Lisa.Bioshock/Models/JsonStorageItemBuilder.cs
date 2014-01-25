@@ -95,15 +95,6 @@ namespace Lisa.Bioshock.Models
 
             return new
             {
-                // old
-                ID = item.ID,
-                Name = item.Name,
-                Path = item.Path,
-                FullPath = item.FullPath,
-                Type = (item is Folder ? "Folder" : "File"),
-                Subs = items,
-
-                // new
                 result = true,
                 id = item.ID,
                 name = item.Name,
