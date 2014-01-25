@@ -132,54 +132,5 @@ namespace Lisa.Bioshock.Controllers
 
             return Json(null);
         }
-
-
-
-        [OutputCache(NoStore = true, Location = OutputCacheLocation.None)] //<--- MAGIC IN IE!!!!
-        public ActionResult FileContents(int id, string filename)
-        {
-            if (!Request.Url.AbsoluteUri.Contains("?"))
-            {
-                return Redirect(string.Format("/Project/{0}/File/{1}?g={2}", id, filename, Guid.NewGuid()));
-            }
-
-            if (filename == null)
-            {
-                filename = "index.html";
-            }
-
-            var project = Db.Projects.Find(id);
-            FileSystem fileSystem = FileSystemHelper.GetFileSystem(project.RootID);
-
-            var file = fileSystem.Root.FindItemByPath(filename, false) as Lisa.Storage.File;
-
-            if (file != null)
-            {
-                //file.ContentType = "text/css";
-                // Both of these lines don't work... strangely.
-                //Response.AddHeader("Content-Type", file.ContentType);
-                //Response.ContentType = file.ContentType;
-                //Response.Expires = 0;
-                //Response.Headers.Set("Expires", "0");
-                //Request.Headers.Add("Expires", "0");
-                //Request.Headers.Set("Expires", "0");
-                // Firefox ignores Expires and Cache-Control
-
-                var content = string.Empty;
-                using (var contents = new StreamReader(file.InputStream))
-                {
-                    content = contents.ReadToEnd(); //<-- THIS SUCKS IN IE!!!!
-                }
-
-                return new ContentResult
-                {
-                    // This DOES work...???
-                    ContentType = file.ContentType,
-                    Content = content,
-                    ContentEncoding = System.Text.Encoding.UTF8
-                };
-            }
-            return HttpNotFound();
-        }
     }
 }

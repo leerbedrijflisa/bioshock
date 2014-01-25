@@ -12,7 +12,7 @@ class MenuWindow extends UIWindow {
         });
 
         this.$element
-            .find('#editorMenuWindow-close a')
+            .find('#menu-window-close a')
             .click(() => {
 
                 this.close();

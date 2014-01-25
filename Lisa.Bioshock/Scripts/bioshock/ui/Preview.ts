@@ -1,7 +1,6 @@
 class Preview {
     constructor(selector: string) {
         this.element = <HTMLIFrameElement> $(selector)[0];
-        this.document = $(this.element).contents();
     }
 
     public addKeyUpHandler(eventHandler: (JQueryKeyEventObject) => any) {
@@ -27,6 +26,10 @@ class Preview {
         else {
             this.reloadDependencies();
         }
+    }
+
+    public clear() {
+        this.document.html('<html><head></head><body></body></html>');
     }
 
     private applyChanges(contents) {
@@ -81,7 +84,11 @@ class Preview {
         $(this.element).data('fileId', id);
     }
 
+    private get document(): JQuery {
+        return $((this.element.contentDocument
+            || this.element.contentWindow.document).documentElement);
+    }
+
     private element: HTMLIFrameElement;
-    private document: JQuery;
     private oldLink: string;
 }

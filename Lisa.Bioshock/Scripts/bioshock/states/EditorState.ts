@@ -1,7 +1,7 @@
 class EditorState implements IState {
 
     public enter() {
-        this.editorWindow = new EditorWindow('#editorWindow');
+        this.editorWindow = new EditorWindow('#editor-window');
         this.editorWindow.onEditorResize = (type: ResizeType) => {
 
             if (type == ResizeType.RESIZING || type == ResizeType.STOP) {
@@ -43,11 +43,13 @@ class EditorState implements IState {
     }
 
     private openStartUpFile = () => {
-        $.get('/project/getstartupfile', { projectID: workspace.projectID }, (file: IStorageItem) => {
-            workspace.editor.openFile(file);
-            workspace.preview.fileId = file.id;
-            this.editorWindow.title = file.name;
-            this.lastOpenedFile = file;
+        workspace.ajax.getStartUpFile({
+            success: (file: StorageItem) => {
+                workspace.editor.openFile(file);
+                workspace.preview.fileId = file.id;
+                this.editorWindow.title = file.name;
+                this.lastOpenedFile = file;
+            }
         });
     }
 
@@ -72,14 +74,12 @@ class EditorState implements IState {
         }
         else if (event.altKey) {
             if (event.keyCode == Keys.N) {
-
                 var newFileState = new NewFileState();
                 newFileState.onNewFile = this.onOpenFile;
 
                 this.stateMachine.pushState(newFileState);
             }
             else if (event.keyCode == Keys.O) {
-
                 var openFileState = new OpenFileState();
                 openFileState.onOpenFile = this.onOpenFile;
 
@@ -108,17 +108,12 @@ class EditorState implements IState {
             this.saveFile = true;
         }, 1500);
 
-        // TEMPORARY WRITE FILE FIX!!!
-        var data = {
-            projectID: workspace.projectID,
-            fileID: event.fileID,
-            contents: event.contents
-        };
-
         this.editorWindow.hideErrors();
     }
 
-    private onOpenFile = (file: IStorageItem): void => {
+    private onOpenFile = (file: StorageItem) => {
+        workspace.preview.clear();
+
         clearTimeout(this.editorChangeTimer);
         this.saveFile = false;
 
@@ -129,13 +124,14 @@ class EditorState implements IState {
             contents: currentFile.fileProps.contents
         })
 
-        if (file.name.indexOf('.html') > -1) {
+        if(FileSystemHelper.isHTML(file.name)) {
             workspace.preview.fileId = file.id;
         }
         workspace.editor.openFile(file);
         this.editorWindow.title = file.name;
 
         if (currentFile.fileProps.contentType != this.lastOpenedFile.fileProps.contentType) {
+            // Enables ALT+C functionality
             this.lastOpenedFile = currentFile;
         }
     }
@@ -158,7 +154,7 @@ class EditorState implements IState {
     private monitor: Monitor;
     private synchronizer: Synchronizer;
     private ignoreCtrl: boolean = false;
-    private lastOpenedFile: IStorageItem;
+    private lastOpenedFile: StorageItem;
     private _syncInterval: number;
     private editorChangeTimer: number;
     private saveFile: boolean = false;

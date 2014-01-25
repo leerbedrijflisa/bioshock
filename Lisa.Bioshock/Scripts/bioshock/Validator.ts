@@ -6,10 +6,10 @@ class Validator {
     public validateFile(fileName: string, contents: string) {
         var validationType = '';
 
-        if (fileName.indexOf('.html') > -1) {
+        if(FileSystemHelper.isHTML(fileName)) {
             validationType = 'html';
         }
-        else if (fileName.indexOf('.css') > -1) {
+        else if(FileSystemHelper.isCSS(fileName)) {
             validationType = 'css';
         }
 

@@ -14,17 +14,17 @@ namespace Lisa.Bioshock
             routes.IgnoreRoute("{resource}.axd/{*pathInfo}");
 
             routes.MapRoute(
-                "GetFile",
-                "Project/{id}/File/{*filename}",
+                "GetFileContents",
+                "Project/{projectID}/File/{*fileName}",
                 new
                 {
-                    controller = "Test",
-                    action = "FileContents",
-                    filename = UrlParameter.Optional
+                    controller = "Project",
+                    action = "GetFileContents",
+                    fileName = UrlParameter.Optional
                 },
                 new
                 {
-                    id = @"\d+"
+                    projectID = @"\d+"
                 }
             );
 

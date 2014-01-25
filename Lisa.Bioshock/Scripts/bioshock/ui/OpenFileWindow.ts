@@ -6,12 +6,12 @@ class OpenFileWindow extends UIWindow {
 
     public initialize() {
         var $filter = this.$element.find('#filter');
-        var $filterQuery = $filter.find('.filter_query');
+        var $filterQuery = $filter.find('.filter-query');
 
         this.open(() => {
             this.createFileList();
         }).close(() => {
-            this.cleanup();
+            this.onClose();
         });
 
         $filter.submit(() => {
@@ -34,7 +34,7 @@ class OpenFileWindow extends UIWindow {
 
     private filter(event) {
         var filter = $(event.target).val();
-        var $highlights = this.$element.find('#block .highlights');
+        var $highlights = this.$element.find('#open-file-filter-block .highlights');
         $highlights.children('ul').remove();
 
         if (filter.length > 0) {
@@ -75,7 +75,7 @@ class OpenFileWindow extends UIWindow {
             $a.click();
         }
 
-        this.$element.find('.filter_query').focus();
+        this.$element.find('.filter-query').focus();
         return false;
     }
 
@@ -85,7 +85,7 @@ class OpenFileWindow extends UIWindow {
     }
 
     private createFileList() {
-        var $fileList = $('#file_list').empty();
+        var $fileList = $('#file-list').empty();
 
         this.files = [];
 
@@ -98,7 +98,7 @@ class OpenFileWindow extends UIWindow {
         });
     }
 
-    private generateFolderTree(item: IStorageItem, $fileList, $ul?) {
+    private generateFolderTree(item: StorageItem, $fileList, $ul?) {
         var path = item.fullPath;
 
         if (path == '') {
@@ -107,7 +107,7 @@ class OpenFileWindow extends UIWindow {
 
         if (item.type == StorageItemType.FOLDER) {
             var $folder = $('<div />').addClass('folder').appendTo($fileList);
-            $('<span />').addClass('folder_name').text(path).appendTo($folder);
+            $('<span />').addClass('folder-name').text(path).appendTo($folder);
 
             var $files = $('<ul />').appendTo($folder);
             $('<div />').addClass('clear').appendTo($folder);
@@ -127,10 +127,10 @@ class OpenFileWindow extends UIWindow {
         }
     }  
 
-    private cleanup() {
-        this.$element.find('.filter_query').val('');
+    private onClose() {
+        this.$element.find('.filter-query').val('');
 
-        var $highlights = this.$element.find('#block .highlights');
+        var $highlights = this.$element.find('#open-file-filter-block .highlights');
         $highlights.children('ul').remove();
     }  
 

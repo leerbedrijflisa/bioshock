@@ -50,7 +50,7 @@ class Editor {
         this.editor.getDoc().setValue(value);
     }
 
-    public openFile(file: IStorageItem): void {
+    public openFile(file: StorageItem): void {
         this.currentFile = file;
         var doc = new CodeMirror.Doc('', file.fileProps.contentType);
         this.editor.swapDoc(doc);
@@ -67,7 +67,7 @@ class Editor {
         this.handleCursorChange = true;
     }
 
-    public newFile(file: IStorageItem): void {
+    public newFile(file: StorageItem): void {
         this.openFile(file);
     }
 
@@ -105,14 +105,14 @@ class Editor {
         }
     }
 
-    public get file(): IStorageItem {
+    public get file(): StorageItem {
         return this.currentFile;
     }
 
     private editor: CodeMirror.Editor;
     private codeMirrorEditor: CodeMirrorEditor;
     private changeEventHandlers: { (EditorEventObject): void }[] = [];
-    private currentFile: IStorageItem;
+    private currentFile: StorageItem;
     private widgets: CodeMirror.LineWidget[] = [];
     private handleCursorChange: boolean = true;
 } 

@@ -17,8 +17,8 @@ class EditorWindow extends UIWindow {
         super.initialize();
 
         this.$editorResizeOverlay = $('#editor-resize-overlay');
-        this.$fileName = this.$element.find('#filename');
-        this.$errors = this.$element.find('#errors');
+        this.$title = this.$element.find('#editor-title');
+        this.$errors = this.$element.find('#editor-errors');
 
         this.$element.resizable({
             minHeight: 52,
@@ -44,7 +44,7 @@ class EditorWindow extends UIWindow {
         }).draggable({
             iframeFix: true,
             containment: 'window',
-            handle: 'h1'
+            handle: '#editor-header'
         });
 
         return this;
@@ -52,16 +52,16 @@ class EditorWindow extends UIWindow {
 
     public set errorCount(count: number) {
         this.$element
-            .find('#errorcount')
+            .find('#editor-error-count')
             .text(count == 0 ? 'Geen' : count);
     }
 
     public set title(title: string) {
-        this.$fileName.text(title);
+        this.$title.text(title);
     }
 
     public get title(): string {
-        return this.$fileName.text();
+        return this.$title.text();
     }
 
     public hideErrors() {
@@ -80,6 +80,6 @@ class EditorWindow extends UIWindow {
     }
 
     private $editorResizeOverlay: JQuery;
-    private $fileName: JQuery;
+    private $title: JQuery;
     private $errors: JQuery;
 } 

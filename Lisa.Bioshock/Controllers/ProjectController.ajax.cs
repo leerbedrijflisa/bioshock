@@ -11,9 +11,9 @@ using System.Web.UI;
 
 namespace Lisa.Bioshock.Controllers
 {
+    //[AjaxAuthorize]
     public partial class ProjectController
     {
-        //[AjaxAuthorize]
         [OutputCache(NoStore = true, Location = OutputCacheLocation.None)]
         public ActionResult CreateFile(int projectID, string fileName)
         {
@@ -22,7 +22,7 @@ namespace Lisa.Bioshock.Controllers
             var project = Db.Projects.Find(projectID);
             if (project == null)
             {
-                return HttpNotFound();
+                return new JsonErrorResult("Project niet gevonden.");
             }
 
             var fileSystem = FileSystemHelper.GetFileSystem(project.RootID);
@@ -36,13 +36,6 @@ namespace Lisa.Bioshock.Controllers
                 project.LastOpenedFile = Guid.Parse(file.ID);
                 Db.SaveChanges();
 
-                //return Json(new
-                //{
-                //    result = true,
-                //    fileID = file.ID,
-                //    contentType = file.ContentType,
-                //}, JsonRequestBehavior.AllowGet);
-
                 return new JsonStorageItemResult(file, false);
             }
 
@@ -50,7 +43,7 @@ namespace Lisa.Bioshock.Controllers
         }
 
 
-        //[AjaxAuthorize]
+
         [HttpPost]
         [ValidateInput(false)]
         [OutputCache(NoStore = true, Location = OutputCacheLocation.None)]
@@ -59,7 +52,7 @@ namespace Lisa.Bioshock.Controllers
             var project = Db.Projects.Find(projectID);
             if (project == null)
             {
-                return HttpNotFound();
+                return new JsonErrorResult("Project niet gevonden.");
             }
 
             var fileSystem = FileSystemHelper.GetFileSystem(project.RootID);
@@ -67,11 +60,7 @@ namespace Lisa.Bioshock.Controllers
 
             if (file == null)
             {
-                return Json(new
-                {
-                    result = false,
-                    errorMessage = "Bestand kon niet gevonden worden."
-                });
+                return new JsonErrorResult("Bestand niet gevonden.");
             }
 
             try
@@ -86,28 +75,21 @@ namespace Lisa.Bioshock.Controllers
                     errorMessage += Environment.NewLine + e.Message;
                 #endif
 
-                return Json(new
-                {
-                    result = false,
-                    errorMessage = errorMessage
-                });
+                return new JsonErrorResult(errorMessage);
             }
 
-            return Json(new
-            {
-                result = true
-            });
+            return new JsonStorageItemResult(file, false);
         }
 
 
-        //[AjaxAuthorize]
+
         [OutputCache(NoStore = true, Location = OutputCacheLocation.None)]
         public ActionResult GetFiles(int projectID)
         {
             var project = Db.Projects.Find(projectID);
             if (project == null)
             {
-                return HttpNotFound();
+                return new JsonErrorResult("Project niet gevonden.");
             }
 
             var fileSystem = FileSystemHelper.GetFileSystem(project.RootID);
@@ -115,21 +97,21 @@ namespace Lisa.Bioshock.Controllers
         }
 
 
-        //[AjaxAuthorize]
+
         [OutputCache(NoStore = true, Location = OutputCacheLocation.None)]
         public ActionResult GetFile(int projectID, string fileID, bool readContents = false)
         {
             var project = Db.Projects.Find(projectID);
             if (project == null)
             {
-                return HttpNotFound();
+                return new JsonErrorResult("Project niet gevonden.");
             }
 
             var fileSystem = FileSystemHelper.GetFileSystem(project.RootID);
             var file = fileSystem.Root.FindItemByID(fileID) as File;
             if (file == null)
             {
-                return HttpNotFound();
+                return new JsonErrorResult("Bestand niet gevonden.");
             }
 
             project.LastOpenedFile = Guid.Parse(file.ID);
@@ -138,7 +120,59 @@ namespace Lisa.Bioshock.Controllers
             return new JsonStorageItemResult(file, readContents);
         }
 
-        //[AjaxAuthorize]
+
+
+
+
+        [OutputCache(NoStore = true, Location = OutputCacheLocation.None)] //<--- MAGIC IN IE!!!!
+        public ActionResult GetFileContents(int projectID, string fileName)
+        {
+            if(!Request.QueryString.AllKeys.Contains("g"))
+            {
+                return Redirect(string.Format("/Project/{0}/File/{1}?g={2}", projectID, fileName, Guid.NewGuid()));
+            }
+
+            var project = Db.Projects.Find(projectID);
+            FileSystem fileSystem = FileSystemHelper.GetFileSystem(project.RootID);
+
+            File file = null;
+            if (string.IsNullOrEmpty(fileName))
+            {
+                file = fileSystem.Root.FindItemByID(project.LastOpenedFile.ToString()) as File;
+            }
+            else
+            {
+                file = fileSystem.Root.FindItemByPath(fileName, false) as File;
+            }
+
+            if (file != null)
+            {
+                //file.ContentType = "text/css";
+                // Both of these lines don't work... strangely.
+                //Response.AddHeader("Content-Type", file.ContentType);
+                //Response.ContentType = file.ContentType;
+                //Response.Expires = 0;
+                //Response.Headers.Set("Expires", "0");
+                //Request.Headers.Add("Expires", "0");
+                //Request.Headers.Set("Expires", "0");
+
+                // Firefox and IE ignores headers 'Expires' and 'Cache-Control'.
+
+                var contents = file.ReadContents(); //<-- THIS SUCKS IN IE!!!!
+
+                return new ContentResult
+                {
+                    // This DOES work...???
+                    ContentType = file.ContentType,
+                    Content = contents,
+                    ContentEncoding = System.Text.Encoding.UTF8
+                };
+            }
+            return HttpNotFound();
+        }
+
+        
+
         [HttpGet]
         [OutputCache(NoStore = true, Location = OutputCacheLocation.None)]
         public ActionResult GetStartUpFile(int projectID)
@@ -146,7 +180,7 @@ namespace Lisa.Bioshock.Controllers
             var project = Db.Projects.Find(projectID);
             if (project == null)
             {
-                return HttpNotFound();
+                return new JsonErrorResult("Project niet gevonden.");
             }
 
             var fileSystem = FileSystemHelper.GetFileSystem(project.RootID);
@@ -154,7 +188,7 @@ namespace Lisa.Bioshock.Controllers
 
             if (file == null)
             {
-                return HttpNotFound();
+                return new JsonErrorResult("Start-up bestand niet gevonden.");
             }
 
             return new JsonStorageItemResult(file, true);

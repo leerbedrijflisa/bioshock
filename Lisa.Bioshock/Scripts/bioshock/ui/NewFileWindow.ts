@@ -5,13 +5,15 @@ class NewFileWindow extends UIWindow {
     }
 
     public initialize() {
-        var $form = this.$element.find('#createFile');
-        var $addButton = this.$element.find('#addButton');
+        var $form = $('#new-file-form');
+        var $addButton = $('#new-file-add-button');
+        this.$error = $("#new-file-error-message");
+        this.$fileName = $("#new-file-name");
 
         this.open(() => {
-            this.setUp();
+            this.onOpen();
         }).close(() => {
-            this.cleanup();
+            this.onClose();
         });
 
         $form.submit(() => {
@@ -24,7 +26,9 @@ class NewFileWindow extends UIWindow {
             return false;
         });
 
-        this.$error = $("#newFileErrorMessage");
+        this.$fileName.keydown(() => {
+            this.$error.slideUp(50);
+        });
 
         return super.initialize();
     }
@@ -33,51 +37,32 @@ class NewFileWindow extends UIWindow {
     }
 
     public showError = (message: string) => {
-        this.$error.slideUp(50, () => {
+        var show = () => {
             this.$error.text(message);
             this.$error.slideDown(100);
-        });
+        };
+
+        if (this.$error.is(":visible")) {
+            this.$error.slideUp(50, show);
+        } else {
+            show();
+        }
     }
 
-    private cleanup = () => {
-        this.$element.find('#newFileName').val('');
+    private onClose = () => {
+        this.$fileName.val('');
     }
 
-    private setUp = () => {
-        var $filename = this.$element.find('#newFileName');
-        console.log($filename);
-
-        setTimeout(function () {
-
-            $filename.focus();
-        }, 500);
+    private onOpen = () => {
+        setTimeout(() => {
+            this.$fileName.focus();
+        }, 150);
     }
 
     private createFile = () => {
-        //    console.log('Create file called.');
-        //    var fileName = this.$element.find('#newFileName').val();
-
-        //    if (fileName.endsWith('.css') || fileName.endsWith('.html')) {
-
-        //        workspace.ajax.createFile({ filename: fileName }, (file: IStorageItem) => {
-        //            if (data.result) {
-
-        //                workspace.editor.newFile(data.contentType);
-        //                $('#filename').text(fileName);
-        //                this.onNewFile(file);
-        //                this.close();
-        //            } else {
-
-        //                alert('Er is een interne fout opgetreden bij het aanmaken van uw bestand!');
-        //            }
-        //        });
-        //    } else {
-        //        alert('Kan geen bestand aanmaken zonder extensie!');
-        //    }
-
-        this.onNewFile(this.$element.find('#newFileName').val());
-        this.close();
+        this.onNewFile(this.$fileName.val());
     }
 
     private $error: JQuery;
+    private $fileName: JQuery;
 };

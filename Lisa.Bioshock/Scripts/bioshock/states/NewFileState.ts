@@ -3,34 +3,40 @@ class NewFileState implements IState {
     constructor() {
     }
 
-    public onNewFile(file: IStorageItem) {
+    public onNewFile(file: StorageItem) {
     }
 
     public enter() {
-        this._window = <NewFileWindow> new NewFileWindow('#newFileWindow')
+        this.window = <NewFileWindow> new NewFileWindow('#new-file-window')
             .open()
             .close(() => {
                 if (this.stateMachine.currentState == this) {
                     this.stateMachine.popState();
                 }
             });
-        this._window.onNewFile = (fileName: string) => {
-            if (fileName.indexOf('.html') > -1 || fileName.indexOf('.css') > -1) {
-                workspace.ajax.createFile({ fileName: fileName }, (data: AjaxFileResult) => {
+
+        this.window.onNewFile = (fileName: string) => {
+            if(FileSystemHelper.hasValidExtension(fileName)) {
+                workspace.ajax.createFile({ fileName: fileName }, (data: StorageItemAjaxResult) => {
                     if (data.result) {
                         this.onNewFile(data);
+                        this.window.close();
                     } else {
-                        this._window.showError(data.errorMessage);
+                        this.window.showError(data.errorMessage);
                     }
                 });
             } else {
-                this._window.showError('Extensie wordt niet herkend.');
+                if (fileName.indexOf('.') > -1) {
+                    this.window.showError('De extensie werd niet herkend.');
+                } else {
+                    this.window.showError('Geef een extensie op.');
+                }
             }
         }
     }
 
     public leave() {
-        this._window.close();
+        this.window.close();
     }
 
     public resume() {
@@ -51,5 +57,5 @@ class NewFileState implements IState {
     // fields
     public stateMachine: StateMachine;
 
-    private _window: NewFileWindow;
+    private window: NewFileWindow;
 }

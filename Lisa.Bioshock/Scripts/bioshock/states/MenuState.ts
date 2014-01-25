@@ -4,7 +4,7 @@ class MenuState implements IState {
     }
 
     public enter() {
-        this._window = <MenuWindow> new MenuWindow('#editorMenuWindow')
+        this._window = <MenuWindow> new MenuWindow('#menu-window')
             .open()
             .close(() => {
                 if (this.stateMachine.currentState == this) {

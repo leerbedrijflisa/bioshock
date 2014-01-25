@@ -1,4 +1,4 @@
-interface IStorageItem {
+interface StorageItem {
     id: string;
     name: string;
     path: string;
@@ -6,7 +6,7 @@ interface IStorageItem {
     type: StorageItemType;
 
     folderProps: {
-        items: IStorageItem[];
+        items: StorageItem[];
     };
 
     fileProps: {
@@ -15,7 +15,7 @@ interface IStorageItem {
     }
 }
 
-interface AjaxFileResult extends IStorageItem {
+interface StorageItemAjaxResult extends StorageItem {
     result: boolean;
     errorMessage?: string;
 }

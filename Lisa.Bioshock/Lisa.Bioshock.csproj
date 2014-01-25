@@ -444,6 +444,7 @@
     <Content Include="Content\Site.css" />
     <Content Include="Content\CodeMirror\mode\livescript\livescript.ls" />
     <Content Include="Scripts\bioshock\BaseGuiController.ts" />
+    <TypeScriptCompile Include="Scripts\bioshock\filesystem\FileSystemHelper.ts" />
     <Content Include="Scripts\bioshock\filesystem\StorageItem.js" />
     <Content Include="Scripts\bioshock\FullScreenGuiController.ts" />
     <TypeScriptCompile Include="Scripts\bioshock\Monitor.ts" />

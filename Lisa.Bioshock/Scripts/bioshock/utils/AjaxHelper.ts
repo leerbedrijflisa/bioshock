@@ -64,6 +64,12 @@ class AjaxHelper {
 
         this.makeRequest('/project/writefile', data, true, options.success, options.error);
     }
+
+
+    public getStartUpFile(options: AjaxCallbacks) {
+        this.makeRequest('/project/getstartupfile', null, false, options.success, options.error);
+    }
+
     
     /** The actual request. */
     private makeRequest(url: string, data: Object, isPost: boolean, success: Function, error?: Function) {

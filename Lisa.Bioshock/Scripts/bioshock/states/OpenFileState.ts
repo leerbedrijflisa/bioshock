@@ -3,11 +3,11 @@ class OpenFileState implements IState {
     constructor() {
     }
 
-    public onOpenFile(file: IStorageItem): void {
+    public onOpenFile(file: StorageItem): void {
     }
 
     public enter() {
-        this.window = <OpenFileWindow> new OpenFileWindow('#openFileWindow')
+        this.window = <OpenFileWindow> new OpenFileWindow('#open-file-window')
             .open()
             .close(() => {
                 if (this.stateMachine.currentState == this) {
@@ -16,7 +16,7 @@ class OpenFileState implements IState {
             });
 
         this.window.onOpenFile = (fileId: string) => {
-            workspace.ajax.getFileContents(fileId, (file: IStorageItem) => {
+            workspace.ajax.getFileContents(fileId, (file: StorageItem) => {
                 if (file.type == StorageItemType.FOLDER) {
                     throw new Error("Could not open a folder.");
                 }
@@ -46,7 +46,6 @@ class OpenFileState implements IState {
     private onKeyUp = (event: JQueryKeyEventObject) => {
 
         if (event.keyCode == Keys.ESC) {
-
             this.stateMachine.popState();
         }
     }
