@@ -1,6 +1,9 @@
 class MenuState implements IState {
 
-    constructor() {
+    public static name = 'MenuState';
+
+    public getName() {
+        return self.name;
     }
 
     public enter() {

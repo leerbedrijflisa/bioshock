@@ -1,6 +1,9 @@
 class PreviewState implements IState {
 
-    constructor() {
+    public static name = 'PreviewState';
+
+    public getName() {
+        return self.name;
     }
 
     public enter(): void {        

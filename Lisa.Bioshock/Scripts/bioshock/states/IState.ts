@@ -1,5 +1,10 @@
 interface IState {
     /**
+     * Gets the name of the state.
+     */
+    getName(): string;
+
+    /**
      * Enters the state.
      */
     enter(): void;

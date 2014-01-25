@@ -3,10 +3,8 @@ class FileSystemHelper {
     public static hasValidExtension(fileName: string) {
         for (var i in this.extensions) {
             if (this.extensions.hasOwnProperty(i)) {
-                for (var j = 0; j < this.extensions[i].length; j++) {
-                    if (fileName.indexOf('.' + this.extensions[i][j]) > -1) {
-                        return true;
-                    }
+                if (this.hasCorrectExtension(this.extensions[i], fileName)) {
+                    return true;
                 }
             }
         }
@@ -24,11 +22,16 @@ class FileSystemHelper {
 
     private static hasCorrectExtension(type: string[], fileName: string) {
         for (var i = 0; i < type.length; i++) {
-            if (fileName.indexOf('.' + type[i])) {
+            if (this.endsWith(fileName, '.'+ type[i])) {
                 return true;
             }
         }
         return false;
+    }
+
+    private static endsWith(str: string, pattern: string) {
+        var d = str.length - pattern.length;
+        return d >= 0 && str.lastIndexOf(pattern) === d;
     }
 
     private static extensions = {

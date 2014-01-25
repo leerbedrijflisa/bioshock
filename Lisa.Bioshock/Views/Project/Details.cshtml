@@ -15,6 +15,17 @@
     function initialize() {
         workspace = new Workspace($("#ProjectID").val(), "#preview");
         workspace.stateMachine.switchState(new PreviewState());
+
+        // prevent 'backspace' from going to the previous page.
+        var keydown = function (e) {
+            if (e.keyCode == Keys.BACKSPACE) {
+                e.preventDefault();
+                return false;
+            }
+            return true;
+        };
+        $(window).keydown(keydown);
+        workspace.preview.addKeyDownHandler(keydown);
     }
 </script>
 

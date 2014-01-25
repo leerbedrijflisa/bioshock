@@ -1,6 +1,9 @@
 class NewFileState implements IState {
 
-    constructor() {
+    public static name = 'NewFileState';
+
+    public getName() {
+        return self.name;
     }
 
     public onNewFile(file: StorageItem) {
@@ -12,6 +15,10 @@ class NewFileState implements IState {
             .close(() => {
                 if (this.stateMachine.currentState == this) {
                     this.stateMachine.popState();
+
+                    if (this.stateMachine.currentState.getName() != EditorState.name) {
+                        this.stateMachine.pushState(new EditorState());
+                    }
                 }
             });
 

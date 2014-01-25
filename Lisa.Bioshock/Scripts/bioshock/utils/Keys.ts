@@ -1,4 +1,5 @@
 enum Keys {
+    BACKSPACE = 8,
     ENTER = 13,
     CTRL = 17,
     ESC = 27,

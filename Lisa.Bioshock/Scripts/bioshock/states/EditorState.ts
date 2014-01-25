@@ -1,5 +1,11 @@
 class EditorState implements IState {
 
+    public static name = 'EditorState';
+
+    public getName() {
+        return self.name;
+    }
+
     public enter() {
         this.editorWindow = new EditorWindow('#editor-window');
         this.editorWindow.onEditorResize = (type: ResizeType) => {
