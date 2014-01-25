@@ -3,7 +3,7 @@ class PreviewState implements IState {
     public static name = 'PreviewState';
 
     public getName() {
-        return self.name;
+        return PreviewState.name;
     }
 
     public enter(): void {        

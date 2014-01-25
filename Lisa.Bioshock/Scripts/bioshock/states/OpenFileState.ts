@@ -3,7 +3,7 @@ class OpenFileState implements IState {
     public static name = 'OpenFileState';
 
     public getName() {
-        return self.name;
+        return OpenFileState.name;
     }
 
     public onOpenFile(file: StorageItem): void {

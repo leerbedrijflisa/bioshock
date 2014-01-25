@@ -3,7 +3,7 @@ class MenuState implements IState {
     public static name = 'MenuState';
 
     public getName() {
-        return self.name;
+        return MenuState.name;
     }
 
     public enter() {

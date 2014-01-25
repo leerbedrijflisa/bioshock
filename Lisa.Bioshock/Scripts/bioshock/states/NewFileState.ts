@@ -3,7 +3,7 @@ class NewFileState implements IState {
     public static name = 'NewFileState';
 
     public getName() {
-        return self.name;
+        return NewFileState.name;
     }
 
     public onNewFile(file: StorageItem) {

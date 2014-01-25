@@ -3,7 +3,7 @@ class EditorState implements IState {
     public static name = 'EditorState';
 
     public getName() {
-        return self.name;
+        return EditorState.name;
     }
 
     public enter() {
@@ -19,6 +19,8 @@ class EditorState implements IState {
 
         if (workspace.editor.file === undefined) {
             this.openStartUpFile();
+        } else {
+            this.lastOpenedFile = workspace.editor.file;
         }
 
         this.monitor = new Monitor(workspace.signalR, workspace.preview, workspace.editor);
@@ -51,10 +53,10 @@ class EditorState implements IState {
     private openStartUpFile = () => {
         workspace.ajax.getStartUpFile({
             success: (file: StorageItem) => {
+                this.lastOpenedFile = file;
                 workspace.editor.openFile(file);
                 workspace.preview.fileId = file.id;
                 this.editorWindow.title = file.name;
-                this.lastOpenedFile = file;
             }
         });
     }
