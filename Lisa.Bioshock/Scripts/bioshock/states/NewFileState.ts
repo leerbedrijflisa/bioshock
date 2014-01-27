@@ -44,6 +44,7 @@ class NewFileState implements IState {
 
     public leave() {
         this.window.close();
+        this.window.onNewFile = function () { };
     }
 
     public resume() {
