@@ -120,7 +120,9 @@ class EditorState implements IState {
     }
 
     private onOpenFile = (file: StorageItem) => {
-        workspace.preview.clear();
+        if (FileSystemHelper.isHTML(file.name)) {
+            workspace.preview.clear();
+        }
 
         clearTimeout(this.editorChangeTimer);
         this.saveFile = false;
@@ -148,7 +150,16 @@ class EditorState implements IState {
         if (this.saveFile) {
             workspace.ajax.writeFile({
                 fileID: workspace.editor.file.id,
-                contents: workspace.editor.contents
+                contents: workspace.editor.contents,
+                success: () => {
+                    if (FileSystemHelper.isCSS(workspace.editor.file.name)) {
+                        this.synchronizer.processChanges({
+                            fileID: workspace.editor.file.id,
+                            fileName: workspace.editor.file.name,
+                            contents: workspace.editor.contents
+                        });
+                    }
+                }
             });
             this.saveFile = false;
         }
