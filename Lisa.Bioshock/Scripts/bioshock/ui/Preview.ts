@@ -38,10 +38,12 @@ class Preview {
     }
 
     private updateTitle(contents: string) {
-        var title = contents.match(/<title>(.*?)(<\/|$)/m);
+        var title = contents.match(/<title>((.*?|[\r\n*?])*?)(<\/|$)./mi);
 
         if (title) {
             document.title = title[1];
+        } else {
+            document.title = null;
         }
     }
 
@@ -64,6 +66,8 @@ class Preview {
         if (bodyMatch != null && bodyMatch.length > 0) {
             this.document.find('body')[0].innerHTML = bodyMatch[0].replace(/<\/body>/gi, '')
                                                                   .replace(/<\/html>/gi, '');
+        } else {
+            this.document.find('body')[0].innerHTML = contents;
         }
     }
 
