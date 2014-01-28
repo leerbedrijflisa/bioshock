@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Web;
 using System.Web.Mvc;
 
@@ -17,6 +18,7 @@ namespace Lisa.Bioshock.ActionResults
         {
             this.ContentType = "application/json";
             this.JsonRequestBehavior = JsonRequestBehavior.AllowGet;
+            HttpContext.Current.Response.StatusCode = (int)HttpStatusCode.OK;
 
             var values = new Dictionary<string,dynamic>() {
                 { "result", false },
