@@ -81,18 +81,39 @@ class AjaxHelper {
         $.ajax({
             'url': url,
             'data': data,
-            'success': function (result) {
-                if (success) {
-                    success(result);
+            'success': (data: StorageItemAjaxResult) => {
+                if (!data.result) {
+                    if (error == undefined) {
+                        this.triggerToast(data.errorMessage);
+                    }
+                    else if (error(data)) {
+                        this.triggerToast(data.errorMessage);
+                    }
+                }
+
+                if (data.result && success) {
+                    success(data);
                 }
             },
-            'error': function (jqXHR: any, textStatus: string, errorThrown: string) {
-                if (error) {
-                    error(jqXHR, textStatus, errorThrown);
+            'error': (jqXHR: any, textStatus: string, errorThrown: string) => {
+                var errorMessage = jqXHR.status + ' ' + jqXHR.statusText;
+
+                if (error == undefined) {
+                    this.triggerToast(errorMessage);
+                } else {
+                    error(JSON.parse(jqXHR.responseText));
                 }
             },
             'type': (isPost ? 'POST' : 'GET')
         });
+    }
+
+    private triggerToast(message: string) {
+        $('.error-toast')
+            .text('De volgende fout is opgetreden: ' + message)
+            .fadeIn(400)
+            .delay(3000)
+            .fadeOut(400);
     }
 
     /** The ID of the current project. */
