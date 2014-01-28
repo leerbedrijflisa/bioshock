@@ -25,12 +25,13 @@ class NewFileState implements IState {
         this.window.onNewFile = (fileName: string) => {
             if(FileSystemHelper.hasValidExtension(fileName)) {
                 workspace.ajax.createFile({ fileName: fileName }, (data: StorageItemAjaxResult) => {
-                    if (data.result) {
-                        this.onNewFile(data);
-                        this.window.close();
-                    } else {
-                        this.window.showError(data.errorMessage);
-                    }
+                    this.onNewFile(data);
+                    this.window.close();
+                }, (error: StorageItemAjaxResult) => {
+                    this.window.showError(error.errorMessage);
+
+                    // Return false to prevent the default error toast from showing.
+                    return false;
                 });
             } else {
                 if (fileName.indexOf('.') > -1) {
