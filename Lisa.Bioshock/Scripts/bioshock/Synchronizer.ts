@@ -12,7 +12,7 @@ interface ISynchronizeClient {
     update(file: FileDescriptor, contents: string): void;
 }
 interface ISynchronizeServer {
-    processChanges(file: FileDescriptor, contents: string);
+    processChanges(file: FileDescriptor, contents: string): JQueryDeferred<any>;
 }
 interface SynchronizeMessage {
     fileID: string;
@@ -41,6 +41,8 @@ class Synchronizer {
     constructor(signalR: SignalR, projectID: number) {
         this.hub = signalR.synchronizeHub;
         this.projectID = projectID;
+
+        ErrorUtil.configureSignalR(this.hub.server);
     }
 
     /**
