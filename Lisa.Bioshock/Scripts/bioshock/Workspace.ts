@@ -23,6 +23,9 @@ class Workspace {
         this.signalR.synchronizeHub.client.update = function () { };
 
         this.signalR.hub.start().fail(this.onSignalRFailure);
+        this.signalR.hub.error(function (error: string) {
+            ErrorUtil.triggerToast('The following error occured: ' + error);
+        });
     }
 
     private onSignalRFailure() {
