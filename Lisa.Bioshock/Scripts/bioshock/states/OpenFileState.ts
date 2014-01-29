@@ -1,61 +1,68 @@
-class OpenFileState implements IState {
-
-    public static name = 'OpenFileState';
-
-    public getName() {
-        return OpenFileState.name;
-    }
-
-    public onOpenFile(file: StorageItem): void {
-    }
+class OpenFileState implements State {
 
     public enter() {
-        this.window = <OpenFileWindow> new OpenFileWindow('#open-file-window')
-            .open()
-            .close(() => {
-                if (this.stateMachine.currentState == this) {
-                    this.stateMachine.popState();
-
-                    if (this.stateMachine.currentState.getName() != EditorState.name) {
-                        this.stateMachine.pushState(new EditorState());
-                    }
-                }
-            });
-
-        this.window.onOpenFile = (fileId: string) => {
-            workspace.ajax.getFileContents(fileId, (file: StorageItem) => {
-                if (file.type == StorageItemType.FOLDER) {
-                    throw new Error("Could not open a folder.");
-                }
-
-                this.onOpenFile(file);
-                this.window.close();
-            });
-        };
+        this.window = <OpenFileWindow> new OpenFileWindow('#open-file-window').open();
+        this.window.closed.addListener(this.onWindowClosed);
+        this.window.fileSelected.addListener(this.onFileSelected);
     }
 
     public leave() {
-
-        this.window.close();
-        this.onOpenFile = function () { };
+        this.window.clearEventListeners().close();
+        this.fileSelected.clear();
+        this.fileOpened.clear();
     }
 
     public resume() {
-
         $(window).on('keyup', this.onKeyUp);
     }
 
     public suspend() {
-
         $(window).off('keyup', this.onKeyUp);
     }
 
-    private onKeyUp = (event: JQueryKeyEventObject) => {
+    private pop = () => {
+        this.window.closed.removeListener(this.onWindowClosed);
+        this.window.close();
+        this.stateMachine.popState();
+    }
 
+    private onKeyUp = (event: JQueryKeyEventObject) => {
         if (event.keyCode == Keys.ESC) {
-            this.stateMachine.popState();
+            this.pop();
         }
     }
+
+    private onFileSelected = (fileId: string) => {
+        this.fileSelected.raise(fileId);
+
+        workspace.ajax.getFileContents({
+            fileId: fileId,
+            success: this.onFileOpened,
+            error: (data: AjaxResult) => {
+                console.log(data.errorMessage);
+            }
+        });
+    }
+
+    private onFileOpened = (data: StorageItemAjaxResult) => {
+        var file = data.items[0];
+
+        if (file.type == StorageItemType.FOLDER) {
+            throw new Error("Could not open a folder.");
+        }
+
+        this.fileOpened.raise(file);
+        this.pop();
+    }
+
+    private onWindowClosed = () => {
+        this.pop();
+    }
+
+
+    // events
+    public fileSelected: EventDispatcher = new EventDispatcher(this);
+    public fileOpened: EventDispatcher = new EventDispatcher(this);
 
     // fields
     public stateMachine: StateMachine;

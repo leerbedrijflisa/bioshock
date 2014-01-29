@@ -27,19 +27,19 @@ namespace Lisa.Bioshock.Models
         {
         }
 
-
         public dynamic BuildJson(StorageItem item)
         {
-            if (item is Folder)
-            {
-                return this.BuildJsonFromFolder((Folder)item);
-            }
-            return this.BuildJsonFromItem(item);
+            return BuildJson(item);
+        }
+
+        public dynamic BuildJson(Folder folder)
+        {
+            return BuildJsonFolder(folder);
         }
 
         public dynamic BuildJson(File file, bool readContents = false)
         {
-            dynamic json = this.BuildJsonFromItem(file);
+            var json = BuildJsonItem(file);
 
             if (readContents)
             {
@@ -51,51 +51,34 @@ namespace Lisa.Bioshock.Models
 
         public dynamic BuildJson(IEnumerable<StorageItem> items)
         {
-            return this.BuildJsonFromCollection(items);
-        }
-
-        public dynamic BuildJson(Folder folder)
-        {
-            return this.BuildJsonFromFolder(folder);
-        }
-
-
-
-        private dynamic BuildJsonFromCollection(IEnumerable<StorageItem> items)
-        {
             List<dynamic> data = new List<dynamic>();
             foreach (var item in items)
             {
                 if (item is Folder)
                 {
-                    data.Add(this.BuildJsonFromFolder((Folder)item));
+                    data.Add(this.BuildJsonFolder((Folder)item));
                 }
                 else
                 {
-                    data.Add(this.BuildJsonFromItem(item));
+                    data.Add(this.BuildJsonItem(item));
                 }
             }
             return data;
         }
 
-
-        private dynamic BuildJsonFromFolder(Folder folder)
+        private dynamic BuildJsonFolder(Folder folder)
         {
-            var json = this.BuildJsonFromItem(folder);
-            var jsonChildren = this.BuildJsonFromCollection(folder.Items);
+            var json = this.BuildJsonItem(folder);
+            var jsonChildren = this.BuildJson(folder.Items);
 
             json.folderProps.items.AddRange(jsonChildren);
-
             return json;
         }
 
-        private dynamic BuildJsonFromItem(StorageItem item)
+        private dynamic BuildJsonItem(StorageItem item)
         {
-            var items = new List<dynamic>();
-
             return new
             {
-                result = true,
                 id = item.ID,
                 name = item.Name,
                 path = item.Path,
@@ -103,7 +86,7 @@ namespace Lisa.Bioshock.Models
                 type = (item is Folder ? TypeFolder : TypeFile),
                 folderProps = new FolderProperties
                 {
-                    items = items
+                    items = new List<dynamic>()
                 },
                 fileProps = new FileProperties
                 {

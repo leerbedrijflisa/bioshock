@@ -2,42 +2,44 @@
 class NewFileWindow extends UIWindow {
     public constructor(selector: any) {
         super(selector);
+        this.initialize();
     }
 
-    public initialize() {
-        var $form = $('#new-file-form');
-        var $addButton = $('#new-file-add-button');
+    private initialize() {
+        this.$form = $('#new-file-form');
+        this.$addButton = $('#new-file-add-button');
         this.$error = $("#new-file-error-message");
         this.$fileName = $("#new-file-name");
 
-        this.open(() => {
-            this.onOpen();
-        }).close(() => {
-            this.onClose();
-        });
-
-        $form.submit(() => {
-            this.createFile();
-            return false;
-        });
-
-        $addButton.click(() => {
-            this.createFile();
-            return false;
-        });
-
-        this.$fileName.keydown(() => {
-            this.$error.slideUp(50);
-        });
-
-        return super.initialize();
+        this.$form.on('submit', this.onSubmit);
+        this.$fileName.on('keydown', this.onKeyUp);
     }
 
-    public onNewFile(fileName: string) {
+    public open() {
+        setTimeout(() => {
+            this.$fileName.focus();
+        }, 150);
+        return super.open();
     }
 
-    public showError = (message: string) => {
+    public clearEventListeners() {
+        this.fileCreating.clear();
+        this.errorShown.clear();
+
+        this.$form.off('submit', this.onSubmit);
+        this.$fileName.off('keyup', this.onKeyUp);
+
+        return super.clearEventListeners();
+    }
+
+    public reset() {
+        this.$fileName.val('');
+    }
+
+    public showError(message: string) {
         var show = () => {
+            this.errorShown.raise(message);
+
             this.$error.text(message);
             this.$error.slideDown(100);
         };
@@ -49,20 +51,22 @@ class NewFileWindow extends UIWindow {
         }
     }
 
-    private onClose = () => {
-        this.$fileName.val('');
+    private onKeyUp = () => {
+        this.$error.slideUp(50);
     }
 
-    private onOpen = () => {
-        setTimeout(() => {
-            this.$fileName.focus();
-        }, 150);
+    private onSubmit = () => {
+        this.fileCreating.raise(this.$fileName.val());
+        return false;
     }
 
-    private createFile = () => {
-        this.onNewFile(this.$fileName.val());
-    }
+    // events
+    public fileCreating: EventDispatcher = new EventDispatcher(this);
+    public errorShown: EventDispatcher = new EventDispatcher(this);
 
+    // fields
+    private $form: JQuery;
+    private $addButton: JQuery;
     private $error: JQuery;
     private $fileName: JQuery;
 };

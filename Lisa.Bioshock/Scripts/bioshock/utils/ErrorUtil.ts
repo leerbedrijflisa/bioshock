@@ -16,7 +16,10 @@ class ErrorUtil {
                 signalrHubProxy[x] = () => {
                     var method: Function = signalrHubProxy[x];
                     var deferred: JQueryDeferred<any> = proxy.apply(method.caller, method.arguments);
-                    deferred.fail(ErrorUtil.onSignalRFail);
+
+                    if (deferred) {
+                        deferred.fail(ErrorUtil.onSignalRFail);
+                    }
                 };
             }
         }
@@ -37,6 +40,7 @@ class ErrorUtil {
      * @param {string} message - The message to show as error.
      */
     public static triggerToast(message: string) {
+        message = message || "An unknown error occurred.";
         $('.error-toast')
             .text(message)
             .fadeIn(400)

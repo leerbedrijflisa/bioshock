@@ -1,51 +1,16 @@
-class NewFileState implements IState {
-
-    public static name = 'NewFileState';
-
-    public getName() {
-        return NewFileState.name;
-    }
-
-    public onNewFile(file: StorageItem) {
-    }
+class NewFileState implements State {
 
     public enter() {
-        this.window = <NewFileWindow> new NewFileWindow('#new-file-window')
-            .open()
-            .close(() => {
-                if (this.stateMachine.currentState == this) {
-                    this.stateMachine.popState();
-
-                    if (this.stateMachine.currentState.getName() != EditorState.name) {
-                        this.stateMachine.pushState(new EditorState());
-                    }
-                }
-            });
-
-        this.window.onNewFile = (fileName: string) => {
-            if(FileSystemHelper.hasValidExtension(fileName)) {
-                workspace.ajax.createFile({ fileName: fileName }, (data: StorageItemAjaxResult) => {
-                    this.onNewFile(data);
-                    this.window.close();
-                }, (error: StorageItemAjaxResult) => {
-                    this.window.showError(error.errorMessage);
-
-                    // Return false to prevent the default error toast from showing.
-                    return false;
-                });
-            } else {
-                if (fileName.indexOf('.') > -1) {
-                    this.window.showError('De extensie werd niet herkend.');
-                } else {
-                    this.window.showError('Geef een extensie op.');
-                }
-            }
-        }
+        this.window = <NewFileWindow> new NewFileWindow('#new-file-window').open();
+        this.window.closed.addListener(this.onWindowClosed);
+        this.window.fileCreating.addListener(this.onFileCreating);
     }
 
     public leave() {
-        this.window.close();
-        this.window.onNewFile = function () { };
+        this.window.clearEventListeners().close();
+        this.window.fileCreating.removeListener(this.onFileCreating);
+        this.fileCreating.clear();
+        this.fileCreated.clear();
     }
 
     public resume() {
@@ -56,12 +21,53 @@ class NewFileState implements IState {
         $(window).off('keyup', this.onKeyUp);
     }
 
+    private pop = () => {
+        this.window.closed.removeListener(this.onWindowClosed);
+        this.window.close();
+        this.stateMachine.popState();
+    }
+
     private onKeyUp = (event: JQueryKeyEventObject) => {
         if (event.keyCode == Keys.ESC) {
-            this.stateMachine.popState();
+            this.pop();
         }
     }
 
+    private onFileCreating = (fileName: string) => {
+        this.fileCreating.raise(fileName);
+
+        if (FileSystemHelper.hasValidExtension(fileName)) {
+            workspace.ajax.createFile({
+                fileName: fileName,
+                success: (data: StorageItemAjaxResult) => {
+                    this.fileCreated.raise(data);
+                    this.pop();
+                },
+                error: (error: AjaxResult) => {
+                    this.window.showError(error.errorMessage);
+
+                    // Return false to prevent the default error toast from showing.
+                    return false;
+                }
+            });
+        }
+        else {
+            if (fileName.indexOf('.') > -1) {
+                this.window.showError('De extensie werd niet herkend.');
+            }
+            else {
+                this.window.showError('Geef een extensie op.');
+            }
+        }
+    }
+
+    private onWindowClosed = () => {
+        this.pop();
+    }
+
+    // events
+    public fileCreating: EventDispatcher = new EventDispatcher(this);
+    public fileCreated: EventDispatcher = new EventDispatcher(this);
 
     // fields
     public stateMachine: StateMachine;

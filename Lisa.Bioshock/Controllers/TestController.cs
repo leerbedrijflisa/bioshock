@@ -109,7 +109,7 @@ namespace Lisa.Bioshock.Controllers
 
         private bool FileExists(FileSystem fileSystem, string filename)
         {
-            var file = fileSystem.Root.FindItemByPath("/root/" + filename) as Lisa.Storage.File;
+            var file = fileSystem.Root.FindItemByPath(filename) as Lisa.Storage.File;
             return file != null;
         }
 

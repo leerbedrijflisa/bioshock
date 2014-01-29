@@ -2,37 +2,46 @@ class OpenFileWindow extends UIWindow {
 
     public constructor(selector: any) {
         super(selector);
+        this.initialize();
     }
 
-    public initialize() {
-        var $filter = this.$element.find('#filter');
-        var $filterQuery = $filter.find('.filter-query');
+    private initialize() {
+        this.$filter = this.$element.find('#filter');
+        this.$filterQuery = this.$filter.find('.filter-query');
 
-        this.open(() => {
-            this.createFileList();
-        }).close(() => {
-            this.onClose();
-        });
+        this.$filter.on('submit', this.onFilterSubmit);
+        this.$filterQuery.on('keyup', this.onFilter);
+    }
 
-        $filter.submit(() => {
-            return this.filterSubmit();
-        });
+    public open() {
+        this.$filterQuery.val('');
 
-        $filterQuery.keyup((event) => {
-            this.filter(event);
-        });
-
-        setTimeout(function () {
-            $filterQuery.focus();
+        setTimeout(() => {
+            this.$filterQuery.focus();
         }, 100);
 
-        return super.initialize();
-    }    
-
-    public onOpenFile(fileId: string): void {
+        this.createFileList();
+        return super.open();
     }
 
-    private filter(event) {
+    public clearEventListeners() {
+        this.fileSelected.clear();
+
+        this.$filter.off('submit', this.onFilterSubmit);
+        this.$filterQuery.off('keyUp', this.onFilter);
+
+        return super.clearEventListeners();
+    }
+
+    public reset() {
+        this.$filterQuery.val('');
+
+        var $highlights = this.$element.find('#open-file-filter-block .highlights');
+        $highlights.children('ul').remove();
+    }  
+
+
+    private onFilter = (event) => {
         var filter = $(event.target).val();
         var $highlights = this.$element.find('#open-file-filter-block .highlights');
         $highlights.children('ul').remove();
@@ -58,14 +67,14 @@ class OpenFileWindow extends UIWindow {
                     var $span = $('<span />').text(file.name).appendTo($a);
 
                     $a.click((event) => {
-                        this.updateEditor(event);
+                        this.onFileSelected(event);
                     });
                 }
             }
         }
     }
 
-    private filterSubmit() {
+    private onFilterSubmit = () => {
         var $highlights = this.$element.find('.highlights');
         var $ul = $highlights.find('ul');
         var $children = $ul.children('li');
@@ -75,13 +84,13 @@ class OpenFileWindow extends UIWindow {
             $a.click();
         }
 
-        this.$element.find('.filter-query').focus();
+        this.$filterQuery.focus();
         return false;
     }
 
-    private updateEditor(event: JQueryEventObject) {
+    private onFileSelected = (event: JQueryEventObject) => {
         var id = $(event.currentTarget).data('file-id');
-        this.onOpenFile(id);
+        this.fileSelected.raise(id);
     }
 
     private createFileList() {
@@ -90,9 +99,9 @@ class OpenFileWindow extends UIWindow {
         this.files = [];
 
         workspace.ajax.getFiles((data) => {
-            for (var i in data) {
-                if (data.hasOwnProperty(i)) {
-                    this.generateFolderTree(data[i], $fileList);
+            for (var i in data.items) {
+                if (data.items.hasOwnProperty(i)) {
+                    this.generateFolderTree(data.items[i], $fileList);
                 }
             }
         });
@@ -127,12 +136,11 @@ class OpenFileWindow extends UIWindow {
         }
     }  
 
-    private onClose() {
-        this.$element.find('.filter-query').val('');
+    // events
+    public fileSelected: EventDispatcher = new EventDispatcher(this);
 
-        var $highlights = this.$element.find('#open-file-filter-block .highlights');
-        $highlights.children('ul').remove();
-    }  
-
+    // fields
     private files = [];
+    private $filter: JQuery;
+    private $filterQuery: JQuery;
 };

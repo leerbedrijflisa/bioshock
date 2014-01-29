@@ -1,4 +1,4 @@
-/// <reference path="IState.ts" />
+/// <reference path="State.ts" />
 class StateMachine {
 
     /**
@@ -6,7 +6,7 @@ class StateMachine {
      *
      * @param {IState} state - The new state to switch to.
      */
-    public switchState(state: IState) {
+    public switchState(state: State) {
         state.stateMachine = this;
 
         if (this._stack.length > 0) {
@@ -26,7 +26,7 @@ class StateMachine {
      *
      * @param {IState} state - The new state to push.
      */
-    public pushState(state: IState) {
+    public pushState(state: State) {
         state.stateMachine = this;
 
         if (this._stack.length > 0) {
@@ -55,11 +55,11 @@ class StateMachine {
     /**
      * Gets the current state.
      */
-    public get currentState(): IState {
+    public get currentState(): State {
         return this._stack[this._stack.length - 1];
     }
 
 
     // fields
-    private _stack: IState[] = [];
+    private _stack: State[] = [];
 } 

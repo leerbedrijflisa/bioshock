@@ -34,7 +34,7 @@
             return true;
         };
         $(window).keydown(keydown);
-        workspace.preview.addKeyDownHandler(keydown);
+        workspace.preview.keyPressed.addListener(keydown);
     }
 </script>
 

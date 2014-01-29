@@ -1,22 +1,12 @@
 class Preview {
     constructor(selector: string) {
+        this.initialize(selector);
+    }
+
+    private initialize(selector) {
         this.element = <HTMLIFrameElement> $(selector)[0];
-    }
-
-    public addKeyUpHandler(eventHandler: (JQueryKeyEventObject) => any) {
-        this.document.on('keyup', eventHandler);
-    }
-
-    public removeKeyUpHandler(eventHandler: (JQueryKeyEventObject) => any) {
-        this.document.off('keyup', eventHandler);
-    }
-
-    public addKeyDownHandler(eventHandler: (JQueryKeyEventObject) => any) {
-        this.document.on('keydown', eventHandler);
-    }
-
-    public removeKeyDownHandler(eventHandler: (JQueryKeyEventObject) => any) {
-        this.document.off('keydown', eventHandler);
+        this.document.on('keydown', this.onKeyPressed);
+        this.document.on('keyup', this.onKeyReleased);
     }
 
     public update(file: FileDescriptor, contents: string) {
@@ -30,6 +20,14 @@ class Preview {
 
     public clear() {
         this.document.html('<html><head></head><body></body></html>');
+    }
+
+    private onKeyPressed = (event: JQueryKeyEventObject) => {
+        this.keyPressed.raise(event);
+    }
+
+    private onKeyReleased = (event: JQueryKeyEventObject) => {
+        this.keyReleased.raise(event);
     }
 
     private applyChanges(contents) {
@@ -49,12 +47,12 @@ class Preview {
 
     private matchElement(a: JQuery, b: JQuery, attrs: string[]): boolean {
         if (a.length != b.length) {
-            console.log(a.length, b.length);
+            //console.log(a.length, b.length);
             return false;
         }
 
         if (a.prop('tagName') != b.prop('tagName')) {
-            console.log(a.prop('tagName'), b.prop('tagName'));
+            //console.log(a.prop('tagName'), b.prop('tagName'));
             return false;
         }
 
@@ -83,8 +81,15 @@ class Preview {
     }
 
     private updateHead(contents: string, reload = false) {
+        var $contents;
+        try {
+            $contents = $(contents);
+        } catch(e) {
+            $contents = $("");
+        }
+
         var currentLink = $(this.document.find('link')[0]);
-        var newLink = $($(contents).filter('link')[0]);
+        var newLink = $($contents.filter('link')[0]);
 
         if (newLink.length > 0) {
             var href = newLink.attr('href');
@@ -224,6 +229,11 @@ class Preview {
             || this.element.contentWindow.document).documentElement);
     }
 
+    // events
+    public keyPressed: EventDispatcher = new EventDispatcher(this);
+    public keyReleased: EventDispatcher = new EventDispatcher(this);
+
+    // fields
     private element: HTMLIFrameElement;
     private oldLink: string;
 }

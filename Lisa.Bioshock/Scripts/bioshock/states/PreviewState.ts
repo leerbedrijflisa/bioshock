@@ -1,10 +1,4 @@
-class PreviewState implements IState {
-
-    public static name = 'PreviewState';
-
-    public getName() {
-        return PreviewState.name;
-    }
+class PreviewState implements State {
 
     public enter(): void {        
     }
@@ -14,12 +8,12 @@ class PreviewState implements IState {
 
     public resume(): void {
         $(window).on('keyup', this.onKeyUp);
-        workspace.preview.addKeyUpHandler(this.onKeyUp);
+        workspace.preview.keyReleased.addListener(this.onKeyUp);
     }
 
     public suspend(): void {
         $(window).off('keyup', this.onKeyUp);
-        workspace.preview.removeKeyUpHandler(this.onKeyUp);
+        workspace.preview.keyReleased.removeListener(this.onKeyUp);
     }
 
     private onKeyUp = (event: JQueryKeyEventObject) => {
@@ -29,12 +23,16 @@ class PreviewState implements IState {
         }
         else if (event.altKey) {
             if (event.keyCode == Keys.O) {
-                //this.stateMachine.pushState(new EditorState());
-                this.stateMachine.pushState(new OpenFileState());
+                var openFileState = new OpenFileState();
+                openFileState.fileOpened.addListener(this.onFileOpened);
+                
+                this.stateMachine.pushState(openFileState);
             }
             else if (event.keyCode == Keys.N) {
-                //this.stateMachine.pushState(new EditorState());
-                this.stateMachine.pushState(new NewFileState());
+                var newFileState = new NewFileState();
+                newFileState.fileCreated.addListener(this.onFileOpened);
+
+                this.stateMachine.pushState(newFileState);
             }
         }
         else if (event.keyCode == Keys.ESC) {
@@ -42,6 +40,11 @@ class PreviewState implements IState {
         }
     }
 
+    private onFileOpened = () => {
+        setTimeout(() => {
+            this.stateMachine.pushState(new EditorState());
+        }, 50);
+    }
 
     // properties
 

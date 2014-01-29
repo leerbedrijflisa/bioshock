@@ -15,11 +15,6 @@ interface StorageItem {
     }
 }
 
-interface StorageItemAjaxResult extends StorageItem {
-    result: boolean;
-    errorMessage?: string;
-}
-
 enum StorageItemType {
     FOLDER = 1,
     FILE = 2

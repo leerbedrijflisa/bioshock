@@ -1,20 +1,9 @@
-class EditorState implements IState {
-
-    public static name = 'EditorState';
-
-    public getName() {
-        return EditorState.name;
-    }
+class EditorState implements State {
 
     public enter() {
         this.editorWindow = new EditorWindow('#editor-window');
-        this.editorWindow.onEditorResize = (type: ResizeType) => {
-
-            if (type == ResizeType.RESIZING || type == ResizeType.STOP) {
-                workspace.editor.refresh();
-            }
-        }
-
+        this.editorWindow.resizing.addListener(() => workspace.editor.refresh());
+        this.editorWindow.resized.addListener(() => workspace.editor.refresh());
         this.editorWindow.open();
 
         if (workspace.editor.file === undefined) {
@@ -29,30 +18,34 @@ class EditorState implements IState {
     }    
 
     public leave() {
-
-        this.editorWindow.close();
+        this.editorWindow.clearEventListeners().close();
     }
 
     public resume() {
-        $(window).on('keyup', this.onKeyUp);
-        $(window).on('keydown', this.onKeyDown);
-        workspace.preview.addKeyUpHandler(this.onKeyUp);
-        workspace.preview.addKeyDownHandler(this.onKeyDown);
-        workspace.editor.addChangeHandler(this.onEditorChange);
+        $(window).on('keydown', this.onKeyPressed);
+        $(window).on('keyup', this.onKeyReleased);
+
+        workspace.preview.keyPressed.addListener(this.onKeyPressed);
+        workspace.preview.keyReleased.addListener(this.onKeyReleased);
+
+        workspace.editor.changed.addListener(this.onEditorChanged);
         workspace.editor.refresh();
         workspace.editor.focus();
     }
 
     public suspend() {
-        $(window).off('keyup', this.onKeyUp);
-        $(window).off('keydown', this.onKeyDown);
-        workspace.preview.removeKeyUpHandler(this.onKeyUp);
-        workspace.preview.removeKeyDownHandler(this.onKeyDown);
+        $(window).off('keydown', this.onKeyPressed);
+        $(window).off('keyup', this.onKeyReleased);
+
+        workspace.preview.keyPressed.removeListener(this.onKeyPressed);
+        workspace.preview.keyReleased.removeListener(this.onKeyReleased);
     }
 
     private openStartUpFile = () => {
         workspace.ajax.getStartUpFile({
-            success: (file: StorageItem) => {
+            success: (data: StorageItemAjaxResult) => {
+                var file = data.items[0];
+
                 this.lastOpenedFile = file;
                 workspace.editor.openFile(file);
                 workspace.preview.fileId = file.id;
@@ -61,11 +54,11 @@ class EditorState implements IState {
         });
     }
 
-    private onKeyDown = (event: JQueryKeyEventObject) => {
+    private onKeyPressed = (event: JQueryKeyEventObject) => {
         this.ignoreCtrl = event.ctrlKey && event.keyCode != Keys.CTRL;
     }
 
-    private onKeyUp = (event: JQueryKeyEventObject) => {
+    private onKeyReleased = (event: JQueryKeyEventObject) => {
 
         if (event.keyCode == Keys.CTRL && !this.ignoreCtrl) {
             this.stateMachine.popState();
@@ -83,19 +76,19 @@ class EditorState implements IState {
         else if (event.altKey) {
             if (event.keyCode == Keys.N) {
                 var newFileState = new NewFileState();
-                newFileState.onNewFile = this.onOpenFile;
+                newFileState.fileCreated.addListener(this.onFileOpened);
 
                 this.stateMachine.pushState(newFileState);
             }
             else if (event.keyCode == Keys.O) {
                 var openFileState = new OpenFileState();
-                openFileState.onOpenFile = this.onOpenFile;
+                openFileState.fileOpened.addListener(this.onFileOpened);
 
                 this.stateMachine.pushState(openFileState);
             }
             else if (event.keyCode == Keys.C) {
                 if (this.lastOpenedFile !== undefined) {
-                    this.onOpenFile(this.lastOpenedFile);
+                    this.onFileOpened(this.lastOpenedFile);
                 }
             }
         }
@@ -104,9 +97,9 @@ class EditorState implements IState {
         }
     }
 
-    private onEditorChange = (event: EditorEventObject) => {
+    private onEditorChanged = (event: EditorEventObject) => {
         this.synchronizer.processChanges({
-            fileID: event.fileID,
+            fileID: event.fileId,
             fileName: event.fileName,
             contents: event.contents
         });
@@ -119,7 +112,7 @@ class EditorState implements IState {
         this.editorWindow.hideErrors();
     }
 
-    private onOpenFile = (file: StorageItem) => {
+    private onFileOpened = (file: StorageItem) => {
         if (FileSystemHelper.isHTML(file.name)) {
             workspace.preview.clear();
         }
@@ -130,7 +123,7 @@ class EditorState implements IState {
         var currentFile = workspace.editor.file;
 
         workspace.ajax.writeFile({
-            fileID: currentFile.id,
+            fileId: currentFile.id,
             contents: currentFile.fileProps.contents
         })
 
@@ -149,7 +142,7 @@ class EditorState implements IState {
     private syncInterval = () => {
         if (this.saveFile) {
             workspace.ajax.writeFile({
-                fileID: workspace.editor.file.id,
+                fileId: workspace.editor.file.id,
                 contents: workspace.editor.contents,
                 success: () => {
                     if (FileSystemHelper.isCSS(workspace.editor.file.name)) {

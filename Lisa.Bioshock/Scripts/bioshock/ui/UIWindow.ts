@@ -5,70 +5,73 @@ class UIWindow {
      *
      * @param {any} selector - The (jQuery) selector to find the window in the DOM.
      */
-    constructor(selector: any) {        
+    constructor(selector: any) {
         this.$element = $(selector);
-        this.initialize();
+        this.isVisible = this.$element.is(":visible");
     }
 
-    /**
-    * Initializes the window.
-    */
-    public initialize() {
-        this._isVisible = this.$element.is(":visible");
-        return this;
-    }
 
     /**
-    * Opens the window or, when onOpen is given, adds an event handler.
-    *
-    * @param {Function} onOpen? - When given, adds an event handler that will be called after the window opens.
+    * Opens the window.
     */
-    public open(onOpen?: Function) {
-        if (onOpen) {
-            this._openEvents.push(onOpen);
-        } else {
+    public open(): UIWindow {
+        if (!this.isVisible) {
+            this.isVisible = true;
 
-            if (!this._isVisible) {
-                this.$element.fadeIn(this._fadeOptions);
-                this._isVisible = true;
+            this.reset();
+            this.opening.raise();
+            this.$element.fadeIn(this.fadeOptions, this.opened.raise);
 
-                if (this.triggerOverlay) {
-                    this.$overlay.fadeIn(this._fadeOptions);
-                }
-
-                for (var i = 0; i < this._openEvents.length; i++) {
-                    this._openEvents[i]();
-                }
+            if (this.triggerOverlay) {
+                this.$overlay.fadeIn(this.fadeOptions);
             }
         }
         return this;
     }
 
     /**
-    * Opens the window or, when onClose is given, adds an event handler.
-    *
-    * @param {Function} onClose? - When given, adds an event handler that will be called after the window close.
+    * Closes the window.
     */
-    public close(onClose?: Function) {
-        if (onClose) {
-            this._closeEvents.push(onClose);
-        } else {
+    public close(): UIWindow {
+        if (this.isVisible) {
+            this.isVisible = false;
 
-            if (this._isVisible) {
-                this.$element.fadeOut(this._fadeOptions);
-                this._isVisible = false;
+            this.closing.raise();
+            this.$element.fadeOut(this.fadeOptions, this.closed.raise);
 
-                if (this.triggerOverlay) {
-                    this.$overlay.fadeOut(this._fadeOptions);
-                }
-
-                for (var i = 0; i < this._closeEvents.length; i++) {
-                    this._closeEvents[i]();
-                }
+            if (this.triggerOverlay) {
+                this.$overlay.fadeOut(this.fadeOptions);
             }
         }
         return this;
     }
+
+    /**
+    * Clears out all the event listeners for this window.
+    */
+    public clearEventListeners(): UIWindow {
+        this.opening.clear();
+        this.opened.clear();
+        this.closing.clear();
+        this.closed.clear();
+
+        return this;
+    }
+
+    /**
+    * Resets the window (gets called after the window is being closed).
+    *
+    * Example: Resets the value of a textbox inside the window.
+    */
+    public reset() {
+    }
+
+
+    // events
+    public opening: EventDispatcher = new EventDispatcher(this);
+    public opened: EventDispatcher = new EventDispatcher(this);
+    public closing: EventDispatcher = new EventDispatcher(this);
+    public closed: EventDispatcher = new EventDispatcher(this);
 
     // properties
 
@@ -77,11 +80,9 @@ class UIWindow {
     public $element: JQuery;
 
     private $overlay = $('#overlay');
-    private _openEvents = [];
-    private _closeEvents = [];
-    private _fadeOptions = {
+    private fadeOptions = {
         queue: false,
         duration: 100
     };
-    private _isVisible = false;
+    private isVisible = false;
 };

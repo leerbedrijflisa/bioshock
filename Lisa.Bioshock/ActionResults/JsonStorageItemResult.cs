@@ -23,21 +23,33 @@ namespace Lisa.Bioshock.ActionResults
             : this()
         {
             var builder = new JsonStorageItemBuilder();
-            this.Data = builder.BuildJson(items);
+            this.Data = new
+            {
+                result = true,
+                items = builder.BuildJson(items)
+            };
         }
 
-        public JsonStorageItemResult(Folder root)
+        public JsonStorageItemResult(Folder folder)
             : this()
         {
             var builder = new JsonStorageItemBuilder();
-            this.Data = builder.BuildJson(root);
+            this.Data = this.Data = new
+            {
+                result = true,
+                items = new [] { builder.BuildJson(folder) }
+            };
         }
 
         public JsonStorageItemResult(File file, bool readContents)
             : this()
         {
             var builder = new JsonStorageItemBuilder();
-            this.Data = builder.BuildJson(file, readContents);
+            this.Data = new
+            {
+                result = true,
+                items = new [] { builder.BuildJson(file, readContents) }
+            };
         }
     }
 }

@@ -11,11 +11,10 @@ class EditorWindow extends UIWindow {
         super(selector);
 
         this.triggerOverlay = false;
+        this.initialize();
     }
 
-    public initialize() {
-        super.initialize();
-
+    private initialize() {
         this.$editorResizeOverlay = $('#editor-resize-overlay');
         this.$title = this.$element.find('#editor-title');
         this.$errors = this.$element.find('#editor-errors');
@@ -31,15 +30,14 @@ class EditorWindow extends UIWindow {
                     .width(ui.size.width)
                     .height(ui.size.height);
 
-                this.onEditorResize(ResizeType.RESIZING);
+                this.resizing.raise(event);
             },
             start: () => {
                 this.$editorResizeOverlay.show();
-                this.onEditorResize(ResizeType.START);
             },
             stop: () => {
                 this.$editorResizeOverlay.hide();
-                this.onEditorResize(ResizeType.STOP);
+                this.resized.raise();
             }
         }).draggable({
             iframeFix: true,
@@ -48,6 +46,16 @@ class EditorWindow extends UIWindow {
         });
 
         return this;
+    }
+
+    public clearEventListeners() {
+        this.resizing.clear();
+        this.resized.clear();
+
+        this.$element.resizable('destroy');
+        this.$element.draggable('destroy');
+
+        return super.clearEventListeners();
     }
 
     public set errorCount(count: number) {
@@ -76,8 +84,9 @@ class EditorWindow extends UIWindow {
         }
     }
 
-    public onEditorResize(type: ResizeType): void {
-    }
+    // events
+    public resizing: EventDispatcher = new EventDispatcher(this);
+    public resized: EventDispatcher = new EventDispatcher(this);
 
     private $editorResizeOverlay: JQuery;
     private $title: JQuery;

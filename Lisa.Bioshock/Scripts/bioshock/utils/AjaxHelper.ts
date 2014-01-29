@@ -1,10 +1,29 @@
+interface AjaxResult {
+    result: boolean;
+    errorMessage?: string;
+}
+
+
+interface StorageItemAjaxResult extends AjaxResult {
+    items: StorageItem[];
+}
+
+
 interface AjaxCallbacks {
-    error? (jqXHR: JQueryXHR, textStatus: string, errorThrow: string): any;
-    success? (data: any, textStatus: string, jqXHR: JQueryXHR): any;
+    error? (result: AjaxResult): any;
+    success? (data: any): any;
+}
+
+interface AjaxGetFileContentsOptions extends AjaxCallbacks {
+    fileId: string;
+}
+
+interface AjaxCreateFileOptions extends AjaxCallbacks {
+    fileName: string
 }
 
 interface AjaxWriteFileOptions extends AjaxCallbacks {
-    fileID: string;
+    fileId: string;
     contents: string;
 }
 
@@ -38,8 +57,13 @@ class AjaxHelper {
      * @param {Function} success - This handler will be triggered after the ajax request returns the status code 200 OK.
      * @param {Function} error? - When given, this handler will be triggered when any errors occurs in the ajax request.
      */
-    public getFileContents(fileID: string, success: Function, error?: Function) {
-        this.makeRequest('/project/getfile', { fileID: fileID, readContents: true }, false, success, error);
+    public getFileContents(options: AjaxGetFileContentsOptions) {
+        var data = {
+            fileId: options.fileId,
+            readContents: true
+        };
+
+        this.makeRequest('/project/getfile', data, false, options.success, options.error);
     }
 
 
@@ -50,15 +74,19 @@ class AjaxHelper {
      * @param {Function} success - This handler will be triggered after the ajax request returns the status code 200 OK.
      * @param {Function} error? - When given, this handler will be triggered when any errors occurs in the ajax request.
      */
-    public createFile(data: Object, success: Function, error?: Function) {
-        this.makeRequest('/project/createfile', data, false, success, error);
+    public createFile(options: AjaxCreateFileOptions) {
+        var data = {
+            fileName: options.fileName
+        };
+
+        this.makeRequest('/project/createfile', data, false, options.success, options.error);
     }
 
     /**
      */
     public writeFile(options: AjaxWriteFileOptions) {
         var data = {
-            fileID: options.fileID,
+            fileID: options.fileId,
             contents: options.contents
         };
 
@@ -73,9 +101,7 @@ class AjaxHelper {
     
     /** The actual request. */
     private makeRequest(url: string, data: Object, isPost: boolean, success: Function, error?: Function) {
-        if (data === undefined || data === null) {
-            data = {};
-        }
+        data = data || {};
         data['projectID'] = this.projectID;
 
         $.ajax({
@@ -92,7 +118,7 @@ class AjaxHelper {
     }
 
     private onSuccess(data: StorageItemAjaxResult, success?: Function, error?: Function) {
-        if (!data.result && (error == undefined || error(data))) {
+        if (!data.result && (!error || error(data))) {
             ErrorUtil.ajaxError(data.errorMessage);
         }
 
@@ -102,9 +128,9 @@ class AjaxHelper {
     }
 
     private onError(jqXHR: any, error?: Function) {
-        var errorMessage = 'An error occured: ' + jqXHR.status + ' ' + jqXHR.statusText;
+        var errorMessage = 'An error occurred: ' + jqXHR.status + ' ' + jqXHR.statusText;
 
-        if (error == undefined) {
+        if (!error) {
             ErrorUtil.ajaxError(errorMessage);
         } else {
             var json = JSON.parse(jqXHR.responseText);

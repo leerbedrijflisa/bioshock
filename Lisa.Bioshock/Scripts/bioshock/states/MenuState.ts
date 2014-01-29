@@ -1,23 +1,12 @@
-class MenuState implements IState {
-
-    public static name = 'MenuState';
-
-    public getName() {
-        return MenuState.name;
-    }
+class MenuState implements State {
 
     public enter() {
-        this._window = <MenuWindow> new MenuWindow('#menu-window')
-            .open()
-            .close(() => {
-                if (this.stateMachine.currentState == this) {
-                    this.stateMachine.popState();
-                }
-            });
+        this.window = <MenuWindow> new MenuWindow('#menu-window').open();
+        this.window.closed.addListener(this.onWindowClosed);
     }
 
     public leave() {
-        this._window.close();
+        this.window.clearEventListeners().close();
     }
 
     public resume() {
@@ -28,16 +17,24 @@ class MenuState implements IState {
         $(window).off('keyup', this.onKeyUp);
     }
 
+    private pop() {
+        this.window.closed.removeListener(this.onWindowClosed);
+        this.window.close();
+        this.stateMachine.popState();
+    }
+
     private onKeyUp = (event: JQueryKeyEventObject) => {
         if (event.keyCode == Keys.ESC) {
-
-            console.log('popping MenuState');
-            this.stateMachine.popState();
+            this.pop();
         }
+    }
+
+    private onWindowClosed = () => {
+        this.pop();
     }
 
     // fields
     public stateMachine: StateMachine;
 
-    private _window: MenuWindow;
+    private window: MenuWindow;
 }
