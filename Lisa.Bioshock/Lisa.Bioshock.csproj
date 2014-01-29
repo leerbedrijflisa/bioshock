@@ -443,11 +443,11 @@
     <Content Include="Global.asax" />
     <Content Include="Content\Site.css" />
     <Content Include="Content\CodeMirror\mode\livescript\livescript.ls" />
-	<Content Include="Scripts\bioshock\GuiController.ts" />
+    <Content Include="Scripts\bioshock\GuiController.ts" />
     <Content Include="Scripts\bioshock\BaseGuiController.ts" />
     <Content Include="Scripts\bioshock\FullScreenGuiController.ts" />
-	<TypeScriptCompile Include="Scripts\bioshock\filesystem\FileSystemHelper.ts" />
-	<TypeScriptCompile Include="Scripts\bioshock\filesystem\StorageItem.ts" />
+    <TypeScriptCompile Include="Scripts\bioshock\filesystem\FileSystemHelper.ts" />
+    <TypeScriptCompile Include="Scripts\bioshock\filesystem\StorageItem.ts" />
     <TypeScriptCompile Include="Scripts\bioshock\states\EditorState.ts" />
     <TypeScriptCompile Include="Scripts\bioshock\states\IState.ts" />
     <TypeScriptCompile Include="Scripts\bioshock\states\MenuState.ts" />
@@ -457,88 +457,91 @@
     <TypeScriptCompile Include="Scripts\bioshock\states\StateMachine.ts" />
     <TypeScriptCompile Include="Scripts\bioshock\ui\CodeMirrorEditor.ts" />
     <TypeScriptCompile Include="Scripts\bioshock\ui\Editor.ts" />
-	<TypeScriptCompile Include="Scripts\bioshock\ui\EditorWindow.ts" />
+    <TypeScriptCompile Include="Scripts\bioshock\ui\EditorWindow.ts" />
     <TypeScriptCompile Include="Scripts\bioshock\ui\MenuWindow.ts" />
-	<TypeScriptCompile Include="Scripts\bioshock\ui\NewFileWindow.ts" />
-	<TypeScriptCompile Include="Scripts\bioshock\ui\OpenFileWindow.ts" />
+    <TypeScriptCompile Include="Scripts\bioshock\ui\NewFileWindow.ts" />
+    <TypeScriptCompile Include="Scripts\bioshock\ui\OpenFileWindow.ts" />
     <TypeScriptCompile Include="Scripts\bioshock\ui\Preview.ts" />
-    <TypeScriptCompile Include="Scripts\bioshock\ui\UIWindow.ts" />    
+    <TypeScriptCompile Include="Scripts\bioshock\ui\UIWindow.ts" />
     <TypeScriptCompile Include="Scripts\bioshock\utils\AjaxHelper.ts" />
-	<TypeScriptCompile Include="Scripts\bioshock\utils\Keys.ts" />
-	<TypeScriptCompile Include="Scripts\bioshock\Monitor.ts" />
-	<TypeScriptCompile Include="Scripts\bioshock\Synchronizer.ts" />
+    <TypeScriptCompile Include="Scripts\bioshock\utils\ErrorUtil.ts" />
+    <TypeScriptCompile Include="Scripts\bioshock\utils\Keys.ts" />
+    <TypeScriptCompile Include="Scripts\bioshock\Monitor.ts" />
+    <TypeScriptCompile Include="Scripts\bioshock\Synchronizer.ts" />
     <TypeScriptCompile Include="Scripts\bioshock\Validator.ts" />
     <TypeScriptCompile Include="Scripts\bioshock\Workspace.ts" />
-	
-	<Content Include="Scripts\bioshock\filesystem\FileSystemHelper.js">
-		<DependentUpon>FileSystemHelper.ts</DependentUpon>
-	</Content>	
-	<Content Include="Scripts\bioshock\filesystem\StorageItem.js">
-		<DependentUpon>StorageItem.ts</DependentUpon>
-	</Content>
+    <Content Include="Scripts\bioshock\filesystem\FileSystemHelper.js">
+      <DependentUpon>FileSystemHelper.ts</DependentUpon>
+    </Content>
+    <Content Include="Scripts\bioshock\filesystem\StorageItem.js">
+      <DependentUpon>StorageItem.ts</DependentUpon>
+    </Content>
     <Content Include="Scripts\bioshock\Monitor.js">
-		<DependentUpon>Monitor.ts</DependentUpon>
-	</Content>
+      <DependentUpon>Monitor.ts</DependentUpon>
+    </Content>
     <Content Include="Scripts\bioshock\states\EditorState.js">
-		<DependentUpon>EditorState.ts</DependentUpon>
-	</Content>
+      <DependentUpon>EditorState.ts</DependentUpon>
+    </Content>
     <Content Include="Scripts\bioshock\states\IState.js">
-		<DependentUpon>IState.ts</DependentUpon>
-	</Content>
+      <DependentUpon>IState.ts</DependentUpon>
+    </Content>
     <Content Include="Scripts\bioshock\states\MenuState.js">
-		<DependentUpon>MenuState.ts</DependentUpon>
+      <DependentUpon>MenuState.ts</DependentUpon>
     </Content>
     <Content Include="Scripts\bioshock\states\NewFileState.js">
-		<DependentUpon>NewFileState.ts</DependentUpon>
-	</Content>
+      <DependentUpon>NewFileState.ts</DependentUpon>
+    </Content>
     <Content Include="Scripts\bioshock\states\OpenFileState.js">
-		<DependentUpon>OpenFileState.ts</DependentUpon>
-	</Content>
+      <DependentUpon>OpenFileState.ts</DependentUpon>
+    </Content>
     <Content Include="Scripts\bioshock\states\PreviewState.js">
-		<DependentUpon>PreviewState.ts</DependentUpon>
-	</Content>
+      <DependentUpon>PreviewState.ts</DependentUpon>
+    </Content>
     <Content Include="Scripts\bioshock\states\StateMachine.js">
-		<DependentUpon>StateMachine.ts</DependentUpon>
-	</Content>
+      <DependentUpon>StateMachine.ts</DependentUpon>
+    </Content>
     <Content Include="Scripts\bioshock\Synchronizer.js">
-		<DependentUpon>Synchronizer.ts</DependentUpon>
-	</Content>
+      <DependentUpon>Synchronizer.ts</DependentUpon>
+    </Content>
     <Content Include="Scripts\bioshock\ui\CodeMirrorEditor.js">
-		<DependentUpon>CodeMirrorEditor.ts</DependentUpon>
-	</Content>
+      <DependentUpon>CodeMirrorEditor.ts</DependentUpon>
+    </Content>
     <Content Include="Scripts\bioshock\ui\Editor.js">
-		<DependentUpon>Editor.ts</DependentUpon>
-	</Content>
+      <DependentUpon>Editor.ts</DependentUpon>
+    </Content>
     <Content Include="Scripts\bioshock\ui\EditorWindow.js">
-		<DependentUpon>EditorWindow.ts</DependentUpon>
-	</Content>
+      <DependentUpon>EditorWindow.ts</DependentUpon>
+    </Content>
     <Content Include="Scripts\bioshock\ui\MenuWindow.js">
-		<DependentUpon>MenuWindow.ts</DependentUpon>
-	</Content>
+      <DependentUpon>MenuWindow.ts</DependentUpon>
+    </Content>
     <Content Include="Scripts\bioshock\ui\NewFileWindow.js">
-		<DependentUpon>NewFileWindow.ts</DependentUpon>
-	</Content>
+      <DependentUpon>NewFileWindow.ts</DependentUpon>
+    </Content>
     <Content Include="Scripts\bioshock\ui\OpenFileWindow.js">
-		<DependentUpon>OpenFileWindow.ts</DependentUpon>
-	</Content>
+      <DependentUpon>OpenFileWindow.ts</DependentUpon>
+    </Content>
     <Content Include="Scripts\bioshock\ui\Preview.js">
-		<DependentUpon>Preview.ts</DependentUpon>
-	</Content>
+      <DependentUpon>Preview.ts</DependentUpon>
+    </Content>
     <Content Include="Scripts\bioshock\ui\UIWindow.js">
-		<DependentUpon>UIWindow.ts</DependentUpon>
-	</Content>
+      <DependentUpon>UIWindow.ts</DependentUpon>
+    </Content>
     <Content Include="Scripts\bioshock\utils\AjaxHelper.js">
-		<DependentUpon>AjaxHelper.ts</DependentUpon>
-	</Content>
+      <DependentUpon>AjaxHelper.ts</DependentUpon>
+    </Content>
     <Content Include="Scripts\bioshock\utils\Keys.js">
-		<DependentUpon>Keys.ts</DependentUpon>
-	</Content>
+      <DependentUpon>Keys.ts</DependentUpon>
+    </Content>
     <Content Include="Scripts\bioshock\Validator.js">
-		<DependentUpon>Validator.ts</DependentUpon>
-	</Content>
+      <DependentUpon>Validator.ts</DependentUpon>
+    </Content>
     <Content Include="Scripts\bioshock\Workspace.js">
-		<DependentUpon>Workspace.ts</DependentUpon>
-	</Content>
+      <DependentUpon>Workspace.ts</DependentUpon>
+    </Content>
+	<Content Include="Scripts\bioshock\utils\ErrorUtil.js">
+      <DependentUpon>ErrorUtil.ts</DependentUpon>
+    </Content>
     <Content Include="Scripts\jquery-1.9.1.js" />
     <Content Include="Scripts\jquery-ui-1.10.3.js" />
     <Content Include="Scripts\jquery.nicescroll.min.js" />
