@@ -82,38 +82,34 @@ class AjaxHelper {
             'url': url,
             'data': data,
             'success': (data: StorageItemAjaxResult) => {
-                if (!data.result) {
-                    if (error == undefined) {
-                        this.triggerToast(data.errorMessage);
-                    }
-                    else if (error(data)) {
-                        this.triggerToast(data.errorMessage);
-                    }
-                }
-
-                if (data.result && success) {
-                    success(data);
-                }
+                this.onSuccess(data, success, error);
             },
             'error': (jqXHR: any, textStatus: string, errorThrown: string) => {
-                var errorMessage = jqXHR.status + ' ' + jqXHR.statusText;
-
-                if (error == undefined) {
-                    this.triggerToast(errorMessage);
-                } else {
-                    error(JSON.parse(jqXHR.responseText));
-                }
+                this.onError(jqXHR, error);
             },
             'type': (isPost ? 'POST' : 'GET')
         });
     }
 
-    private triggerToast(message: string) {
-        $('.error-toast')
-            .text('De volgende fout is opgetreden: ' + message)
-            .fadeIn(400)
-            .delay(3000)
-            .fadeOut(400);
+    private onSuccess(data: StorageItemAjaxResult, success?: Function, error?: Function) {
+        if (!data.result && (error == undefined || error(data))) {
+            ErrorUtil.ajaxError(data.errorMessage);
+        }
+
+        if (data.result && success) {
+            success(data);
+        }
+    }
+
+    private onError(jqXHR: any, error?: Function) {
+        var errorMessage = 'An error occured: ' + jqXHR.status + ' ' + jqXHR.statusText;
+
+        if (error == undefined) {
+            ErrorUtil.ajaxError(errorMessage);
+        } else {
+            var json = JSON.parse(jqXHR.responseText);
+            error(json);
+        }
     }
 
     /** The ID of the current project. */
