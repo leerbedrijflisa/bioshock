@@ -40,7 +40,7 @@ class NewFileState implements State {
             workspace.ajax.createFile({
                 fileName: fileName,
                 success: (data: StorageItemAjaxResult) => {
-                    this.fileCreated.raise(data);
+                    this.fileCreated.raise(data.items[0]);
                     this.pop();
                 },
                 error: (error: AjaxResult) => {

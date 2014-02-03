@@ -9,8 +9,10 @@ class MenuWindow extends UIWindow {
         this.$closeLink.on('click', this.close);
     }
 
-    public reset() {
+    public clearEventListeners() {
         this.$closeLink.off('click', this.close);
+
+        return super.clearEventListeners();
     }
 
     // fields

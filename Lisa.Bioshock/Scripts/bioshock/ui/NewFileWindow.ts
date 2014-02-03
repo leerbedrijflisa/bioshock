@@ -37,18 +37,18 @@ class NewFileWindow extends UIWindow {
     }
 
     public showError(message: string) {
-        var show = () => {
-            this.errorShown.raise(message);
-
-            this.$error.text(message);
-            this.$error.slideDown(100);
-        };
-
         if (this.$error.is(":visible")) {
-            this.$error.slideUp(50, show);
+            this.$error.slideUp(50, () => { this.onErrorShown(message) });
         } else {
-            show();
+            this.onErrorShown(message);
         }
+    }
+
+    private onErrorShown(message: string) {
+        this.errorShown.raise(message);
+
+        this.$error.text(message);
+        this.$error.slideDown(100);
     }
 
     private onKeyUp = () => {

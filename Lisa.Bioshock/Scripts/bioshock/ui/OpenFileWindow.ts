@@ -20,7 +20,6 @@ class OpenFileWindow extends UIWindow {
             this.$filterQuery.focus();
         }, 100);
 
-        this.createFileList();
         return super.open();
     }
 
@@ -40,9 +39,21 @@ class OpenFileWindow extends UIWindow {
         $highlights.children('ul').remove();
     }  
 
+    public setFileData(files: StorageItem[]) {
+        var $fileList = $('#file-list').empty();
+        this.files = [];
 
-    private onFilter = (event) => {
-        var filter = $(event.target).val();
+        for(var i in files) {
+            if (files.hasOwnProperty(i)) {
+                this.generateFolderTree(files[i], $fileList);
+            }
+        }
+
+        this.onFilter();
+    }
+
+    private onFilter = () => {
+        var filter = this.$filterQuery.val();
         var $highlights = this.$element.find('#open-file-filter-block .highlights');
         $highlights.children('ul').remove();
 
@@ -52,7 +63,7 @@ class OpenFileWindow extends UIWindow {
             for (var i = 0; i < this.files.length; i++) {
 
                 var file = this.files[i];
-                if (file.name.search(filter) > -1 || file.fullPath.search(filter) > -1) {
+                if (file.name.indexOf(filter) > -1 || file.fullPath.indexOf(filter) > -1) {
 
                     var $li = $('<li />').appendTo($ul);
                     var $a = $('<a />').attr({
@@ -93,19 +104,6 @@ class OpenFileWindow extends UIWindow {
         this.fileSelected.raise(id);
     }
 
-    private createFileList() {
-        var $fileList = $('#file-list').empty();
-
-        this.files = [];
-
-        workspace.ajax.getFiles((data) => {
-            for (var i in data.items) {
-                if (data.items.hasOwnProperty(i)) {
-                    this.generateFolderTree(data.items[i], $fileList);
-                }
-            }
-        });
-    }
 
     private generateFolderTree(item: StorageItem, $fileList, $ul?) {
         var path = item.fullPath;

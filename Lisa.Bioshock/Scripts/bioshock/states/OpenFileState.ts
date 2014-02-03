@@ -1,9 +1,11 @@
 class OpenFileState implements State {
 
     public enter() {
-        this.window = <OpenFileWindow> new OpenFileWindow('#open-file-window').open();
+        this.window = <OpenFileWindow> new OpenFileWindow('#open-file-window');
+        this.window.opening.addListener(this.onWindowOpening);
         this.window.closed.addListener(this.onWindowClosed);
         this.window.fileSelected.addListener(this.onFileSelected);
+        this.window.open();
     }
 
     public leave() {
@@ -30,6 +32,12 @@ class OpenFileState implements State {
         if (event.keyCode == Keys.ESC) {
             this.pop();
         }
+    }
+
+    private onWindowOpening = () => {
+        workspace.ajax.getFiles((data) => {
+            this.window.setFileData(data.items);
+        });
     }
 
     private onFileSelected = (fileId: string) => {
