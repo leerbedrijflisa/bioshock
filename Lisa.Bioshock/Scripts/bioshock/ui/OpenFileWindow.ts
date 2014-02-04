@@ -43,7 +43,7 @@ class OpenFileWindow extends UIWindow {
         var $fileList = $('#file-list').empty();
         this.files = [];
 
-        for(var i in files) {
+        for (var i in files) {
             if (files.hasOwnProperty(i)) {
                 this.generateFolderTree(files[i], $fileList);
             }
@@ -51,7 +51,7 @@ class OpenFileWindow extends UIWindow {
         this.onFilter();
     }
 
-    private onFilter() {
+    private onFilter = () => {
         var filter = this.$filterQuery.val().toLowerCase();
         var $highlights = this.$element.find('#open-file-filter-block .highlights');
         $highlights.children('ul').remove();

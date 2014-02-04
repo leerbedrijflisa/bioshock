@@ -21,6 +21,8 @@
         workspace = new Workspace($("#ProjectID").val(), "#preview");
         workspace.stateMachine.switchState(new PreviewState());
 
+        document.getElementById("preview").onload = null;
+
         // prevent 'backspace' from going to the previous page.
         var keydown = function (e) {
             var tagName = $(e.target).prop('tagName');
