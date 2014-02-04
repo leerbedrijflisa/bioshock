@@ -51,6 +51,7 @@ namespace Lisa.Bioshock.Models
 
         public dynamic BuildJson(IEnumerable<StorageItem> items)
         {
+            items = items.OrderBy(i => i.Name);
             List<dynamic> data = new List<dynamic>();
             foreach (var item in items)
             {

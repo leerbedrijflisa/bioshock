@@ -48,12 +48,11 @@ class OpenFileWindow extends UIWindow {
                 this.generateFolderTree(files[i], $fileList);
             }
         }
-
         this.onFilter();
     }
 
-    private onFilter = () => {
-        var filter = this.$filterQuery.val();
+    private onFilter() {
+        var filter = this.$filterQuery.val().toLowerCase();
         var $highlights = this.$element.find('#open-file-filter-block .highlights');
         $highlights.children('ul').remove();
 
@@ -61,10 +60,9 @@ class OpenFileWindow extends UIWindow {
             var $ul = $('<ul />').appendTo($highlights);
 
             for (var i = 0; i < this.files.length; i++) {
-
                 var file = this.files[i];
-                if (file.name.indexOf(filter) > -1 || file.fullPath.indexOf(filter) > -1) {
 
+                if (file.name.toLowerCase().indexOf(filter) > -1 || file.fullPath.toLowerCase().indexOf(filter) > -1) {
                     var $li = $('<li />').appendTo($ul);
                     var $a = $('<a />').attr({
                         'href': 'javascript:void(0);',
