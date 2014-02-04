@@ -14,16 +14,10 @@ namespace Lisa.Bioshock.Controllers
         {
             if (ID == null)
             {
-                
                 return RedirectToAction("Index", "Project");
             }
             var project = Db.Projects.Find(ID);
-
-            if (project == null)
-            {
-                return HttpNotFound();
-            }
-
+            
             return View(project);
         }
 
@@ -33,14 +27,9 @@ namespace Lisa.Bioshock.Controllers
             return Content("<h1>Authorized!</h1>");
         }
 
-        public ActionResult Fullscreen(int? ID, string GUID)
+        public ActionResult Fullscreen()
         {
-            if (ID == null)
-            {
-                return RedirectToAction("Index", "Project");
-            }
-            ViewBag.ProjectID = ID;
-            ViewBag.File = GUID;
+
             return View();
         }
 

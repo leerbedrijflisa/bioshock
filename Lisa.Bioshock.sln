@@ -1,6 +1,8 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2012
+# Visual Studio 2013
+VisualStudioVersion = 12.0.21005.1
+MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lisa.Bioshock", "Lisa.Bioshock\Lisa.Bioshock.csproj", "{7D11ADED-C748-42F0-9F5D-B118003F9160}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lisa.Daggerfall.Languages", "Lisa.Daggerfall.Languages\Lisa.Daggerfall.Languages.csproj", "{4E321FC5-8215-4A13-956F-9475BF7786EA}"

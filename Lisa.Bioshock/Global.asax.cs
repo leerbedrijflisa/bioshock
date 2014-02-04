@@ -8,6 +8,7 @@ using System.Web.Optimization;
 using System.Web.Routing;
 using System.IdentityModel.Services;
 using System.IdentityModel.Tokens;
+using Microsoft.AspNet.SignalR;
 
 namespace Lisa.Bioshock
 {
@@ -18,8 +19,15 @@ namespace Lisa.Bioshock
     {
         protected void Application_Start()
         {
+            var hubConfig = new HubConfiguration();
+            
+            #if DEBUG
+                hubConfig.EnableDetailedErrors = true;
+            #else
+                hubConfig.EnableDetailedErrors = false;
+            #endif
 
-            RouteTable.Routes.MapHubs();
+            RouteTable.Routes.MapHubs(hubConfig);
             AreaRegistration.RegisterAllAreas();
 
             WebApiConfig.Register(GlobalConfiguration.Configuration);
@@ -45,7 +53,7 @@ namespace Lisa.Bioshock
                     sessionToken.ClaimsPrincipal,
                     sessionToken.Context,
                     sessionToken.ValidFrom,
-                    utcNow.AddSeconds(20));
+                    utcNow.AddMinutes(15));
 
                 e.ReissueCookie = true;
             }

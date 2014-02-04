@@ -1,4 +1,5 @@
 ﻿using Lisa.Bioshock.Data.Tables;
+using Lisa.Bioshock.Helpers;
 using Lisa.Bioshock.Models;
 using Lisa.Storage;
 using Lisa.Storage.Data;
@@ -13,11 +14,11 @@ using System.Web.Mvc;
 namespace Lisa.Bioshock.Controllers
 {
     //[Authorize]
-    public class ProjectController : BaseController
+    public partial class ProjectController : BaseController
     {
         //
         // GET: /Project/
-        //[Authorize]
+
         public ActionResult Index()
         {
             return View(CurrentUser.Projects.Where(p => !p.IsDeleted));
@@ -38,36 +39,28 @@ namespace Lisa.Bioshock.Controllers
                     Name = form.Name,
                     Owner = CurrentUser
                 };
-
                 Db.Projects.Add(project);
                 Db.SaveChanges();
 
-                IStorageProvider sp = CreateStorageProvider(project);
-                FileSystem fs = new FileSystem(sp);
-
-                var index = fs.Root.Files.Add("index.html", "text/html");
-
+                FileSystem fileSystem = FileSystemHelper.GetFileSystem(project.RootID);
+                File index = fileSystem.Root.Files.Add("index.html", "text/html");
                 project.LastOpenedFile = Guid.Parse(index.ID);
+
                 Db.SaveChanges();
 
-                return RedirectToAction("Index", "Home", new { ID = project.ID });
+                return RedirectToAction("Details", "Project", new { ID = project.ID });
             }
 
             return View(form);
         }
 
-        public ActionResult Details(int id =0)
+        public ActionResult Details(int id = 0)
         {
-            Project project = Db.Projects.Find(id);
-
+            var project = Db.Projects.Find(id);
             if (project == null)
             {
-                return HttpNotFound();
+                return RedirectToAction("Index", "Project");
             }
-
-            IStorageProvider sp = CreateStorageProvider(project);
-            FileSystem fs = new FileSystem(sp);
-            ViewBag.FileSystem = fs;
 
             return View(project);
         }

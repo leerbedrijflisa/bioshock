@@ -1,4 +1,4 @@
-//100/ <reference path="../typings/jquery/jquery.d.ts" />
+/// <reference path="../typings/jquery/jquery.d.ts" />
 /// <reference path="BaseGuiController.ts" />
 class FullScreenGuiController extends BaseGuiController {
 

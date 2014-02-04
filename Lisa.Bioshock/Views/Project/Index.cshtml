@@ -11,7 +11,7 @@
 @foreach (var project in Model)
 {
     <li>
-        <a href="@Url.Action("Index", "Home", new { ID = project.ID })">@project.Name</a> -
+        <a href="@Url.Action("Details", new { ID = project.ID })">@project.Name</a> - 
         <a href="@Url.Action("Delete", new { ID = project.ID })">Delete</a>
     </li>
 }

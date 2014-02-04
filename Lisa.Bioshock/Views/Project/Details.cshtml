@@ -1,13 +1,45 @@
 ﻿@model Project
+
 @{
-    ViewBag.Title = Model.Name;
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";   
 }
 
-<h2>@Model.Name</h2>
+@if (Model != null) 
+{
+    <input type="hidden" value="@Model.ID" id="ProjectID" />
+}
+    <div class="accesskeys">
+        <input type="text" accesskey="F" />
+        <input type="text" accesskey="C" />
+    </div>
+    
 
-<h3>Root</h3>
+<script type="text/javascript">
+    // Global instance of the BioshockWorkspace that can be used by other classes.
+    function initialize() {
+        workspace = new Workspace($("#ProjectID").val(), "#preview");
+        workspace.stateMachine.switchState(new PreviewState());
 
-@Html.Partial("_TreeView", (IEnumerable<Lisa.Storage.StorageItem>)ViewBag.FileSystem.Root.Items)
+        // prevent 'backspace' from going to the previous page.
+        var keydown = function (e) {
+            var tagName = $(e.target).prop('tagName');
 
-@* TODO: CHANGE TO REAL OWNER!!!!!! *@
-<p><small>Gemaakt door: @User.Identity.Name op @Model.Created.ToShortDateString()</small></p>
+            if (tagName != 'INPUT' && tagName != 'TEXTAREA') {
+                if (e.keyCode == Keys.BACKSPACE) {
+                    e.preventDefault();
+                    return false;
+                }
+            }
+            return true;
+        };
+        $(window).keydown(keydown);
+        workspace.preview.keyPressed.addListener(keydown);
+    }
+</script>
+
+<iframe id="preview" frameborder="0" data-file-id="" src="/Project/@Model.ID/File" onload="initialize()"></iframe>
+@Html.Partial("_EditorWindow")
+@Html.Partial("_EditorMenuWindow")
+@Html.Partial("_NewFileWindow")
+@Html.Partial("_OpenFileWindow")

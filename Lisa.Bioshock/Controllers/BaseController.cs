@@ -1,14 +1,15 @@
 ﻿using Lisa.Bioshock.Data;
 using Lisa.Bioshock.Data.Tables;
-using Lisa.Storage.Data;
-using Lisa.Storage.Data.Web;
 using System;
 using System.Collections.Generic;
-using System.Configuration;
 using System.Linq;
 using System.Security.Claims;
 using System.Web;
 using System.Web.Mvc;
+using Lisa.Storage;
+using Lisa.Storage.Data;
+using Lisa.Storage.Data.Web;
+using System.Configuration;
 
 namespace Lisa.Bioshock.Controllers
 {
@@ -66,10 +67,6 @@ namespace Lisa.Bioshock.Controllers
             //        ViewBag.CurrentUser = CurrentUser;
             //    }                
             //}
-
-            CurrentUser = Db.Users.Find(1);
-            ViewBag.CurrentUser = CurrentUser;
-
             //var identity = (ClaimsIdentity)User.Identity;
 
             //var customerUserId = identity.Claims
@@ -80,24 +77,45 @@ namespace Lisa.Bioshock.Controllers
             //    CurrentUser = Db.Users.FirstOrDefault(u => u.CustomerUserID == customerUserId.Value);
             //    ViewBag.CurrentUser = CurrentUser;
             //}
+
+            CurrentUser = Db.Users.Find(1);
+            ViewBag.CurrentUser = CurrentUser;
         }
 
-        protected IStorageProvider CreateStorageProvider(Project project)
+        protected string GetContentType(string fileName)
         {
-            return new CloudStorageProvider
-                (
-                    ConfigurationManager.AppSettings["CloudStorageConnectionString"],
-                    "bioshock",
-                    project.RootID.ToString()
-                );
+            if(string.IsNullOrEmpty(fileName))
+            {
+                return null;
+            }
+
+            string fileExt = System.IO.Path.GetExtension(fileName).TrimStart('.');
+
+            switch(fileExt)
+            {
+                case "htm":
+                case "html":
+                    return "text/html";
+
+                case "css":
+                    return "text/css";
+
+                //case "js":
+                //    return "text/javascript";
+
+                //case "php":
+                //    return "text/php";
+
+                case null:
+                case "":
+                default:
+                    return null;
+            }
         }
 
         protected override void Dispose(bool disposing)
         {
-            if (Db != null)
-            {
-                Db.Dispose();
-            }
+            Db.Dispose();
             base.Dispose(disposing);
         }
 

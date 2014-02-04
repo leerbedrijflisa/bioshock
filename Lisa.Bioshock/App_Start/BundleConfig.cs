@@ -39,8 +39,11 @@ namespace Lisa.Bioshock
                         "~/Content/themes/base/jquery.ui.progressbar.css",
                         "~/Content/themes/base/jquery.ui.theme.css"));
 
-            bundles.Add(new ScriptBundle("~/bundles/bioshock")
-                .IncludeDirectory("~/Scripts/bioshock", "*.js", true));
+            var bioshockBundle = new ScriptBundle("~/bundles/bioshock")
+                .IncludeDirectory("~/Scripts/bioshock", "*.js", true);
+
+            bioshockBundle.Orderer = new BundleOrderer();
+            bundles.Add(bioshockBundle);
         }
     }
 }

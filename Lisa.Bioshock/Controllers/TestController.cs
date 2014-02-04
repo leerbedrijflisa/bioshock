@@ -1,11 +1,10 @@
 ﻿using Lisa.Bioshock.ActionResults;
+using Lisa.Bioshock.Helpers;
 using Lisa.Bioshock.Models;
 using Lisa.Storage;
 using Lisa.Storage.Data;
-using Lisa.Storage.Data.Web;
 using System;
 using System.Collections.Generic;
-using System.Configuration;
 using System.IO;
 using System.Linq;
 using System.Web;
@@ -16,55 +15,21 @@ namespace Lisa.Bioshock.Controllers
 {
     public class TestController : BaseController
     {
-        //LocalStorageProvider provider;
-        //FileSystem fileSystem;
         Lisa.Storage.File file;
-        //
-        // GET: /Test/
-        public string Index()
-        {
-            var provider = new CloudStorageProvider(ConfigurationManager.AppSettings["CloudStorageConnectionString"], "bioshock", "test");
-            FileSystem fileSystem = new FileSystem(provider);
-
-            fileSystem.Root.Files.Add("index.html", "text/html");
-            Folder css = fileSystem.Root.Folders.Add("css");
-            css.Files.Add("stylesheet.css", "text/css");
-            
-            return Loop(fileSystem.Root);
-        }
-
-        private string Loop(Folder parent)
-        {
-            string s = "<ul>";
-            foreach (Folder folder in parent.Folders)
-            {
-                s += "<li>" + folder.Name + Loop(folder) + "</li>";
-            }
-            foreach (Lisa.Storage.File file in parent.Files)
-            {
-                s += "<li>" + file.Name + "</li>";
-            }
-
-            s += "</ul>";
-
-            return s;
-        }
 
         [ValidateInput(false)]
         [HttpGet]
         public JsonResult GetFiles(int projectID, string contentType = null)
         {
             var project = Db.Projects.Find(projectID);
-
-            IStorageProvider provider = CreateStorageProvider(project);
-            FileSystem fileSystem = new FileSystem(provider);
+            var fileSystem = FileSystemHelper.GetFileSystem(project.RootID);
 
             if (contentType != null)
             {
-                return new JsonItemResult(GetFilesByContentType(contentType, fileSystem.Root));
+                return new JsonStorageItemResult(GetFilesByContentType(contentType, fileSystem.Root));
             }
 
-            return new JsonItemResult(fileSystem.Root.Items);
+            return new JsonStorageItemResult(fileSystem.Root);
         }
 
         private List<Storage.File> GetFilesByContentType(string contentType, Folder parentFolder)
@@ -84,17 +49,16 @@ namespace Lisa.Bioshock.Controllers
 
         [HttpPost]
         [OutputCache(NoStore = true, Location = OutputCacheLocation.None)]
-        public ActionResult GetFileContent(int projectID, string guid)
+        public ActionResult GetFileContent(int projectID, string guid = null)
         {
             var project = Db.Projects.Find(projectID);
 
-            IStorageProvider provider = CreateStorageProvider(project);
-            FileSystem fileSystem = new FileSystem(provider);
-
+            var fileSystem = FileSystemHelper.GetFileSystem(project.RootID);
             var file = fileSystem.Root.FindItemByID(guid) as Lisa.Storage.File;
+
             if (file == null)
             {
-                return HttpNotFound();
+               return HttpNotFound();
             }
 
             var content = string.Empty;
@@ -124,9 +88,7 @@ namespace Lisa.Bioshock.Controllers
         public ActionResult CreateFile(int projectID, string filename)
         {
             var project = Db.Projects.Find(projectID);
-
-            IStorageProvider provider = CreateStorageProvider(project);
-            FileSystem fileSystem = new FileSystem(provider);
+            var fileSystem = FileSystemHelper.GetFileSystem(project.RootID);
 
             if (!FileExists(fileSystem, filename))
             {
@@ -140,13 +102,14 @@ namespace Lisa.Bioshock.Controllers
                     guid = file.ID
                 }, JsonRequestBehavior.AllowGet);
             }
+        
 
-            return Json(new { Result = false, ErrorMessage = "Het bestand met de opgeven naam bestaat al."}, JsonRequestBehavior.AllowGet);
+            return Json(new { Result = false}, JsonRequestBehavior.AllowGet);
         }
 
-        private bool FileExists(FileSystem filesystem, string filename)
+        private bool FileExists(FileSystem fileSystem, string filename)
         {
-            var file = filesystem.Root.FindItemByPath("/root/" + filename) as Lisa.Storage.File;
+            var file = fileSystem.Root.FindItemByPath(filename) as Lisa.Storage.File;
             return file != null;
         }
 
@@ -156,52 +119,18 @@ namespace Lisa.Bioshock.Controllers
         {
             var project = Db.Projects.Find(projectID);
 
-            IStorageProvider provider = CreateStorageProvider(project);
-            FileSystem fileSystem = new FileSystem(provider);
-
+            var fileSystem = FileSystemHelper.GetFileSystem(project.RootID);
             var file = fileSystem.Root.FindItemByID(guid) as Lisa.Storage.File;
+
             var content = string.Empty;
             using (var contents = new StreamWriter(file.OutputStream))
             {
                 contents.Write(source);
-                //contents.BaseStream.SetLength(source.Length);
+                contents.BaseStream.SetLength(source.Length);
                 contents.Flush();
             }
 
-            return Json(new { Result = true });
-        }
-
-        public ActionResult FileContents(int id, string filename)
-        {
-            if(!Request.Url.AbsoluteUri.Contains("?"))
-            {
-                return Redirect(string.Format("/Project/{0}/File/{1}?g={2}", id, filename, Guid.NewGuid()));
-            }
-
-            if (filename == null)
-            {
-                filename = "index.html";
-                //return Content(string.Empty);
-            }
-
-            var project = Db.Projects.Find(id);
-            IStorageProvider provider = CreateStorageProvider(project);
-            FileSystem fileSystem = new FileSystem(provider);
-
-            var file = fileSystem.Root.FindItemByPath("/root/"+ filename, false) as Lisa.Storage.File;
-
-            if (file != null)
-            {
-                Response.AddHeader("Content-Type", file.ContentType);
-                var content = string.Empty;
-                using (var contents = new StreamReader(file.InputStream))
-                {
-                    content = contents.ReadToEnd();
-                }
-
-                return Content(content);
-            }
-            return HttpNotFound();
+            return Json(null);
         }
     }
 }

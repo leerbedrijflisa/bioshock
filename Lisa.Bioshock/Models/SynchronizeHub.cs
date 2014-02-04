@@ -3,48 +3,65 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using Microsoft.AspNet.SignalR;
-using Newtonsoft.Json;
+using Lisa.Bioshock.Data;
+using Lisa.Storage;
+using Lisa.Storage.Data;
+using Lisa.Bioshock.Extensions;
+using Lisa.Bioshock.Helpers;
+using System.Threading.Tasks;
 
 namespace Lisa.Bioshock.Models
 {
+    public struct FileDescriptor
+    {
+        public string ID { get; set; }
+        public string Name { get; set; }
+        public int ProjectID { get; set; }
+    }
+
     public class SynchronizeHub : Hub
     {
-        //public override System.Threading.Tasks.Task OnConnected()
-        //{
-        //    //if(HttpContext.Current.Session["SignalR"] == null)
-        //    //{
-        //    //    HttpContext.Current.Session.Add("SignalR", new List<string>());
-        //    //}
-        //    //((List<string>)HttpContext.Current.Session["SignalR"]).Add(Context.ConnectionId);
-
-        //    if (!HttpContext.Current.Response.Cookies.AllKeys.Contains("SignalR"))
-        //    {
-        //        var cookie = new HttpCookie("SignalR", JsonConvert.SerializeObject(new List<string>()));
-        //        HttpContext.Current.Response.Cookies.Add(cookie);
-        //    }
-
-        //    var clients = JsonConvert.DeserializeObject<List<string>>(HttpContext.Current.Response.Cookies["SignalR"].Value);
-        //    clients.Add(Context.ConnectionId);
-        //    if (Context.Request.GetHttpContext().Session != null)
-        //    {
-        //        System.Diagnostics.Debug.WriteLine("Session Found!");
-        //    }
-        //    HttpContext.Current.Response.Cookies["SignalR"].Value = JsonConvert.SerializeObject(clients);
-
-        //    return base.OnConnected();
-        //}
-
-        public void Send(object codeMessage, string connID)
+        public void ProcessChanges(FileDescriptor file, string contents)
         {
-            //var clients = JsonConvert.DeserializeObject<List<string>>(HttpContext.Current.Request.Cookies["SignalR"].Value);
-            //foreach (string client in clients)
+            //Task.Run(() =>
             //{
-            //    if (client != Context.ConnectionId)
-            //    {
+            //    WriteFile(file, contents);
+            //    Console.WriteLine("Task.Run(WriteFile)");
+            //});
+            Clients.All.Update(file, contents);
+        }
 
-            //    }
-            //}
-            Clients.Client(connID).addMessage(codeMessage);
+        private void WriteFile(FileDescriptor file, string contents)
+        {
+            using (var db = new BioshockContext())
+            {
+                var project = db.Projects.Find(file.ProjectID);
+                if (project != null)
+                {
+                    var fileSystem = FileSystemHelper.GetFileSystem(project.RootID);
+                    var currentFile = fileSystem.Root.FindItemByID(file.ID) as File;
+
+                    if (currentFile != null)
+                    {
+                        try
+                        {
+                            currentFile.WriteContents(contents);
+                        }
+                        catch (Exception ex)
+                        {
+                            Console.WriteLine(ex.StackTrace);
+                        }
+                    }
+                }
+            }
+        }
+
+        private FileSystem CreateFileSystem(Guid rootID)
+        {
+            LocalStorageProvider provider = new LocalStorageProvider("/Storage/" + rootID);
+            FileSystem fileSystem = new FileSystem(provider);
+
+            return fileSystem;
         }
     }
 }
