@@ -21,7 +21,8 @@ namespace Lisa.Bioshock.Controllers
 
         public ActionResult Index()
         {
-            return View(CurrentUser.Projects.Where(p => !p.IsDeleted));
+            var currentUser = CurrentUser.Projects.Where(p => !p.IsDeleted);
+            return View(currentUser);
         }
 
         public ActionResult Create()
