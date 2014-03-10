@@ -90,7 +90,7 @@ namespace Lisa.Bioshock.Controllers
 
             try
             {
-                string headersToContents = "Time: " + DateTime.UtcNow.ToString("YYYYMMddHHmmssffff") + Environment.NewLine;
+                string headersToContents = "Time: " + DateTime.UtcNow.ToString() + Environment.NewLine;
                 headersToContents += "ID: " + fileID.ToString() + Environment.NewLine;
                 headersToContents += "Action: Storage" + Environment.NewLine;
                 headersToContents += "RootID: " + project.RootID + Environment.NewLine;
