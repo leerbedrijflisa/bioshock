@@ -60,6 +60,14 @@ class EditorState implements State {
 
     private onKeyReleased = (event: JQueryKeyEventObject) => {
 
+        if (this.saveFile) {
+            workspace.ajax.writeFile({
+                fileId: workspace.editor.file.id,
+                contents: workspace.editor.contents
+            })
+            this.saveFile = false;
+        }
+
         if (event.keyCode == Keys.CTRL && !this.ignoreCtrl) {
             this.stateMachine.popState();
         }
@@ -118,14 +126,17 @@ class EditorState implements State {
         }
 
         clearTimeout(this.editorChangeTimer);
+
+        if (this.saveFile) {
+            workspace.ajax.writeFile({
+                fileId: currentFile.id,
+                contents: currentFile.fileProps.contents
+            })
+        }
+
         this.saveFile = false;
 
         var currentFile = workspace.editor.file;
-
-        workspace.ajax.writeFile({
-            fileId: currentFile.id,
-            contents: currentFile.fileProps.contents
-        })
 
         if(FileSystemHelper.isHTML(file.name)) {
             workspace.preview.fileId = file.id;
