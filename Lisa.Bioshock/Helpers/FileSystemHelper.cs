@@ -14,7 +14,7 @@ namespace Lisa.Bioshock.Helpers
         {
             var provider = new CloudStorageProvider
             (
-                ConfigurationManager.AppSettings["CloudStorageConnectionString"],
+                ConfigurationManager.AppSettings["StorageConnectionString"],
                 "bioshock",
                 rootID.ToString()
             );

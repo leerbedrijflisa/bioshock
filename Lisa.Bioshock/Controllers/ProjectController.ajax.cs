@@ -8,12 +8,37 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using System.Web.UI;
+using System.Configuration;
+using Microsoft.WindowsAzure.Storage;
+using Microsoft.WindowsAzure.Storage.Auth;
+using Microsoft.WindowsAzure.Storage.Queue;
 
 namespace Lisa.Bioshock.Controllers
 {
     //[AjaxAuthorize]
     public partial class ProjectController
     {
+
+        public CloudStorageAccount storageAccount;
+        public CloudQueueClient queueClient;
+        CloudQueue queue;
+
+        public ProjectController()
+        {
+            // Retrieve storage account from conection string
+            // CloudStorageAccount.Parse(
+            //                    ConfigurationManager.AppSettings["StorageConnectionString"]);
+            //
+            var conString = ConfigurationManager.AppSettings["StorageConnectionString"];
+            storageAccount = CloudStorageAccount.Parse(conString);
+            // Create the queue client
+            queueClient = storageAccount.CreateCloudQueueClient();
+            // Retrieve a reference to a queue
+            queue = queueClient.GetQueueReference("projectfilesqueue");
+            // Create queue if it doesn't already exist
+            queue.CreateIfNotExists();
+        }
+
         [OutputCache(NoStore = true, Location = OutputCacheLocation.None)]
         public ActionResult CreateFile(int projectID, string fileName)
         {
@@ -65,7 +90,16 @@ namespace Lisa.Bioshock.Controllers
 
             try
             {
-                file.WriteContents(contents);
+                string headersToContents = "Time: " + DateTime.UtcNow.ToString() + Environment.NewLine;
+                headersToContents += "ID: " + fileID.ToString() + Environment.NewLine;
+                headersToContents += "Action: Storage" + Environment.NewLine;
+                headersToContents += "RootID: " + project.RootID + Environment.NewLine;
+                headersToContents += "Project: " + project.ID + "-" + project.Name + Environment.NewLine;
+                headersToContents += "Headers: Some optionele headers" + Environment.NewLine;
+                headersToContents += Environment.NewLine + "Message: " + contents;
+                CloudQueueMessage message = new CloudQueueMessage(headersToContents);
+                queue.AddMessage(message);
+                //file.WriteContents(contents);
             }
             catch (Exception e)
             {
