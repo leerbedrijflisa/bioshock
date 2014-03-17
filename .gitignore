@@ -1,0 +1,36 @@
+
+# /
+/*.suo
+
+# /Lisa.Bioshock/
+/Lisa.Bioshock/*.user
+/Lisa.Bioshock/bin
+/Lisa.Bioshock/obj
+/Lisa.Bioshock/delme.txt
+
+# /Lisa.Bioshock/Properties/PublishProfiles/
+/Lisa.Bioshock/Properties/PublishProfiles/*.user
+
+# /Lisa.Bioshock/Scripts/bioshock/
+/Lisa.Bioshock/Scripts/bioshock/*.js
+/Lisa.Bioshock/Scripts/bioshock/*.map
+
+# /Lisa.Bioshock/Scripts/bioshock/filesystem/
+/Lisa.Bioshock/Scripts/bioshock/filesystem/*.js
+/Lisa.Bioshock/Scripts/bioshock/filesystem/*.map
+
+# /Lisa.Bioshock/Scripts/bioshock/states/
+/Lisa.Bioshock/Scripts/bioshock/states/*.js
+/Lisa.Bioshock/Scripts/bioshock/states/*.map
+
+# /Lisa.Bioshock/Scripts/bioshock/ui/
+/Lisa.Bioshock/Scripts/bioshock/ui/*.js
+/Lisa.Bioshock/Scripts/bioshock/ui/*.map
+
+# /Lisa.Bioshock/Scripts/bioshock/utils/
+/Lisa.Bioshock/Scripts/bioshock/utils/*.js
+/Lisa.Bioshock/Scripts/bioshock/utils/*.map
+
+# /Lisa.Bioshock.Data/
+/Lisa.Bioshock.Data/bin
+/Lisa.Bioshock.Data/obj
