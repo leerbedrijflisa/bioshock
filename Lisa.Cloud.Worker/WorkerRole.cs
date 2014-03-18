@@ -29,26 +29,17 @@ namespace Lisa.Cloud.Worker
         public override void Run()
         {
 
-            // Retrieve storage account from conection string
-            // CloudStorageAccount.Parse(
-            //                    ConfigurationManager.AppSettings["CloudStorageConnectionString"]);
-            //
-            // Development Storage Account
+
             var conString = ConfigurationManager.AppSettings["StorageConnectionString"];
             storageAccount = CloudStorageAccount.Parse(conString);
-            // Create the queue client
             queueClient = storageAccount.CreateCloudQueueClient();
-            // Retrieve a reference to a queue
+           
             queue = queueClient.GetQueueReference("projectfilesqueue");
-            //create queue if not exists
             queue.CreateIfNotExists();
-
-            // This is a sample worker implementation. Replace with your logic.
-            Trace.TraceInformation("WorkerRole1 entry point called", "Information");
 
             while (true)
             {
-                Trace.TraceInformation("Search for new queue message");
+                Trace.TraceInformation("Search for a new queue message");
 
                 Dictionary<string, string> dictionary = null;
                 CloudQueueMessage cloudMessage = queue.GetMessage();
@@ -60,12 +51,11 @@ namespace Lisa.Cloud.Worker
                 else if (null != (dictionary = processQueue(cloudMessage)))
                 {
 
-                    queue.DeleteMessage(cloudMessage);
-                    Trace.TraceInformation("Deleted message from the queue");
-
                     if (dictionary["ID"] == null || dictionary["Time"] == null || dictionary["Action"] == null)
                     {
                         Trace.TraceInformation("Failed to find the headers..");
+                        queue.DeleteMessage(cloudMessage);
+                        Trace.TraceInformation("Deleted message from the queue");
                         break;
                     }
 
