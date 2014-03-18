@@ -649,27 +649,27 @@
       <Project>{ff861e1f-c7fb-4255-a8c1-70813546c3a3}</Project>
       <Name>Lisa.Bioshock.Data</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\tempProjects\Skyrim\Lisa.Checkers\Lisa.Checkers.csproj">
+    <ProjectReference Include="..\Lisa.Checkers\Lisa.Checkers.csproj">
       <Project>{eb2833ff-7ff8-44e8-af04-8bff1cfa6dae}</Project>
       <Name>Lisa.Checkers</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\tempProjects\Skyrim\Lisa.Daggerfall.Languages\Lisa.Daggerfall.Languages.csproj">
+    <ProjectReference Include="..\Lisa.Daggerfall.Languages\Lisa.Daggerfall.Languages.csproj">
       <Project>{4e321fc5-8215-4a13-956f-9475bf7786ea}</Project>
       <Name>Lisa.Daggerfall.Languages</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\tempProjects\Skyrim\Lisa.Daggerfall\Lisa.Daggerfall.csproj">
+    <ProjectReference Include="..\Lisa.Daggerfall\Lisa.Daggerfall.csproj">
       <Project>{f6b25977-e139-4c93-b0cb-92744615a291}</Project>
       <Name>Lisa.Daggerfall</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\tempProjects\Skyrim\Lisa.Skyrim.Languages\Lisa.Skyrim.Languages.csproj">
+    <ProjectReference Include="..\Lisa.Skyrim.Languages\Lisa.Skyrim.Languages.csproj">
       <Project>{7fa170a3-8eee-4ce7-85c0-d6890cc3d4ff}</Project>
       <Name>Lisa.Skyrim.Languages</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\tempProjects\Skyrim\Lisa.Skyrim\Lisa.Skyrim.csproj">
+    <ProjectReference Include="..\Lisa.Skyrim\Lisa.Skyrim.csproj">
       <Project>{eba9e2d9-e029-4975-8f2d-08bcb9b8335b}</Project>
       <Name>Lisa.Skyrim</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\tempProjects\FileSystem\Lisa.Storage.FileSystem\Lisa.Storage.FileSystem.csproj">
+    <ProjectReference Include="..\Lisa.Storage.FileSystem\Lisa.Storage.FileSystem.csproj">
       <Project>{7971748a-8148-485a-bee2-7cc1a2a4e54b}</Project>
       <Name>Lisa.Storage.FileSystem</Name>
     </ProjectReference>

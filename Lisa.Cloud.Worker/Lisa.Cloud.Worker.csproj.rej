@@ -4,6 +4,7 @@ diff a/Lisa.Cloud.Worker/Lisa.Cloud.Worker.csproj b/Lisa.Cloud.Worker/Lisa.Cloud
        <Name>Lisa.Bioshock</Name>
      </ProjectReference>
 -    <ProjectReference Include="..\Lisa.Storage.FileSystem\Lisa.Storage.FileSystem.csproj">
++    <ProjectReference Include="..\..\tempProjects\FileSystem\Lisa.Storage.FileSystem\Lisa.Storage.FileSystem.csproj">
        <Project>{7971748a-8148-485a-bee2-7cc1a2a4e54b}</Project>
        <Name>Lisa.Storage.FileSystem</Name>
      </ProjectReference>

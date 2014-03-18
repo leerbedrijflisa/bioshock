@@ -28,8 +28,6 @@ namespace Lisa.Cloud.Worker
 
         public override void Run()
         {
-
-
             var conString = ConfigurationManager.AppSettings["StorageConnectionString"];
             storageAccount = CloudStorageAccount.Parse(conString);
             queueClient = storageAccount.CreateCloudQueueClient();
@@ -46,7 +44,7 @@ namespace Lisa.Cloud.Worker
 
                 if (null == (cloudMessage))
                 {
-                    Thread.Sleep(10000);
+                    Thread.Sleep(5000);
                 }
                 else if (null != (dictionary = processQueue(cloudMessage)))
                 {
@@ -60,15 +58,18 @@ namespace Lisa.Cloud.Worker
                     }
 
                     var ID = dictionary["ID"];
-                    var timee = dictionary["Time"];
-                    DateTime time = DateTime.Parse(timee);
                     var action = dictionary["Action"];
                     var message = dictionary["Message"];
                     var rootID = dictionary["RootID"];
+
+                    var timee = dictionary["Time"];
+                    DateTime time = DateTime.Parse(timee);
+
                     string projectDir = dictionary["Project"];
                     string[] projectSplit = projectDir.Split('-');
                     var projectName = projectSplit[1];
                     var projectID = projectSplit[0];
+
                     Trace.TraceInformation("ID: " + ID);
                     Trace.TraceInformation("Project: " + projectSplit);
                     Trace.TraceInformation("Time: " + time);
@@ -79,10 +80,12 @@ namespace Lisa.Cloud.Worker
                     if (file == null)
                     {
                         Trace.TraceError("File not found!" + Environment.NewLine + "Project: " + projectDir + Environment.NewLine + "File: " + ID);
+                        queue.DeleteMessage(cloudMessage);
+                        Trace.TraceInformation("Deleted message from the queue");
                         break;
                     }
-                    
-                    switch (dictionary["Action"])
+
+                    switch (action)
                     {
                         case "Storage":
                             Trace.TraceInformation("Action: Storage");
@@ -101,15 +104,10 @@ namespace Lisa.Cloud.Worker
                             file.Descriptor.Metadata["LastModified"] = time.ToString();
      
                             break;
-                        case "ValidateHtml":
-                            Trace.TraceInformation("Action: Validate Html");
-
-                            break;
-                        case "ValidateCss":
-                            Trace.TraceInformation("Action: Validate CSS");
-
-                            break;
                     }
+
+                    queue.DeleteMessage(cloudMessage);
+                    Trace.TraceInformation("Deleted message from the queue");
 
                 }
             }
@@ -178,7 +176,6 @@ namespace Lisa.Cloud.Worker
                             }
                             headers.Add(key, value.Trim());
                         }
-
                     }
                     else
                     {
