@@ -16,10 +16,5 @@
     <ConfigurationSettings>
       <Setting name="StorageConnectionString" />
     </ConfigurationSettings>
-    <Contents>
-      <Content destination=".\">
-        <SourceDirectory path="C:\Users\Marijn Kok\Documents\Svn\BioshockSvn\Lisa.Cloud\rcf\Debug\Lisa.Cloud.WorkerContent\" />
-      </Content>
-    </Contents>
   </WorkerRole>
 </ServiceDefinition>

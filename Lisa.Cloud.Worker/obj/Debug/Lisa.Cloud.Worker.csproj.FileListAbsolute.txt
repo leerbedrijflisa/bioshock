@@ -164,3 +164,6 @@ C:\Users\Marijn Kok\Documents\Svn\BioshockSvn\Lisa.Cloud.Worker\bin\Debug\nl-NL\
 C:\Users\Marijn Kok\Documents\Svn\BioshockSvn\Lisa.Cloud.Worker\obj\Debug\Lisa.Cloud.Worker.csprojResolveAssemblyReference.cache
 C:\Users\Marijn Kok\Documents\Svn\BioshockSvn\Lisa.Cloud.Worker\obj\Debug\Lisa.Cloud.Worker.dll
 C:\Users\Marijn Kok\Documents\Svn\BioshockSvn\Lisa.Cloud.Worker\obj\Debug\Lisa.Cloud.Worker.pdb
+C:\Users\Marijn Kok\Documents\GitHub\bioshock\Lisa.Cloud.Worker\obj\Debug\Lisa.Cloud.Worker.csprojResolveAssemblyReference.cache
+C:\Users\Marijn Kok\Documents\GitHub\bioshock\Lisa.Cloud.Worker\obj\Debug\Lisa.Cloud.Worker.dll
+C:\Users\Marijn Kok\Documents\GitHub\bioshock\Lisa.Cloud.Worker\obj\Debug\Lisa.Cloud.Worker.pdb

@@ -78,7 +78,7 @@
       <Project>{7d11aded-c748-42f0-9f5d-b118003f9160}</Project>
       <Name>Lisa.Bioshock</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Lisa.Storage.FileSystem\Lisa.Storage.FileSystem.csproj">
+    <ProjectReference Include="..\..\tempProjects\FileSystem\Lisa.Storage.FileSystem\Lisa.Storage.FileSystem.csproj">
       <Project>{7971748a-8148-485a-bee2-7cc1a2a4e54b}</Project>
       <Name>Lisa.Storage.FileSystem</Name>
     </ProjectReference>

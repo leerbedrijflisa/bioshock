@@ -134,3 +134,5 @@ C:\Users\Marijn Kok\Documents\Svn\BioshockSvn\Lisa.Cloud\obj\Debug\Lisa.Cloud.Wo
 C:\Users\Marijn Kok\Documents\Svn\BioshockSvn\Lisa.Cloud\obj\Debug\Lisa.Cloud.Worker\zh-Hant\Microsoft.Data.Edm.resources.dll
 C:\Users\Marijn Kok\Documents\Svn\BioshockSvn\Lisa.Cloud\obj\Debug\Lisa.Cloud.Worker\zh-Hant\Microsoft.Data.OData.resources.dll
 C:\Users\Marijn Kok\Documents\Svn\BioshockSvn\Lisa.Cloud\obj\Debug\Lisa.Cloud.Worker\zh-Hant\System.Spatial.resources.dll
+C:\Users\Marijn Kok\Documents\GitHub\bioshock\Lisa.Cloud\bin\Debug\ServiceConfiguration.cscfg
+C:\Users\Marijn Kok\Documents\GitHub\bioshock\Lisa.Cloud\bin\Debug\ServiceDefinition.csdef
