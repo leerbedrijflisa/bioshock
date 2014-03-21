@@ -22,39 +22,32 @@ namespace Lisa.Cloud.Worker
 {
     public class WorkerRole : RoleEntryPoint
     {
-        public CloudStorageAccount storageAccount;
-        public CloudQueueClient queueClient;
-        CloudQueue queue;
 
         public override void Run()
         {
-            var conString = ConfigurationManager.AppSettings["StorageConnectionString"];
-            storageAccount = CloudStorageAccount.Parse(conString);
-            queueClient = storageAccount.CreateCloudQueueClient();
-           
-            queue = queueClient.GetQueueReference("projectfilesqueue");
-            queue.CreateIfNotExists();
+            CloudQueue queue = GetQueue();
 
             while (true)
             {
-                Trace.TraceInformation("Search for a new queue message");
+                Trace.TraceInformation("Search for a new queue message.");
 
-                Dictionary<string, string> dictionary = null;
                 CloudQueueMessage cloudMessage = queue.GetMessage();
 
-                if (null == (cloudMessage))
+                if (cloudMessage == null)
                 {
                     Thread.Sleep(5000);
+                    continue;
                 }
-                else if (null != (dictionary = processQueue(cloudMessage)))
-                {
 
+                Dictionary<string, string> dictionary = ParseQueueMessage(cloudMessage);
+                if (dictionary != null)
+                {
                     if (dictionary["ID"] == null || dictionary["Time"] == null || dictionary["Action"] == null)
                     {
                         Trace.TraceInformation("Failed to find the headers..");
                         queue.DeleteMessage(cloudMessage);
                         Trace.TraceInformation("Deleted message from the queue");
-                        break;
+                        continue;
                     }
 
                     var ID = dictionary["ID"];
@@ -82,7 +75,7 @@ namespace Lisa.Cloud.Worker
                         Trace.TraceError("File not found!" + Environment.NewLine + "Project: " + projectDir + Environment.NewLine + "File: " + ID);
                         queue.DeleteMessage(cloudMessage);
                         Trace.TraceInformation("Deleted message from the queue");
-                        break;
+                        continue;
                     }
 
                     switch (action)
@@ -97,7 +90,7 @@ namespace Lisa.Cloud.Worker
                             if (lastModified >= time)
                             {
                                 Trace.TraceError("File already proccessed");
-                                break;
+                                continue;
                             }
 
                             file.WriteContents(message);
@@ -124,78 +117,86 @@ namespace Lisa.Cloud.Worker
             return base.OnStart();
         }
 
-        public Dictionary<string, string> processQueue(CloudQueueMessage cloudMessage)
+        public Dictionary<string, string> ParseQueueMessage(CloudQueueMessage cloudMessage)
         {
-            if (null != (cloudMessage))
+            List<string> cloudMessageList = cloudMessage.AsString.Split('\n').ToList();
+            Dictionary<string, string> headers = new Dictionary<string, string>();
+            bool isMessage = false;
+            string message = string.Empty;
+
+            while (cloudMessageList.Count > 0)
             {
-                List<string> cloudMessageList = cloudMessage.AsString.Split('\n').ToList();
-                Dictionary<string, string> headers = new Dictionary<string, string>();
-                bool isMessage = false;
-                string message = string.Empty;
+                var t = cloudMessageList[0];
+                string[] tSplit = t.Split(':');
 
-                while (cloudMessageList.Count > 0)
+                if (tSplit.Length > 1)
                 {
-                    var t = cloudMessageList[0];
-                    string[] tSplit = t.Split(':');
-
-                    if (tSplit.Length > 1)
+                    var key = tSplit.First().Trim();
+                    if (key.ToLower() == "message")
                     {
-                        var key = tSplit.First().Trim();
-                        if (key.ToLower() == "message")
+                        isMessage = true;
+                        if (isMessage)
                         {
-                            isMessage = true;
-                            if (isMessage)
+                            while (cloudMessageList.Count > 0)
                             {
-                                while (cloudMessageList.Count > 0)
-                                {
-                                    var msg = cloudMessageList[0];
-                                    message += msg.Replace("Message: ", "") + Environment.NewLine;
-                                    cloudMessageList.Remove(msg);
-                                }
+                                var msg = cloudMessageList[0];
+                                message += msg.Replace("Message: ", "") + Environment.NewLine;
+                                cloudMessageList.Remove(msg);
+                            }
 
-                                headers.Add("Message", message);
-                                break;
-                            }
-                        }
-                        else
-                        {
-                            var value = "";
-                            if (tSplit.Count() > 2)
-                            {
-                                for (int i = 1; i < tSplit.Count(); i++)
-                                {
-                                    if (i >= 2)
-                                        value += ":" + tSplit[i];
-                                    else
-                                        value += tSplit[i];
-                                }
-                            }
-                            else
-                            {
-                                value = tSplit.Last();
-                            }
-                            headers.Add(key, value.Trim());
+                            headers.Add("Message", message);
+                            break;
                         }
                     }
                     else
                     {
-                        if (isMessage)
+                        var value = "";
+                        if (tSplit.Count() > 2)
                         {
-                            message += t;
+                            for (int i = 1; i < tSplit.Count(); i++)
+                            {
+                                if (i >= 2)
+                                    value += ":" + tSplit[i];
+                                else
+                                    value += tSplit[i];
+                            }
                         }
+                        else
+                        {
+                            value = tSplit.Last();
+                        }
+                        headers.Add(key, value.Trim());
                     }
-
-                    cloudMessageList.Remove(t);
                 }
-
-                if (!headers.ContainsKey("Message"))
+                else
                 {
-                    headers.Add("Message", message);
+                    if (isMessage)
+                    {
+                        message += t;
+                    }
                 }
 
-                return headers;
+                cloudMessageList.Remove(t);
             }
-            return null;
+
+            if (!headers.ContainsKey("Message"))
+            {
+                headers.Add("Message", message);
+            }
+
+            return headers;
+        }
+
+        private CloudQueue GetQueue() 
+        {
+            string connectionString = ConfigurationManager.AppSettings["StorageConnectionString"];
+            CloudStorageAccount storageAccount = CloudStorageAccount.Parse(connectionString);
+            CloudQueueClient queueClient = storageAccount.CreateCloudQueueClient();
+           
+            CloudQueue queue = queueClient.GetQueueReference("projectfilesqueue");
+            queue.CreateIfNotExists();
+
+            return queue;
         }
     }
 }
