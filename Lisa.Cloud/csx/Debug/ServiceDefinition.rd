@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<serviceModel xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" name="Lisa.Cloud" generation="1" functional="0" release="0" Id="12705c7c-f08a-4b6f-9a67-81b36d73da4f" dslVersion="1.2.0.0" xmlns="http://schemas.microsoft.com/dsltools/RDSM">
+<serviceModel xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" name="Lisa.Cloud" generation="1" functional="0" release="0" Id="75a30508-2d2f-4877-995a-d2c924a1e62e" dslVersion="1.2.0.0" xmlns="http://schemas.microsoft.com/dsltools/RDSM">
   <groups>
     <group name="Lisa.CloudGroup" generation="1" functional="0" release="0">
       <settings>

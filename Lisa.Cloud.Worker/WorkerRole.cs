@@ -39,69 +39,39 @@ namespace Lisa.Cloud.Worker
                     continue;
                 }
 
-                Dictionary<string, string> dictionary = ParseQueueMessage(cloudMessage);
-                if (dictionary != null)
+                Parse parseMessage = new Parse(cloudMessage);
+                Message message = null;
+
+                if (!parseMessage.CheckFormat())
                 {
-                    if (dictionary["ID"] == null || dictionary["Time"] == null || dictionary["Action"] == null)
-                    {
-                        Trace.TraceInformation("Failed to find the headers..");
-                        queue.DeleteMessage(cloudMessage);
-                        Trace.TraceInformation("Deleted message from the queue");
-                        continue;
-                    }
-
-                    var ID = dictionary["ID"];
-                    var action = dictionary["Action"];
-                    var message = dictionary["Message"];
-                    var rootID = dictionary["RootID"];
-
-                    var timee = dictionary["Time"];
-                    DateTime time = DateTime.Parse(timee);
-
-                    string projectDir = dictionary["Project"];
-                    string[] projectSplit = projectDir.Split('-');
-                    var projectName = projectSplit[1];
-                    var projectID = projectSplit[0];
-
-                    Trace.TraceInformation("ID: " + ID);
-                    Trace.TraceInformation("Project: " + projectSplit);
-                    Trace.TraceInformation("Time: " + time);
-
-                    var fileSystem = FileSystemHelper.GetFileSystem(rootID);
-                    var file = fileSystem.Root.FindItemByID(ID) as File;
-
-                    if (file == null)
-                    {
-                        Trace.TraceError("File not found!" + Environment.NewLine + "Project: " + projectDir + Environment.NewLine + "File: " + ID);
-                        queue.DeleteMessage(cloudMessage);
-                        Trace.TraceInformation("Deleted message from the queue");
-                        continue;
-                    }
-
-                    switch (action)
-                    {
-                        case "Storage":
-                            Trace.TraceInformation("Action: Storage");
-                            
-                            if (!file.Descriptor.Metadata.ContainsKey("LastModified"))
-                                file.Descriptor.Metadata.Add("LastModified", "3-3-2003 00:00:00");
-
-                            DateTime lastModified = DateTime.Parse(file.Descriptor.Metadata["LastModified"]);
-                            if (lastModified >= time)
-                            {
-                                Trace.TraceError("File already proccessed");
-                                continue;
-                            }
-
-                            file.WriteContents(message);
-                            file.Descriptor.Metadata["LastModified"] = time.ToString();
-     
-                            break;
-                    }
-
+                    Trace.TraceInformation("No valid Cloud Message");
                     queue.DeleteMessage(cloudMessage);
-                    Trace.TraceInformation("Deleted message from the queue");
+                    continue;
+                }
+                if (!parseMessage.CheckHeaders())
+                {
+                    Trace.TraceInformation("No valid headers");
+                    queue.DeleteMessage(cloudMessage);
+                    continue; 
+                }
 
+                message = parseMessage.GetMessage();
+
+                var fileSystem = FileSystemHelper.GetFileSystem(message.RootID);
+                var file = fileSystem.Root.FindItemByID(message.ID) as File;
+
+                if (file == null)
+                {
+                    Trace.TraceError("File not found!" + Environment.NewLine + "Project: " + message.ProjectName + Environment.NewLine + "File: " + message.ID);
+                    queue.DeleteMessage(cloudMessage);
+                    continue;
+                }
+
+                switch (message.Action)
+                {
+                    case "Storage":
+                        SaveFile(file, message);
+                    break;
                 }
             }
         }
@@ -117,76 +87,6 @@ namespace Lisa.Cloud.Worker
             return base.OnStart();
         }
 
-        public Dictionary<string, string> ParseQueueMessage(CloudQueueMessage cloudMessage)
-        {
-            List<string> cloudMessageList = cloudMessage.AsString.Split('\n').ToList();
-            Dictionary<string, string> headers = new Dictionary<string, string>();
-            bool isMessage = false;
-            string message = string.Empty;
-
-            while (cloudMessageList.Count > 0)
-            {
-                var t = cloudMessageList[0];
-                string[] tSplit = t.Split(':');
-
-                if (tSplit.Length > 1)
-                {
-                    var key = tSplit.First().Trim();
-                    if (key.ToLower() == "message")
-                    {
-                        isMessage = true;
-                        if (isMessage)
-                        {
-                            while (cloudMessageList.Count > 0)
-                            {
-                                var msg = cloudMessageList[0];
-                                message += msg.Replace("Message: ", "") + Environment.NewLine;
-                                cloudMessageList.Remove(msg);
-                            }
-
-                            headers.Add("Message", message);
-                            break;
-                        }
-                    }
-                    else
-                    {
-                        var value = "";
-                        if (tSplit.Count() > 2)
-                        {
-                            for (int i = 1; i < tSplit.Count(); i++)
-                            {
-                                if (i >= 2)
-                                    value += ":" + tSplit[i];
-                                else
-                                    value += tSplit[i];
-                            }
-                        }
-                        else
-                        {
-                            value = tSplit.Last();
-                        }
-                        headers.Add(key, value.Trim());
-                    }
-                }
-                else
-                {
-                    if (isMessage)
-                    {
-                        message += t;
-                    }
-                }
-
-                cloudMessageList.Remove(t);
-            }
-
-            if (!headers.ContainsKey("Message"))
-            {
-                headers.Add("Message", message);
-            }
-
-            return headers;
-        }
-
         private CloudQueue GetQueue() 
         {
             string connectionString = ConfigurationManager.AppSettings["StorageConnectionString"];
@@ -197,6 +97,26 @@ namespace Lisa.Cloud.Worker
             queue.CreateIfNotExists();
 
             return queue;
+        }
+
+        private bool SaveFile(File file, Message message)
+        {
+            Trace.TraceInformation("Action: Storage");
+
+            if (!file.Descriptor.Metadata.ContainsKey("LastModified"))
+                file.Descriptor.Metadata.Add("LastModified", "3-3-2003 00:00:00");
+
+            DateTime lastModified = DateTime.Parse(file.Descriptor.Metadata["LastModified"]);
+            if (lastModified >= message.Time)
+            {
+                Trace.TraceError("File already proccessed");
+                return false;
+            }
+
+            file.WriteContents(message.Contents);
+            file.Descriptor.Metadata["LastModified"] = message.Time.ToString();
+            Trace.TraceInformation("Saved file to Cloud");
+            return true;
         }
     }
 }

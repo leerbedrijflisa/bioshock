@@ -95,7 +95,6 @@ namespace Lisa.Bioshock.Controllers
                 headersToContents += "Action: Storage" + Environment.NewLine;
                 headersToContents += "RootID: " + project.RootID + Environment.NewLine;
                 headersToContents += "Project: " + project.ID + "-" + project.Name + Environment.NewLine;
-                headersToContents += "Headers: Some optionele headers" + Environment.NewLine;
                 headersToContents += Environment.NewLine + "Message: " + contents;
                 CloudQueueMessage message = new CloudQueueMessage(headersToContents);
                 queue.AddMessage(message);
