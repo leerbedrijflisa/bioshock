@@ -1,3 +1,5 @@
+///<reference path="../../typings/diff_match_patch/diff_match_patch.d.ts"/>
+
 interface AjaxResult {
     result: boolean;
     errorMessage?: string;
@@ -25,6 +27,7 @@ interface AjaxCreateFileOptions extends AjaxCallbacks {
 interface AjaxWriteFileOptions extends AjaxCallbacks {
     fileId: string;
     contents: string;
+    oldContents: string;
 }
 
 class AjaxHelper {
@@ -75,6 +78,7 @@ class AjaxHelper {
      * @param {Function} error? - When given, this handler will be triggered when any errors occurs in the ajax request.
      */
     public createFile(options: AjaxCreateFileOptions) {
+
         var data = {
             fileName: options.fileName
         };
@@ -85,12 +89,26 @@ class AjaxHelper {
     /**
      */
     public writeFile(options: AjaxWriteFileOptions) {
-        var data = {
-            fileID: options.fileId,
-            contents: options.contents
-        };
+        var dmp = new diff_match_patch();
 
-        this.makeRequest('/project/writefile', data, true, options.success, options.error);
+        if (options.oldContents != null || options.contents != null) {
+            var diff = dmp.diff_main(options.oldContents, options.contents);
+            if (diff.length > 2) {
+                dmp.diff_cleanupSemantic(diff);
+            }
+
+            var patch_list = dmp.patch_make(diff);
+            var patch = dmp.patch_toText(patch_list);
+            var data = {
+                fileID: options.fileId,
+                contents: patch
+                //contents: options.contents 
+            };
+
+            this.makeRequest('/project/writefile', data, true, options.success, options.error);
+        } else {
+            console.log("oldContents or contents is null");
+        }
     }
 
 

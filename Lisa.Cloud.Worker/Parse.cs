@@ -10,6 +10,7 @@ using Microsoft.WindowsAzure.Storage;
 using Microsoft.WindowsAzure.Storage.Auth;
 using Microsoft.WindowsAzure.Storage.Queue;
 using System.Text.RegularExpressions;
+using System.Web;
 
 namespace Lisa.Cloud.Worker
 {
@@ -21,6 +22,7 @@ namespace Lisa.Cloud.Worker
             {
                 Message = queueMessage.AsString;
             }
+            
         }
 
         public bool CheckFormat()
@@ -106,9 +108,10 @@ namespace Lisa.Cloud.Worker
                 output = match.ToString();
                 output = output.Replace("Message: ", "").Trim();
             }
-            return output;
 
+            return output;
         }
+
 
         private string Message;
         private List<string> Headers = new List<string>()

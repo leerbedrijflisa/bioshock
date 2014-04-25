@@ -557,6 +557,7 @@
     <Content Include="Scripts\bioshock\utils\ErrorUtil.js">
       <DependentUpon>ErrorUtil.ts</DependentUpon>
     </Content>
+    <Content Include="Scripts\diff\diff_match_patch.js" />
     <Content Include="Scripts\jquery-1.9.1.js" />
     <Content Include="Scripts\jquery-ui-1.10.3.js" />
     <Content Include="Scripts\jquery.nicescroll.min.js" />
@@ -609,6 +610,7 @@
     <Content Include="Views\Shared\Error.cshtml" />
     <Content Include="Views\Shared\_Layout.cshtml" />
     <Content Include="Views\Home\Index.cshtml" />
+    <TypeScriptCompile Include="Scripts\typings\diff_match_patch\diff_match_patch.d.ts" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

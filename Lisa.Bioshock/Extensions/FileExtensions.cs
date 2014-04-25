@@ -9,10 +9,13 @@ namespace Lisa.Bioshock.Extensions
 {
     public static class FileExtensions
     {
-        public static string ReadContents(this File file)
+        public static string ReadContents(this File file, bool queueCheck = true)
         {
-            var storageCloud = new StorageCloud();
-            storageCloud.waitForQueue();
+            if (queueCheck)
+            {
+                var storageCloud = new StorageCloud();
+                storageCloud.waitForQueue();
+            }
 
             using (var reader = new System.IO.StreamReader(file.InputStream))
             {

@@ -17,6 +17,8 @@ using Lisa.Bioshock.Helpers;
 using Lisa.Bioshock.Extensions;
 using Lisa.Storage;
 using Lisa.Storage.Data;
+using DiffMatchPatch;
+using System.Web;
 
 namespace Lisa.Cloud.Worker
 {
@@ -71,6 +73,7 @@ namespace Lisa.Cloud.Worker
                 {
                     case "Storage":
                         SaveFile(file, message);
+                        queue.DeleteMessage(cloudMessage);
                     break;
                 }
             }
@@ -102,6 +105,9 @@ namespace Lisa.Cloud.Worker
         private bool SaveFile(File file, Message message)
         {
             Trace.TraceInformation("Action: Storage");
+            Trace.TraceInformation("File Name: " + file.Name);
+            Trace.TraceInformation("Root ID: " + message.RootID);
+            Trace.TraceInformation("Patch: " + message.Contents);
 
             if (!file.Descriptor.Metadata.ContainsKey("LastModified"))
                 file.Descriptor.Metadata.Add("LastModified", "3-3-2003 00:00:00");
@@ -113,10 +119,24 @@ namespace Lisa.Cloud.Worker
                 return false;
             }
 
-            file.WriteContents(message.Contents);
-            file.Descriptor.Metadata["LastModified"] = message.Time.ToString();
-            Trace.TraceInformation("Saved file to Cloud");
+            try
+            {
+                string oldContent =file.ReadContents(false);
+
+                var patches = dmp.patch_fromText(message.Contents);
+                var results = dmp.patch_apply(patches, oldContent);
+                var newContents = Uri.UnescapeDataString(results[0].ToString());
+
+                file.WriteContents(newContents);
+                file.Descriptor.Metadata["LastModified"] = message.Time.ToString();
+                Trace.TraceInformation("Saved file to Cloud");
+            } catch(Exception e) {
+                Trace.TraceInformation("File failed to save to the cloud");
+            }
+            
             return true;
         }
+
+        private diff_match_patch dmp = new diff_match_patch();
     }
 }

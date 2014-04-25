@@ -1,5 +1,5 @@
 class EditorState implements State {
-
+    
     public enter() {
         this.editorWindow = new EditorWindow('#editor-window');
         this.editorWindow.resizing.addListener(() => workspace.editor.refresh());
@@ -50,6 +50,7 @@ class EditorState implements State {
                 workspace.editor.openFile(file);
                 workspace.preview.fileId = file.id;
                 this.editorWindow.title = file.name;
+                this.oldContents = file.fileProps.contents;
             }
         });
     }
@@ -63,9 +64,11 @@ class EditorState implements State {
         if (this.saveFile) {
             workspace.ajax.writeFile({
                 fileId: workspace.editor.file.id,
-                contents: workspace.editor.contents
+                contents: workspace.editor.contents,
+                oldContents: this.oldContents,
             })
             this.saveFile = false;
+            this.oldContents = workspace.editor.contents;
         }
 
         if (event.keyCode == Keys.CTRL && !this.ignoreCtrl) {
@@ -130,14 +133,15 @@ class EditorState implements State {
         if (this.saveFile) {
             workspace.ajax.writeFile({
                 fileId: currentFile.id,
-                contents: currentFile.fileProps.contents
+                contents: currentFile.fileProps.contents,
+                oldContents: this.oldContents,
             })
+            this.saveFile = false;
+            this.oldContents = workspace.editor.contents;
         }
 
-        this.saveFile = false;
-
         var currentFile = workspace.editor.file;
-
+        
         if(FileSystemHelper.isHTML(file.name)) {
             workspace.preview.fileId = file.id;
         }
@@ -148,6 +152,7 @@ class EditorState implements State {
             // Enables ALT+C functionality
             this.lastOpenedFile = currentFile;
         }
+        
     }
 
     private syncInterval = () => {
@@ -155,14 +160,17 @@ class EditorState implements State {
             workspace.ajax.writeFile({
                 fileId: workspace.editor.file.id,
                 contents: workspace.editor.contents,
+                oldContents: this.oldContents,
                 success: () => {
                     if (FileSystemHelper.isCSS(workspace.editor.file.name)) {
                         this.synchronizer.processChanges({
                             fileID: workspace.editor.file.id,
                             fileName: workspace.editor.file.name,
-                            contents: workspace.editor.contents
+                            contents: workspace.editor.contents,
+                            oldContents: this.oldContents,
                         });
                     }
+                    this.oldContents = workspace.editor.contents;
                 }
             });
             this.saveFile = false;
@@ -181,4 +189,5 @@ class EditorState implements State {
     private _syncInterval: number;
     private editorChangeTimer: number;
     private saveFile: boolean = false;
+    public oldContents: string;
 }  
