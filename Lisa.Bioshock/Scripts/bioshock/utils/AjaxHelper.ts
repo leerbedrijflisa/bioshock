@@ -69,6 +69,16 @@ class AjaxHelper {
         this.makeRequest('/project/getfile', data, false, options.success, options.error);
     }
 
+    /** 
+     * Make an ajax request to get all the shortkeys within the current project.
+     *
+     * @param {Function} success - This handler will be triggered after the ajax request returns the status code 200 OK.
+     * @param {Function} error? - When given, this handler will be triggered when any errors occurs in the ajax request.
+    */
+    public getShortKeys(success: Function, error?: Function) {
+        this.makeRequest('http://localhost:57464/api/cheatsheet/', null, false, success, error, false);
+    }
+
 
     /**
      * Make an ajax request to create a new file within the current project.
@@ -118,9 +128,12 @@ class AjaxHelper {
 
     
     /** The actual request. */
-    private makeRequest(url: string, data: Object, isPost: boolean, success: Function, error?: Function) {
+    private makeRequest(url: string, data: Object, isPost: boolean, success: Function, error?: Function, sendProjectID: boolean = true) {
         data = data || {};
-        data['projectID'] = this.projectID;
+
+        if (sendProjectID) {
+            data['projectID'] = this.projectID; 
+        }
 
         $.ajax({
             'url': url,
@@ -136,13 +149,18 @@ class AjaxHelper {
     }
 
     private onSuccess(data: StorageItemAjaxResult, success?: Function, error?: Function) {
-        if (!data.result && (!error || error(data))) {
+        if ((data.result !== undefined && !data.result) && (!error || error(data))) {
             ErrorUtil.ajaxError(data.errorMessage);
         }
 
-        if (data.result && success) {
+        if (((data.result === undefined && data) || (data.result !== undefined && data.result))
+            && success) {
+
             success(data);
         }
+        //if ((data.result !== undefined && (data.result || data)) && success) {
+        //    success(data);
+        //}
     }
 
     private onError(jqXHR: any, error?: Function) {

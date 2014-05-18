@@ -389,6 +389,9 @@
     <Content Include="Content\Images\AddFile.png" />
     <Content Include="Content\Images\filter_button.png" />
     <Content Include="Content\Images\filter_item_logo.png" />
+    <Content Include="Content\Images\helpcode.jpg" />
+    <Content Include="Content\Images\helplock.jpg" />
+    <Content Include="Content\Images\helpnew.jpg" />
     <Content Include="Content\Images\item.png" />
     <Content Include="Content\Images\scroll.jpg" />
     <Content Include="Content\Images\Sprite.png" />
@@ -454,8 +457,10 @@
     <Content Include="Global.asax" />
     <Content Include="Content\Site.css" />
     <Content Include="Content\CodeMirror\mode\livescript\livescript.ls" />
+    <Content Include="Views\Shared\_CheatSheet.cshtml" />
     <TypeScriptCompile Include="Scripts\bioshock\filesystem\FileSystemHelper.ts" />
     <TypeScriptCompile Include="Scripts\bioshock\filesystem\StorageItem.ts" />
+    <TypeScriptCompile Include="Scripts\bioshock\states\CheatSheetState.ts" />
     <TypeScriptCompile Include="Scripts\bioshock\states\EditorState.ts" />
     <TypeScriptCompile Include="Scripts\bioshock\states\State.ts" />
     <TypeScriptCompile Include="Scripts\bioshock\states\MenuState.ts" />
@@ -463,6 +468,7 @@
     <TypeScriptCompile Include="Scripts\bioshock\states\OpenFileState.ts" />
     <TypeScriptCompile Include="Scripts\bioshock\states\PreviewState.ts" />
     <TypeScriptCompile Include="Scripts\bioshock\states\StateMachine.ts" />
+    <TypeScriptCompile Include="Scripts\bioshock\ui\CheatSheetWindow.ts" />
     <TypeScriptCompile Include="Scripts\bioshock\ui\EditorErrorRenderer.ts" />
     <TypeScriptCompile Include="Scripts\bioshock\ui\Editor.ts" />
     <TypeScriptCompile Include="Scripts\bioshock\ui\EditorWindow.ts" />
@@ -470,6 +476,7 @@
     <TypeScriptCompile Include="Scripts\bioshock\ui\NewFileWindow.ts" />
     <TypeScriptCompile Include="Scripts\bioshock\ui\OpenFileWindow.ts" />
     <TypeScriptCompile Include="Scripts\bioshock\ui\Preview.ts" />
+    <TypeScriptCompile Include="Scripts\bioshock\ui\ShortKeys.ts" />
     <TypeScriptCompile Include="Scripts\bioshock\ui\UIWindow.ts" />
     <TypeScriptCompile Include="Scripts\bioshock\utils\AjaxHelper.ts" />
     <TypeScriptCompile Include="Scripts\bioshock\utils\ErrorUtil.ts" />

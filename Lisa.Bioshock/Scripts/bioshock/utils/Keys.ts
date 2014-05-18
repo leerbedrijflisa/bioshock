@@ -29,5 +29,6 @@ enum Keys {
     X = 88,
     Y = 89,
     Z = 90,
+    F1 = 112,
     NUMLOCK = 144,
 }

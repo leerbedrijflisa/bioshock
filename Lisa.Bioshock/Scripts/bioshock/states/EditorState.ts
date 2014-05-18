@@ -102,10 +102,17 @@ class EditorState implements State {
                     this.onFileOpened(this.lastOpenedFile);
                 }
             }
+            else if (event.keyCode == Keys.H) {
+                var cheatSheetState = new CheatSheetState();
+                cheatSheetState.enter();
+
+                this.stateMachine.pushState(cheatSheetState);
+            }
         }
         else if (event.keyCode == Keys.ESC) {
             this.stateMachine.pushState(new MenuState());
         }
+ 
     }
 
     private onEditorChanged = (event: EditorEventObject) => {

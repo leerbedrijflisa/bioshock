@@ -12,6 +12,12 @@ header, footer, nav, section {
     display: block;
 }
 
+.font,input{
+	font-family: 'Open Sans', Open Sans, 'sans-serif';
+	color:#444444;
+}
+
+.hide {display:none;}
 
 /* Styles for basic forms
 -----------------------------------------------------------*/
@@ -380,7 +386,235 @@ textarea {
     font-size: 14px;
 }
 
+/* Cheat Sheet
+-----------------------------------------------------------*/
+.lightbox_background,.helpBackground{
+	width:100%;
+	height:100%;
+	background:rgba(255,255,255,0.5);
+	z-index:101;
+	position:absolute;
+	top:0px;
+	left:0px;
+	display:none;
+}
+.lightboxOuterContainer{
+	margin:-300px 0px 0px -270px;
+	top:50%;
+	left:50%;
+	width:540px;
+	height:601px;
+	background:white;
+	border:1px solid white;
+	position:absolute;
+}
+.lightboxInnerContainer{
+	margin:0px auto;
+	width:498px;
+	height:549px;
+	border:1px solid rgb(192,192,192);
+	padding:30px 20px 20px 20px;
+}
+.lightboxContent{
+	width:496px;
+	height:547px;
+	border:1px solid rgb(192,192,192);
+	overflow:auto;
+	overflow-x:hidden;
+	position:relative;
+}
+.lightboxContentContent{
+	width:456px;
+	padding:20px;
+}
 
+.cross{
+	width:11px;
+	height:10px;
+	position:absolute;
+	right:11px;
+	top:11px;
+	background:url(cross.png);
+}
+.cross:hover{
+	cursor:pointer;
+}
+
+.line::before{
+	height:1px;
+	background:rgb(221,221,221);
+	width:456px;
+	display:block;
+	content:'';
+	float:left;
+	position:absolute;
+	top:8px;
+}
+.line{
+	background:white;
+	display:inline-block;
+	position:relative;
+}
+.line::after{
+	content:'/';
+	background:white;
+	position:absolute;
+	float:left;
+	left:0px;
+	padding-right:5px;
+	top:-2px;
+}
+.block{
+	width:99px;
+	height:68px;
+	float:left;
+	margin:0px 5px;
+	padding:5px;
+	font-size:12px;
+	line-height:12px;
+}
+.block.selected{
+	background-color:rgb(241,241,241);
+}
+.row .block:first-child{
+	margin-left:-5px;
+}
+.row .block:last-child{
+	margin-right:-5px;
+}
+.block img{
+	width:97px;
+	height:54px;
+	border:1px solid rgb(192,192,192);
+	background:white;
+}
+.block span{
+	z-index:99;
+	text-overflow: ellipsis;
+	height:14px;
+	display:inline-block;
+	width:100%;
+	overflow:hidden;
+}
+.row::after{
+	content:'';
+	width:100%;
+	display:block;
+	clear:both;
+	height:1px;
+}
+.row:last-child .block{
+	margin-bottom:0px;
+}
+
+.options{
+	width:496px;
+	height:26px;
+	border-top:1px solid white;
+	position:absolute;
+	bottom:22px;
+	left:22px;
+	background:rgb(245,245,245);
+	display:none;
+}
+.options ul,.options ul li{
+	margin:0px;
+	padding:0px;
+	display:inline-block;
+}
+.options ul{
+	border-top:1px solid rgb(192,192,192);
+	width:100%;
+}
+.options li{
+	width:123px;
+	border-right:1px solid rgb(192,192,192);
+	float:left;
+	font-size:12px;
+	line-height:23px;
+	height:25px;
+	text-align:center;
+}
+.options li:last-child{
+	width:124px;
+	border-right:0px solid rgb(192,192,192);
+}
+.options li:hover{
+	background:white;
+	cursor:pointer;
+}
+
+.helpOuterContainer{
+	width:712px;
+	background:white;
+	border:1px solid white;
+	height:572px;
+	top:50%;
+	left:50%;
+	margin:-287px 0px 0px -357px;
+	position:absolute;
+}
+.helpInnerContainer{
+	padding:20px;
+	height:530px;
+	border:1px solid rgb(192,192,192);
+	width:670px;
+}
+.bigblock{
+	width:210px;
+	height:140px;
+	margin:0px 10px;
+	float:left;
+	font-size:14px;
+}
+.bigblock img{
+	width:208px;
+	border:1px solid rgb(192,192,192);
+	height:118px;
+}
+.bigblock span:nth-child(2){
+	font-weight:bold;
+	margin-left:10px;
+	display:inline-block;
+}
+.bigblock span:last-child{
+	float:right;
+	margin-right:10px;
+}
+
+.helpInnerContainer .row .bigblock:first-child{
+	margin-left:0px;
+}
+.helpInnerContainer .row .bigblock:last-child{
+	margin-right:0px;
+}
+.bigInput{
+	width:636px;
+	margin:20px 0px;
+	height:32px;
+	padding:0px 15px;
+}
+.helpList{
+	height:317px;
+	overflow:auto;
+	width:100%;
+	padding:0px;
+	margin:0px;
+}
+.helpList li{
+	margin:0px;
+	padding:0px;
+	height:20px;
+	font-size:14px;
+}
+.helpList li:nth-child(even){
+	background:rgb(241,241,241);
+}
+.helpList li span:first-child{
+	width:230px;
+	margin-left:10px;
+	display:inline-block;
+}
 
 /* New file window
 -----------------------------------------------------------*/
