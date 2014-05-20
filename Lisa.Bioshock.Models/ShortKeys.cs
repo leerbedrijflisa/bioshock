@@ -10,9 +10,8 @@ namespace Lisa.Bioshock.Models
     {
         public int Id { get; set; }
         public string Name { get; set; }
-        public string Key1 { get; set; }
-        public string Key2 { get; set; }
-        public string Key3 { get; set; }
+        public string Shortkey { get; set; }
+
 
         //public int FilterCount { get; set; }
     }

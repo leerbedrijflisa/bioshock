@@ -4,6 +4,8 @@ class CheatSheetWindow extends UIWindow {
         this.initialize();
     }
 
+    public shortkeys: JQuery;
+
     private initialize() {
         this.$filterQuery = this.$element.find('.bigInput');
         this.$filterQuery.on('keyup', this.onFilter);
@@ -18,24 +20,42 @@ class CheatSheetWindow extends UIWindow {
         return super.clearEventListeners();
     }
 
+    // shortkey list, 1 shortkey veld
     public setShortKeysData(keys: any[]) {
         var fileList = $('.helpList').empty();
 
         for (var i = 0; i < keys.length; i++) {
             var key = keys[i];
-            var writeKeys = '';
-
-            if (key.key1) {
-                writeKeys = key.key1;
-            } if (key.key2) {
-                writeKeys += (key.key1 ? ' + ' + key.key2 : key.key2);
-            } if (key.key3) {
-                writeKeys += ((key.key1 || key.key2) ? ' + ' + key.key2 : key.key2);
-            }
-
-            fileList.append('<li><span>' + writeKeys + '</span><span class="s">' + key.name + '</span></li>');
+           
+            fileList.append('<li><span>' + key.shortkey + '</span><span class="s">' + key.name + '</span></li>');
         }
     }
+
+    private filter = () => {
+        var helpList = $('.helpList');
+        var searchString = this.$filterQuery.val();
+        var searchArray = searchString.split(' ');
+
+        if (searchString.length > 2) {
+            helpList.find("li").each(function (index) {
+                var item = $(this);
+                var remove = true;
+
+                for (var i = 0; i < searchArray.length; i++) {
+                    var sItem = searchArray[i].toLowerCase();
+                    var indexCount = item.text().toLowerCase().indexOf(sItem.trim());
+                    if (indexCount > -1) {
+                        remove = false;
+                    }
+                }
+                alert(indexCount);
+                if (remove) {
+                    item.remove();
+                }
+            });
+        }
+    }
+
 
     private onFilter = () => {
         this.clearFilter();
@@ -54,8 +74,9 @@ class CheatSheetWindow extends UIWindow {
                     }
                 } else {
                     hide = false;
-                    if(item == null || !item)
+                    if (item == null || !item) {
                         $(this).removeClass('hide');
+                    }
                 }
             }
         });
@@ -70,6 +91,5 @@ class CheatSheetWindow extends UIWindow {
 
     // fields
     private $closeLink: JQuery;
-    private $filterQuery: JQuery;
-    
+    private $filterQuery: JQuery;    
 }  
