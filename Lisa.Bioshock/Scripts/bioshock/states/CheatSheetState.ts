@@ -33,7 +33,6 @@ class CheatSheetState implements State {
 
     private onWindowOpening = () => {
         workspace.ajax.getShortKeys((data) => {
-            this.window.shortkeys = data;
             this.window.setShortKeysData(data);
         });
     }
