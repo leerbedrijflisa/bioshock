@@ -31,6 +31,23 @@ class OpenFileState implements State {
     private onKeyUp = (event: JQueryKeyEventObject) => {
         if (event.keyCode == Keys.ESC) {
             this.pop();
+        } else if (event.altKey) {
+            if (event.keyCode == Keys.O) {
+                this.pop();
+            }
+            else if (event.keyCode == Keys.N) {
+                this.pop();
+                var newFileState = new NewFileState();
+
+                this.stateMachine.pushState(newFileState);
+            }
+            else if (event.keyCode == Keys.H) {
+                this.pop();
+                var cheatSheetState = new CheatSheetState();
+                cheatSheetState.enter();
+
+                this.stateMachine.pushState(cheatSheetState);
+            }
         }
     }
 
